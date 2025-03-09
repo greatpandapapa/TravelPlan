@@ -74,6 +74,10 @@
 
 ## Setup
 ### FrontendのBuild
+- Node.jsのパッケージをインストールする
+  ```
+  $ npm i
+  ```
 - .envをサーバに合わせて編集する必要がある。以下の２項目を設定する
   ```
   REACT_APP_SERVER_URL="サーバのURL"
