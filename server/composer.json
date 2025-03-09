@@ -1,0 +1,14 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Controller\\": "controller",
+            "Lib\\": "lib",
+            "Model\\": "model"
+        }
+        },
+            "require": {
+            "illuminate/database": "*",
+            "monolog/monolog": "*",
+            "vlucas/phpdotenv": "^5.5"
+        }
+}
