@@ -19,9 +19,9 @@ export function MyAppBar() {
         navigate('/')
       }
     }
-    
+
     return (
-      <AppBar position="static" sx={{margin:0,padding:0}}>
+    <AppBar position="static" sx={{margin:0,padding:0}}>
       <Toolbar>
         <IconButton
             size="small"
