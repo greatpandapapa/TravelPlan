@@ -114,7 +114,7 @@ export class CScheduleList {
             }
             if (rows[i].start_time != "") {
                 rows[i].end_time = dayjs(rows[i].start_time,"H:mm").add(rows[i].stay_minutes,"m").format("H:mm");
-            }
+            } 
         }
         // autoの時間計算(後)
         for(let i = rows.length-2; i > 0; i--) {

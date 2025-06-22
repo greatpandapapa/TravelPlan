@@ -22,6 +22,7 @@ import TourIcon from '@mui/icons-material/Tour';
 import SaveIcon from '@mui/icons-material/Save';
 import GradingIcon from '@mui/icons-material/Grading';
 import MyAppBar from "../component/MyAppBar";
+import { isMobile } from "react-device-detect";
 
 function Main() {
   const [value, setValue] = React.useState('plan');
@@ -52,48 +53,49 @@ function Main() {
     return (<>loading...</>);  
   }
 
-  const tag_style = {borderRadius: '6px',minHeight: "48px", height: "48px" }
+  const tag_style = {borderRadius: '6px',minWidth:"32px",minHeight: isMobile ? "32px":"48px", height: isMobile ? "32px":"48px" }
 
+  const panel_padding:string = '5px';
   return (
-    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Box sx={{ borderBottom: 1, borderColor: 'divider', margin: "0px" }}>
         <MyAppBar></MyAppBar>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab icon={<CardTravelIcon />} iconPosition="start" label="計画" value="plan" sx={{...tag_style, bgcolor: '#e0ffff'}} />
-              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label="工程" value="scheduleedit"  sx={{...tag_style, bgcolor: '#f0f8ff'}}/>
-              <Tab icon={<SwapVertIcon />} iconPosition="start" label="順序" value="schedulesort"  sx={{...tag_style, bgcolor: '#e6e6fa'}}/>
-              <Tab icon={<TourIcon />} iconPosition="start" label="行き先" value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
-              <Tab icon={<GradingIcon />} iconPosition="start" label="工程表" value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
-              <Tab icon={<SaveIcon />} iconPosition="start" label="保存" value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
+              <Tab icon={<CardTravelIcon />} iconPosition="start" label={isMobile?"":"計画"} value="plan" sx={{...tag_style, bgcolor: '#e0ffff'}} />
+              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={isMobile?"":"工程"} value="scheduleedit"  sx={{...tag_style, bgcolor: '#f0f8ff'}}/>
+              <Tab icon={<SwapVertIcon />} iconPosition="start" label={isMobile?"":"順序"} value="schedulesort"  sx={{...tag_style, bgcolor: '#e6e6fa'}}/>
+              <Tab icon={<TourIcon />} iconPosition="start" label={isMobile?"":"行き先"} value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
+              <Tab icon={<GradingIcon />} iconPosition="start" label={isMobile?"":"工程表"} value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
+              <Tab icon={<SaveIcon />} iconPosition="start" label={isMobile?"":"保存"} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
             </TabList>
           </Box>
-          <TabPanel value="plan" sx={{bgcolor: '#e0ffff',padding: '10px',paddingTop:'20px'}}>
-            <Box sx={{bgcolor: '#ffffff'}}>
+          <TabPanel value="plan" sx={{bgcolor: '#e0ffff',padding: panel_padding,paddingTop:'20px'}}>
+            <Box sx={{bgcolor: '#ffffff',margin: "0px"}}>
               <PlanPanel></PlanPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="scheduleedit" sx={{bgcolor: '#f0f8ff',padding: '10px'}}>
+          <TabPanel value="scheduleedit" sx={{bgcolor: '#f0f8ff',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ScheduleEditPanel></ScheduleEditPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="schedulesort" sx={{bgcolor: '#e6e6fa',padding: '10px'}}>
+          <TabPanel value="schedulesort" sx={{bgcolor: '#e6e6fa',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <SortPanel></SortPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="destination"  sx={{bgcolor: '#ffffe0',padding: '10px'}}>
+          <TabPanel value="destination"  sx={{bgcolor: '#ffffe0',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <DestinationPanel></DestinationPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="publish" sx={{bgcolor: '#fce1fc',padding: '10px'}}>
+          <TabPanel value="publish" sx={{bgcolor: '#fce1fc',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ViewPanel mode="view"></ViewPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="save" sx={{bgcolor: '#f8fbf8',padding: '10px'}}>
+          <TabPanel value="save" sx={{bgcolor: '#f8fbf8',padding: panel_padding}}>
             <Box>
               <SavePanel></SavePanel>
             </Box>

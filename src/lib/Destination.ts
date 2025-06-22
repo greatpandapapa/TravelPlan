@@ -122,6 +122,9 @@ export class CDestination extends CBaseListItem implements IDestination {
             this.hd_sat = data.hd_sat;
             this._fixUndefField();
         }
+        if (this.fee === undefined) {
+            this.fee = 0;
+        }
     }
 
     update(data: IDestination) {

@@ -1,5 +1,5 @@
 import {useState,memo} from 'react';
-import { plan } from '../lib/Plan';
+import { plan,CPlan } from '../lib/Plan';
 import {IScheduleTable} from '../typings/data_json';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,6 +14,7 @@ import {getBgColor} from '../component/CustomMui';
 import { SlimTableCell } from '../component/CustomMui';
 import { ReferenceList } from "../component/ReferenceList";
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 type ViewPanelProps = {
   mode: string;
@@ -24,8 +25,7 @@ type ViewPanelProps = {
  */
 function ViewPanel(gprops:ViewPanelProps) {
   const [width, height] = useWindowSize();
-  let initialRows = plan.getTableRows(); 
-  const [rows, setRows] = useState(initialRows);
+  const rows = plan.getTableRows(); 
 
   /**
    * スケジュールテーブル
@@ -111,7 +111,7 @@ function ViewPanel(gprops:ViewPanelProps) {
         <a target="_blank" href={props.row.destination.url}>{props.row.destination.source}</a>
       </SlimTableCell>
       <SlimTableCell align="right">
-        {(props.row.destination.fee !=0) && (props.row.destination.fee + props.row.destination.currency_label)}
+        {(props.row.destination.fee !=0) && (props.row.destination.fee.toLocaleString() + props.row.destination.currency_label)}
       </SlimTableCell>
       <SlimTableCell align="center">
         {(props.row.destination.map_url != "") && (
@@ -124,7 +124,19 @@ function ViewPanel(gprops:ViewPanelProps) {
   });
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', margin: "0px" }}>
+        <Box fontSize={16}>
+        <Grid container spacing={1}>
+          <Grid item xs="auto">日程：</Grid>
+          <Grid item xs={3} sx={{textAlign: "left"}}>{plan.geTerm()}</Grid>
+          <Grid item xs="auto">予算：</Grid>
+          {CPlan.currency_options.map((cc)=>{
+            if (plan.total_fee[cc.value] > 0) {
+              return (<Grid item xs={1} sx={{textAlign: "left"}}>{plan.total_fee[cc.value].toLocaleString()}{cc.label}</Grid>);
+            }
+          })}
+        </Grid>
+        </Box>
         {ScheduleTable()}
     </Paper>
   );

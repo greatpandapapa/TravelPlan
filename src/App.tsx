@@ -6,6 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import { isMobile } from "react-device-detect";
 import Load from './page/Load';
 import Main from './page/Main';
 
@@ -15,6 +16,14 @@ function App() {
   const theme = createTheme({
     typography: {
       fontSize: 11,
+    },
+    spacing: 4,
+    mixins: {
+      toolbar: {
+        '@media (min-width: 600px)': {
+          minHeight: isMobile ? '32px':'64px',
+       },
+      },
     },
   });
 

@@ -19,7 +19,14 @@ dayjs.locale(ja);
 /**
  * 旅行計画
  */
-class CPlan {
+export class CPlan {
+    // static
+    static currency_options: {value:string; label:string}[] = [
+            {value:"Yen",label:"円"},
+            {value:"Dollar",label:"ドル"},
+            {value:"Euro",label:"ユーロ"},
+            {value:"Local",label:"現地通貨"}
+        ];
     // プロパティ
     title: string = "";
     name: string = "";
@@ -30,6 +37,10 @@ class CPlan {
     private schedules: CScheduleList = new CScheduleList(jsondata);
     private destinations: CDestinationList = new CDestinationList(jsondata);
     private references: CReferenceList = new CReferenceList(jsondata);
+    // 集計情報
+    public start_date: String="";
+    public end_date: String="";
+    public total_fee: {[index: string]: number} = {}
 
     /**
      * コンストラクタ
@@ -86,6 +97,7 @@ class CPlan {
     public getScheduleRows():IScheduleRows[] {
         return this.schedules.getScheduleRows(this.deparure_date);
     }
+
     /**
      * 新規スケジュールのObject
      * 
@@ -167,14 +179,15 @@ class CPlan {
             {label:"観光",value:"sightseeing"}, 
             {label:"食事",value:"meal"}, 
             {label:"移動",value:'move'},
-            {label:"ホテル",value:'hotel'},
+            {label:"宿泊施設",value:'hotel'},
+            {label:"個人宅",value:'home'},
             {label:"駐車場",value:'parking'},
-            {label:"サービス",value:'service'},
             {label:"駅",value:'station'},
             {label:"空港",value:'airport'},
             {label:"港",value:'port'},
             {label:"行動",value:'action'},
             {label:"手続き",value:'procedure'},
+            {label:"サービス",value:'service'},
             {label:"終了",value:'end'}
         ]);
     }
@@ -205,12 +218,7 @@ class CPlan {
      * currencyのValueOptions
      */
     public getCurrencyValueOptions():object[] {
-        return ([
-            {value:"Yen",label:"円"},
-            {value:"Dollar",label:"ドル"},
-            {value:"Euro",label:"ユーロ"},
-            {value:"Local",label:"現地通貨"}
-        ]);
+        return  CPlan.currency_options;
     }
     /**
      * 通貨の文字列取得
@@ -248,10 +256,34 @@ class CPlan {
                 sc.destination = {...this.destinations.getDestinationTableRow(row.dest_id)};
                 sc.destination.currency_label = this.getCurrencyName(sc.destination.currency);
             }
-            rows.push(sc);    
+            rows.push(sc);
         });
+        this.start_date = rows[0].dayn;
+        this.end_date = rows[rows.length-1].dayn;
         let filter = new TableFilter(rows);
+
+        let dest_fee_sumed:(number|null)[] = [];
+        // 金額計算（毎回クリアする）
+        CPlan.currency_options.forEach((cc)=>{
+            this.total_fee[cc.value] = 0;
+        });
+        for(let i=0;i<rows.length;i++) {
+            if (rows[i].dest_id != null) {
+                if (! dest_fee_sumed.includes(rows[i].dest_id)) {
+                    this.total_fee[rows[i].destination.currency] += Number(rows[i].destination.fee);
+                    dest_fee_sumed.push(rows[i].dest_id);
+                }
+            }
+        }
+
         return filter.do();
+    }
+
+    /**
+     * 期間を取得する
+     */
+    public geTerm():String {
+        return this.start_date + "-" + this.end_date; 
     }
 
     /**
@@ -366,6 +398,7 @@ class TableFilter {
 
     /**
      * GoogleMapのリンクをつける
+     * 
      */
     private _addMoveGoogleMapLink() {
         // 最初と最後は見る必要ないのでループから外す
@@ -375,28 +408,10 @@ class TableFilter {
                     continue;
                 }
                 if (this.rows[i-1].type == "station"  && this.rows[i+1].type == "station") {
-                    // Yahoo経路検索
-                    //https://transit.yahoo.co.jp/search/result?from=%E6%B4%8B%E5%85%89%E5%8F%B0&to=%E6%9D%B1%E4%BA%AC&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2025&m=02&d=23&hh=07&m1=0&m2=0&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1
                     // 駅名
-                    const org = encodeURIComponent(this.rows[i-1].name);
-                    const dest = encodeURIComponent(this.rows[i+1].name);
-                    // 日付
-                    const day = /(\d+)\-(\d+)\-(\d+)/.exec(this.rows[i].dayn);
-                    if (day == null) continue;
-                    const y:string = day[1];
-                    const m:string = day[2];
-                    const d:string = day[3];
-                    // 時間
-                    const st:(string|null) = this.rows[i].start_time;
-                    if (st == null) continue;
-                    const time = /(\d+)\:(\d)(\d)/.exec(st);
-                    if (time == null) continue;
-                    const hh:string = time[1];
-                    const m1:string = time[2];
-                    const m2:string = time[3];
-                    const url = "https://transit.yahoo.co.jp/search/result?from="+org+"&to="+dest+"&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y="+y+"&m="+m+"&d="+d+"&hh="+hh+"&m1="+m1+"&m2="+m2+"&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1"
-                    this.rows[i].destination.url = url;
-                    this.rows[i].destination.source = "Yahoo経路検索";
+                    const from = this.rows[i-1].name;
+                    const to = this.rows[i+1].name;
+                    this._createYahooTrainURL(i,from,to);
                 } else if (this.rows[i-1].destination.address != ""  && this.rows[i+1].destination.address != "") {
                     // GoogleMap
                     let org = encodeURIComponent(this.rows[i-1].destination.address);
@@ -404,13 +419,56 @@ class TableFilter {
                     let url = "https://www.google.com/maps/dir/?api=1&origin="+org+"&destination="+dest;
                     this.rows[i].destination.url = url;
                     this.rows[i].destination.source = "GoogleMap";
+                } else {
+                    const re = new RegExp('(.+)駅\\s*-\\s*(.+)駅\\s*');
+                    if (re.test(this.rows[i].name)) {
+                        // 駅名
+                        const matches = this.rows[i].name.match(re);
+                        if (matches != null) {
+                            const from = matches[1].trim();
+                            const to = matches[2].trim();
+                            this._createYahooTrainURL(i,from,to);
+                        }
+                    }
                 }
             }
         }
     }
 
     /**
-     * GoogleMapのリンクをつける
+     * Yahoo経理案内のURLを生成する
+     * 
+     * @param index this.rowsのインデックス
+     * @param from 出発駅名
+     * @param to 到着駅名
+     */
+    private _createYahooTrainURL(index:number,from:string,to:string) {
+        // Yahoo経路検索
+        //https://transit.yahoo.co.jp/search/result?from=%E6%B4%8B%E5%85%89%E5%8F%B0&to=%E6%9D%B1%E4%BA%AC&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=2025&m=02&d=23&hh=07&m1=0&m2=0&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1
+        // 駅名
+        const org = encodeURIComponent(from);
+        const dest = encodeURIComponent(to);
+        // 日付
+        const day = /(\d+)\-(\d+)\-(\d+)/.exec(this.rows[index].dayn);
+        if (day == null) return;
+        const y:string = day[1];
+        const m:string = day[2];  // 0パディングする必要あるがもともとなってるから
+        const d:string = day[3];  // 0パディングする必要あるがもともとなってるから
+        // 時間
+        const st:(string|null) = this.rows[index].start_time;
+        if (st == null) return;
+        const time = /(\d+)\:(\d)(\d)/.exec(st);
+        if (time == null) return;
+        const hh:string = ('00'+Number(time[1])).slice(-2); // 0パディングする必要あり
+        const m1:string = time[2];
+        const m2:string = time[3];
+        const url = "https://transit.yahoo.co.jp/search/result?from="+org+"&to="+dest+"&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y="+y+"&m="+m+"&d="+d+"&hh="+hh+"&m1="+m1+"&m2="+m2+"&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1"
+        this.rows[index].destination.url = url;
+        this.rows[index].destination.source = "Y!経路検索";
+    }
+
+    /**
+     * 定休日をチェックする
      */
     private _checkHoliday() {
         for(let i=0;i<this.rows.length;i++) {

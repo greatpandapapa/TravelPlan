@@ -251,7 +251,7 @@ function SortPanel() {
   });
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', marginY: "10px" }}>
        {SortableScheduleTable()}
     </Paper>
   );

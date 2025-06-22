@@ -262,6 +262,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
         '& .textPrimary': {
           color: 'text.primary',
         },
+        marginY: "10px" 
       }}
       >
       <StripedDataGrid
