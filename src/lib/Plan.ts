@@ -420,7 +420,7 @@ class TableFilter {
                     this.rows[i].destination.url = url;
                     this.rows[i].destination.source = "GoogleMap";
                 } else {
-                    const re = new RegExp('(.+)駅\\s*-\\s*(.+)駅\\s*');
+                    const re = new RegExp('(.+)駅\\s*→\\s*(.+)駅\\s*');
                     if (re.test(this.rows[i].name)) {
                         // 駅名
                         const matches = this.rows[i].name.match(re);
