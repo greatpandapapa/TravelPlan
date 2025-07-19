@@ -95,6 +95,7 @@ export interface IValueOptions {
 export interface IBringItem extends IBaseListItem {
     id: number;
     name: string;
+    type: string;
     memo: string;
     checked: boolean;
 } 

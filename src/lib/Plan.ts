@@ -422,6 +422,12 @@ export class CPlan {
     public getBringItem(id:number) {
         return this.bringitems.getData(id);
     }
+    /**
+     * 持ち物タイプの選択肢
+     */
+    public getBringItemTypeValueOptions():IValueOptions[] {
+        return this.bringitems.getTypeValueOptions();
+    }        
 }
 
 /**
