@@ -43,5 +43,6 @@
             "hd_fri": false,
             "hd_sat": false                    
         }
-    ]
+    ],
+    "bringitem": []
 }

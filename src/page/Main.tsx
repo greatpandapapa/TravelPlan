@@ -23,6 +23,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import GradingIcon from '@mui/icons-material/Grading';
 import MyAppBar from "../component/MyAppBar";
 import { isMobile } from "react-device-detect";
+import BringItemPanel from './BringItemPanel';
 
 function Main() {
   const [value, setValue] = React.useState('plan');
@@ -36,7 +37,7 @@ function Main() {
   if (!loaded) {
     let from:string = state["from"];
     if (from == "new") {
-      plan.loadTeplateData();
+      plan.loadTemplateData();
       setLoaded(true);
     } else if (from == "file") {
       const data = state["data"];
@@ -67,6 +68,7 @@ function Main() {
               <Tab icon={<SwapVertIcon />} iconPosition="start" label={isMobile?"":"順序"} value="schedulesort"  sx={{...tag_style, bgcolor: '#e6e6fa'}}/>
               <Tab icon={<TourIcon />} iconPosition="start" label={isMobile?"":"行き先"} value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
               <Tab icon={<GradingIcon />} iconPosition="start" label={isMobile?"":"工程表"} value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
+              <Tab icon={<GradingIcon />} iconPosition="start" label={isMobile?"":"持ち物"} value="bringitem"  sx={{...tag_style, bgcolor: '#cfffd4'}}/>
               <Tab icon={<SaveIcon />} iconPosition="start" label={isMobile?"":"保存"} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
             </TabList>
           </Box>
@@ -93,6 +95,11 @@ function Main() {
           <TabPanel value="publish" sx={{bgcolor: '#fce1fc',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ViewPanel mode="view"></ViewPanel>
+            </Box>
+          </TabPanel>
+          <TabPanel value="bringitem" sx={{bgcolor: '#cfffd4',padding: panel_padding}}>
+            <Box sx={{bgcolor: '#ffffff'}}>
+              <BringItemPanel></BringItemPanel>
             </Box>
           </TabPanel>
           <TabPanel value="save" sx={{bgcolor: '#f8fbf8',padding: panel_padding}}>

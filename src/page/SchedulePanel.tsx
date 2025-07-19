@@ -217,28 +217,28 @@ export function ScheduleGrid(props:ScheduleGridProps) {
               color="inherit"
             />,
           ];
+        } else {
+          return [
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<AddIcon />}
+              label="Add"
+              onClick={handleAddClick(id)}
+              color="inherit"
+            />,
+          ];
         }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<AddIcon />}
-            label="Add"
-            onClick={handleAddClick(id)}
-            color="inherit"
-          />,
-        ];
       },
     }
   ];

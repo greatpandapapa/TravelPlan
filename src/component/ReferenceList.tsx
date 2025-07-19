@@ -108,27 +108,27 @@ type ReferenceListProps = {
  * 参考情報
  */
 export function ReferenceList(props:ReferenceListProps) {
-    const initalrows = plan.getreferenceRows();
+    const initalrows = plan.getReferenceRows();
     const [rows,setRows] = useState(initalrows);
     const [reference,setreference] = useState(new CReference());
     const [open,setOpen] = useState(false);
 
     // データの保存
     const saveData = (data:IReference) => {
-        plan.updatereference(data);
-        setRows(plan.getreferenceRows());
+        plan.updateReference(data);
+        setRows(plan.getReferenceRows());
         setOpen(false);
     };
     // 編集
     const editData = (id:number) => {
-        setreference(plan.getreference(id));
+        setreference(plan.getReference(id));
         setOpen(true);
     };
     // 編集
     const delData = (id:number) => {
-        plan.delreference(id);
-        console.log(plan.getreferenceRows());
-        setRows(plan.getreferenceRows());
+        plan.delReference(id);
+        console.log(plan.getReferenceRows());
+        setRows(plan.getReferenceRows());
         setOpen(false);
     };
 
@@ -144,7 +144,7 @@ export function ReferenceList(props:ReferenceListProps) {
                 参考サイト
                 {props.edit && (
                 <span onClick={()=>{
-                    setreference(plan.getNewreference());
+                    setreference(plan.getNewReference());
                     setOpen(true);
                 }}>( + )</span>)}
             </Box>

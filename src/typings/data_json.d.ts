@@ -52,7 +52,8 @@ export interface DataJson {
     plan: IPlan,
     reference: IReference[],
     schedule: ISchedule[],
-    destination: IDestination[]
+    destination: IDestination[],
+    bringitem: IBringItem[]
 }
 
 declare module '*.json' {
@@ -90,3 +91,10 @@ export interface IValueOptions {
     label: string,
     value: string,
 }
+ 
+export interface IBringItem extends IBaseListItem {
+    id: number;
+    name: string;
+    memo: string;
+    checked: boolean;
+} 

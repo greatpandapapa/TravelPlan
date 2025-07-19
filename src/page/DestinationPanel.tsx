@@ -439,7 +439,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
  */
 export function DestinationPanel() {
   const [destination,setDestination] = useState<IDestination>(plan.getNewDestination());
-  const [destinationRows,setDestinationRows] = useState<object[]>(plan.getDestinationRow());
+  const [destinationRows,setDestinationRows] = useState<object[]>(plan.getDestinationRows());
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -447,7 +447,7 @@ export function DestinationPanel() {
 
   // リスト更新
   const updateList = () => {
-    setDestinationRows(plan.getDestinationRow());
+    setDestinationRows(plan.getDestinationRows());
   }
 
   // 目的地を追加

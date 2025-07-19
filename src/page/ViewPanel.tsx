@@ -15,6 +15,7 @@ import { SlimTableCell } from '../component/CustomMui';
 import { ReferenceList } from "../component/ReferenceList";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import { Link } from '@mui/material';
 
 type ViewPanelProps = {
   mode: string;
@@ -64,6 +65,18 @@ function ViewPanel(gprops:ViewPanelProps) {
     );
   };
 
+  type AddressMapLinkProps = {
+    address: string;
+  };
+
+  /**
+   * 住所をGoogleMapのリンクにする
+   */
+  const AddressMapLink = ((props:AddressMapLinkProps)=>{
+    let url = "https://www.google.com/maps/place/"+encodeURIComponent(props.address);
+    return (<Link target="_blank" href={url}>{props.address}</Link>);
+  });
+
   type ScheduleTableRowProps = {
     row:IScheduleTable;
     pre_date:string;
@@ -103,19 +116,23 @@ function ViewPanel(gprops:ViewPanelProps) {
         {(props.row.name=="") && props.row.destination.name}
         {(props.row.name!="" && props.row.destination.name!="") && "("+props.row.destination.name+")"}
       </SlimTableCell>
-      <SlimTableCell align="left">{props.row.destination.address}</SlimTableCell>
-      <SlimTableCell align="center">
-        <a target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</a>
+      <SlimTableCell align="left">
+        {(props.row.destination.address != "") && (
+          <AddressMapLink address={props.row.destination.address}></AddressMapLink>
+         )}       
       </SlimTableCell>
       <SlimTableCell align="center">
-        <a target="_blank" href={props.row.destination.url}>{props.row.destination.source}</a>
+        <Link target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</Link>
+      </SlimTableCell>
+      <SlimTableCell align="center">
+        <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
       </SlimTableCell>
       <SlimTableCell align="right">
         {(props.row.destination.fee !=0) && (props.row.destination.fee.toLocaleString() + props.row.destination.currency_label)}
       </SlimTableCell>
       <SlimTableCell align="center">
         {(props.row.destination.map_url != "") && (
-           <a target="_blank" href={props.row.destination.map_url}>地図</a>
+           <Link target="_blank" href={props.row.destination.map_url}>地図</Link>
           )}
       </SlimTableCell>
       <SlimTableCell align="left">{props.row.destination.memo}</SlimTableCell>

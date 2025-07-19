@@ -6,12 +6,14 @@ import {
     IValueOptions,
     IScheduleNestedTable,
     IReference,
+    IBringItem,
 } from "../typings/data_json";
 import jsondata from "./_template.json"
 import ja from 'dayjs/locale/ja';
 import {CScheduleList} from "./Schedule"
-import {CDestinationList,CDestination} from "./Destination"
-import {CReferenceList} from "./Reference"
+import {CDestinationList,CDestination} from "./Destination";
+import {CReferenceList} from "./Reference";
+import {CBringItemList} from "./BringItem";
 
 // 日付の曜日を日本語にするため
 dayjs.locale(ja);
@@ -37,6 +39,7 @@ export class CPlan {
     private schedules: CScheduleList = new CScheduleList(jsondata);
     private destinations: CDestinationList = new CDestinationList(jsondata);
     private references: CReferenceList = new CReferenceList(jsondata);
+    private bringitems: CBringItemList = new CBringItemList(jsondata);
     // 集計情報
     public start_date: String="";
     public end_date: String="";
@@ -53,7 +56,7 @@ export class CPlan {
     /**
      * テンプレートを読み込む
      */
-    public loadTeplateData() {
+    public loadTemplateData() {
         const data = jsondata;
         this.title = data.plan.title;
         this.name = data.plan.name;
@@ -64,6 +67,7 @@ export class CPlan {
         this.schedules = new CScheduleList(data);
         this.destinations = new CDestinationList(data);
         this.references = new CReferenceList(data);
+        this.bringitems = new CBringItemList(data);
     }
 
     /**
@@ -89,6 +93,14 @@ export class CPlan {
             reference = data.reference;
         }
         this.references = new CReferenceList({...data,reference:reference});
+        //  referenceは後から追加したため、サーバから返ってくるデータに含まれていない場合もあるため対応する
+        let bringitem:any[];
+        if (!("bringitem" in data)) {
+            bringitem = [];
+        } else {
+            bringitem = data.bringitem;
+        }
+        this.bringitems = new CBringItemList({...data,bringitem:bringitem});
     }
 
     /**
@@ -132,7 +144,7 @@ export class CPlan {
     /**
      * 新規目的用のObject
      */
-    public getDestinationRow():object[] {
+    public getDestinationRows():object[] {
         return this.destinations.getRows();
     }
     /**
@@ -336,6 +348,7 @@ export class CPlan {
             schedule: this.schedules.getSaveData(),
             destination: this.destinations.getSaveData(),
             reference: this.references.getSaveData(),
+            bringitem: this.bringitems.getSaveData(),
         }
         return data;
     }
@@ -343,13 +356,13 @@ export class CPlan {
     /**
      * 参考の配列
      */
-    public getreferenceRows():IReference[] {
+    public getReferenceRows():IReference[] {
         return this.references.getRows();
     }
     /**
      * 新規参考のObject
      */
-    public getNewreference() {
+    public getNewReference() {
         return this.references.getNewData();
     }
     /**
@@ -357,7 +370,7 @@ export class CPlan {
      *
      * @param data 
      */
-    public updatereference(data:object) {
+    public updateReference(data:object) {
         this.references.updateData(data);
     }
     /**
@@ -365,14 +378,49 @@ export class CPlan {
      * 
      * @param id ID
      */
-    public delreference(id:number) {
+    public delReference(id:number) {
         this.references.delData(id);
     }
     /**}
      * 参考を取得する
      */
-    public getreference(id:number) {
+    public getReference(id:number) {
         return this.references.getData(id);
+    }
+
+    /**
+     * 参考の配列
+     */
+    public getBringItemRows():IBringItem[] {
+        return this.bringitems.getRows();
+    }
+    /**
+     * 新規参考のObject
+     */
+    public getNewBringItem() {
+        return this.bringitems.getNewData();
+    }
+    /**
+     * 参考の追加
+     *
+     * @param data 
+     */
+    public updateBringItem(data:object) {
+        this.bringitems.updateData(data);
+    }
+    /**
+     * 参考を削除する
+     * 
+     * @param id ID
+     */
+    public delBringItem(id:number) {
+        this.bringitems.delData(id);
+    }
+    /**}
+     * 参考を取得する
+     */
+    public getBringItem(id:number) {
+        return this.bringitems.getData(id);
     }
 }
 
@@ -391,8 +439,9 @@ class TableFilter {
      * フィルタ
      */
     do() {
-        this._addMoveGoogleMapLink();
+        this._addRouteSearchLink();
         this._checkHoliday();
+//        this._addMapLink();
         return this.rows;
     }
 
@@ -400,36 +449,32 @@ class TableFilter {
      * GoogleMapのリンクをつける
      * 
      */
-    private _addMoveGoogleMapLink() {
+    private _addRouteSearchLink() {
         // 最初と最後は見る必要ないのでループから外す
         for(let i=1;i<this.rows.length-1;i++) {
             if (this.rows[i].type == "move" ) {
                 if (i-1 < 0 || i+1 >= this.rows.length) {
                     continue;
                 }
-                if (this.rows[i-1].type == "station"  && this.rows[i+1].type == "station") {
+                const re = new RegExp('(.+)駅\\s*→\\s*(.+)駅\\s*');
+                if (re.test(this.rows[i].name)) {
+                    // 駅名
+                    const matches = this.rows[i].name.match(re);
+                    if (matches != null) {
+                        const from = matches[1].trim();
+                        const to = matches[2].trim();
+                        this._createYahooTrainURL(i,from,to);
+                    }
+                } else if (this.rows[i-1].type == "station"  && this.rows[i+1].type == "station") {
                     // 駅名
                     const from = this.rows[i-1].name;
                     const to = this.rows[i+1].name;
                     this._createYahooTrainURL(i,from,to);
                 } else if (this.rows[i-1].destination.address != ""  && this.rows[i+1].destination.address != "") {
                     // GoogleMap
-                    let org = encodeURIComponent(this.rows[i-1].destination.address);
-                    let dest = encodeURIComponent(this.rows[i+1].destination.address);
-                    let url = "https://www.google.com/maps/dir/?api=1&origin="+org+"&destination="+dest;
-                    this.rows[i].destination.url = url;
-                    this.rows[i].destination.source = "GoogleMap";
-                } else {
-                    const re = new RegExp('(.+)駅\\s*→\\s*(.+)駅\\s*');
-                    if (re.test(this.rows[i].name)) {
-                        // 駅名
-                        const matches = this.rows[i].name.match(re);
-                        if (matches != null) {
-                            const from = matches[1].trim();
-                            const to = matches[2].trim();
-                            this._createYahooTrainURL(i,from,to);
-                        }
-                    }
+                    let from = this.rows[i-1].destination.address;
+                    let to = this.rows[i+1].destination.address;
+                    this._createGoogleMapURL(i,from,to);
                 }
             }
         }
@@ -468,6 +513,22 @@ class TableFilter {
     }
 
     /**
+     * Yahoo経理案内のURLを生成する
+     * 
+     * @param index this.rowsのインデックス
+     * @param from 出発駅名
+     * @param to 到着駅名
+     */
+    private _createGoogleMapURL(index:number,from:string,to:string) {
+        // GoogleMap
+        let org = encodeURIComponent(from);
+        let dest = encodeURIComponent(to);
+        let url = "https://www.google.com/maps/dir/?api=1&origin="+org+"&destination="+dest;
+        this.rows[index].destination.url = url;
+        this.rows[index].destination.source = "GoogleMap";
+    }
+
+    /**
      * 定休日をチェックする
      */
     private _checkHoliday() {
@@ -483,6 +544,21 @@ class TableFilter {
                     (wday[1] == "日" && this.rows[i].destination.hd_sun)) {
                     this.rows[i].destination.alert = "定休日";
                 }
+            }
+        }
+    }
+
+    /**
+     * GoogleMapのリンクをつける
+     * 
+     */
+    private _addMapLink() {
+        // 最初と最後は見る必要ないのでループから外す
+        for(let i=1;i<this.rows.length-1;i++) {
+            if (this.rows[i].destination.address != "") {
+                let address = encodeURIComponent(this.rows[i].destination.address);
+                let url = "https://www.google.com/maps/place/"+address;
+                this.rows[i].destination.map_url = url;
             }
         }
     }
