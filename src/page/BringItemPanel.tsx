@@ -203,6 +203,7 @@ export function BringItemGrid(props:BringItemGridProps) {
             onRowModesModelChange={handleRowModesModelChange}
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
+            rowHeight={35}
         />
     </Box>
   );

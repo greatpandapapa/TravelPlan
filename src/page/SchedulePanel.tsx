@@ -275,6 +275,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
         processRowUpdate={processRowUpdate}
         slots={slots}
         slotProps={slotProps}
+        rowHeight={35}
       />
     </Box>
   );

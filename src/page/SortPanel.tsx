@@ -4,6 +4,7 @@ import {IScheduleTable,IScheduleNestedTable} from '../typings/data_json';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
+import { SlimTableCell } from '../component/CustomMui';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -98,16 +99,16 @@ function SortPanel() {
       <Table sx={{ minWidth: 650,padding: '1px 1px' }} stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <TableCell component="th"></TableCell>
-            <TableCell component="th">ID</TableCell>
-            <TableCell component="th">日付</TableCell>
-            <TableCell component="th">時間</TableCell>
-            <TableCell component="th">滞在</TableCell>
-            <TableCell component="th">タイプ</TableCell>
-            <TableCell component="th">予定</TableCell>
-            <TableCell component="th">住所</TableCell>
-            <TableCell component="th">予約</TableCell>
-            <TableCell component="th">情報源</TableCell>
+            <SlimTableCell component="th"></SlimTableCell>
+            <SlimTableCell component="th">ID</SlimTableCell>
+            <SlimTableCell component="th">日付</SlimTableCell>
+            <SlimTableCell component="th">時間</SlimTableCell>
+            <SlimTableCell component="th">滞在</SlimTableCell>
+            <SlimTableCell component="th">タイプ</SlimTableCell>
+            <SlimTableCell component="th">予定</SlimTableCell>
+            <SlimTableCell component="th">住所</SlimTableCell>
+            <SlimTableCell component="th">予約</SlimTableCell>
+            <SlimTableCell component="th">情報源</SlimTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -155,7 +156,7 @@ function SortPanel() {
     return (
       <>
         <TableRow key={top_row.id} ref={setNodeRef} style={style2} {...attributes} >
-            <ScheduleTableCells listeners={listeners} row={top_row}  grp_head={true} grp_count={props.grp_rows.count}/>
+            <ScheduleSlimTableCells listeners={listeners} row={top_row}  grp_head={true} grp_count={props.grp_rows.count}/>
         </TableRow>
         <DndContext
           sensors={sensors}
@@ -205,12 +206,12 @@ function SortPanel() {
 
     return (
         <TableRow key={props.row.id} ref={setNodeRef} style={style2} {...attributes} {...listeners}>
-            <ScheduleTableCells listeners={listeners} row={props.row} grp_head={false} grp_count={1} />
+            <ScheduleSlimTableCells listeners={listeners} row={props.row} grp_head={false} grp_count={1} />
         </TableRow>
     );
   });
 
-  interface  ScheduleTableCellsProps {
+  interface  ScheduleSlimTableCellsProps {
     row:IScheduleTable;
     listeners:DraggableSyntheticListeners;
     grp_head: boolean;
@@ -220,32 +221,32 @@ function SortPanel() {
   /**
    * １行の全セルを出力
    */
-  const ScheduleTableCells = ((props:ScheduleTableCellsProps) => {
+  const ScheduleSlimTableCells = ((props:ScheduleSlimTableCellsProps) => {
     return (
       <>
         {props.grp_head == true ? (
-         <TableCell rowSpan={props.grp_count} style={{verticalAlign:'top'}}>
+         <SlimTableCell rowSpan={props.grp_count} style={{verticalAlign:'top'}}>
             <DragHandleIcon {...props.listeners}/>
-          </TableCell>
+          </SlimTableCell>
          ):<></>}
-        <TableCell align="center">{props.row.id}</TableCell>
-        <TableCell align="left">{props.row.dayn}</TableCell>
-        <TableCell align="center">{props.row.start_time}-{props.row.end_time}</TableCell>
-        <TableCell align="right">{props.row.stay_minutes}</TableCell>
-        <TableCell align="left">{props.row.type_label}</TableCell>
-        <TableCell align="left">
+        <SlimTableCell align="center">{props.row.id}</SlimTableCell>
+        <SlimTableCell align="left">{props.row.dayn}</SlimTableCell>
+        <SlimTableCell align="center">{props.row.start_time}-{props.row.end_time}</SlimTableCell>
+        <SlimTableCell align="right">{props.row.stay_minutes}</SlimTableCell>
+        <SlimTableCell align="left">{props.row.type_label}</SlimTableCell>
+        <SlimTableCell align="left">
           {props.row.destination.alert != "" && (<Typography sx={{color:"#FF0000"}}>★:{props.row.destination.alert}</Typography>)} 
           {props.row.name}
           {(props.row.name=="") && props.row.destination.name}
           {(props.row.name!="" && props.row.destination.name!="") && "("+props.row.destination.name+")"}
-        </TableCell>
-        <TableCell align="left">{props.row.destination.address}</TableCell>
-        <TableCell align="center">
+        </SlimTableCell>
+        <SlimTableCell align="left">{props.row.destination.address}</SlimTableCell>
+        <SlimTableCell align="center">
           <a target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</a>
-        </TableCell>
-        <TableCell align="center">
+        </SlimTableCell>
+        <SlimTableCell align="center">
           <a target="_blank" href={props.row.destination.url}>{props.row.destination.source}</a>
-        </TableCell>
+        </SlimTableCell>
       </>
     );
   });

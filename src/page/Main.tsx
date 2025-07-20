@@ -21,9 +21,10 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 import TourIcon from '@mui/icons-material/Tour';
 import SaveIcon from '@mui/icons-material/Save';
 import GradingIcon from '@mui/icons-material/Grading';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import MyAppBar from "../component/MyAppBar";
-import { isMobile } from "react-device-detect";
 import BringItemPanel from './BringItemPanel';
+import {config,convMobileText} from "../lib/Config"
 
 function Main() {
   const [value, setValue] = React.useState('plan');
@@ -54,7 +55,7 @@ function Main() {
     return (<>loading...</>);  
   }
 
-  const tag_style = {borderRadius: '6px',minWidth:"32px",minHeight: isMobile ? "32px":"48px", height: isMobile ? "32px":"48px" }
+  const tag_style = {borderRadius: '6px',minWidth:"32px",minHeight: config.icon_hight, height: config.icon_hight }
 
   const panel_padding:string = '5px';
   return (
@@ -63,13 +64,13 @@ function Main() {
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab icon={<CardTravelIcon />} iconPosition="start" label={isMobile?"":"計画"} value="plan" sx={{...tag_style, bgcolor: '#e0ffff'}} />
-              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={isMobile?"":"工程"} value="scheduleedit"  sx={{...tag_style, bgcolor: '#f0f8ff'}}/>
-              <Tab icon={<SwapVertIcon />} iconPosition="start" label={isMobile?"":"順序"} value="schedulesort"  sx={{...tag_style, bgcolor: '#e6e6fa'}}/>
-              <Tab icon={<TourIcon />} iconPosition="start" label={isMobile?"":"行き先"} value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
-              <Tab icon={<GradingIcon />} iconPosition="start" label={isMobile?"":"工程表"} value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
-              <Tab icon={<GradingIcon />} iconPosition="start" label={isMobile?"":"持ち物"} value="bringitem"  sx={{...tag_style, bgcolor: '#cfffd4'}}/>
-              <Tab icon={<SaveIcon />} iconPosition="start" label={isMobile?"":"保存"} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
+              <Tab icon={<CardTravelIcon />} iconPosition="start" label={convMobileText("計画")} value="plan" sx={{...tag_style, bgcolor: '#e0ffff'}} />
+              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={convMobileText("工程")} value="scheduleedit"  sx={{...tag_style, bgcolor: '#f0f8ff'}}/>
+              <Tab icon={<SwapVertIcon />} iconPosition="start" label={convMobileText("順序")} value="schedulesort"  sx={{...tag_style, bgcolor: '#e6e6fa'}}/>
+              <Tab icon={<TourIcon />} iconPosition="start" label={convMobileText("行き先")} value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
+              <Tab icon={<GradingIcon />} iconPosition="start" label={convMobileText("工程表")} value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
+              <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持ち物")} value="bringitem"  sx={{...tag_style, bgcolor: '#cfffd4'}}/>
+              <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
             </TabList>
           </Box>
           <TabPanel value="plan" sx={{bgcolor: '#e0ffff',padding: panel_padding,paddingTop:'20px'}}>

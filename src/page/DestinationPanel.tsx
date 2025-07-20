@@ -210,6 +210,7 @@ export function DestinationGrid(props:DestinationGridProps) {
       <StripedDataGrid
         rows={rows}
         columns={columns}
+        rowHeight={35}
       />
       <EditDestinationModal 
         open={open}
