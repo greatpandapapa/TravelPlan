@@ -51,7 +51,16 @@ class StoreController extends Controller {
             $json = file_get_contents($filename);
             $data = json_decode($json);
             $info = pathinfo($filename);
-            $list[] = ["name"=>$info["filename"],"title"=>$data->plan->title,"purpose"=>$data->plan->purpose,"deparure_date"=>$data->plan->deparure_date];
+            if (isset($data->plan->status)) {
+                $status = $data->plan->status;
+            } else {
+                $status = "Plan";
+            }
+            $list[] = [ "name"=>$info["filename"],
+                        "title"=>$data->plan->title,
+                        "purpose"=>$data->plan->purpose,
+                        "deparure_date"=>$data->plan->deparure_date,
+                        "status"=>$status];
         }
         return new SuccessResponse($list);     
     }

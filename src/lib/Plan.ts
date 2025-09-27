@@ -7,6 +7,7 @@ import {
     IScheduleNestedTable,
     IReference,
     IBringItem,
+    IActionItem,
 } from "../typings/data_json";
 import jsondata from "./_template.json"
 import ja from 'dayjs/locale/ja';
@@ -14,6 +15,7 @@ import {CScheduleList} from "./Schedule"
 import {CDestinationList,CDestination} from "./Destination";
 import {CReferenceList} from "./Reference";
 import {CBringItemList} from "./BringItem";
+import {CActionItemList} from "./ActionItem";
 
 // 日付の曜日を日本語にするため
 dayjs.locale(ja);
@@ -23,23 +25,52 @@ dayjs.locale(ja);
  */
 export class CPlan {
     // static
-    static currency_options: {value:string; label:string}[] = [
+    static currency_options: IValueOptions[] = [
             {value:"Yen",label:"円"},
             {value:"Dollar",label:"ドル"},
             {value:"Euro",label:"ユーロ"},
             {value:"Local",label:"現地通貨"}
         ];
+    static status_options: IValueOptions[] = [
+            {value:"Plan",label:"計画中"},
+            {value:"Done",label:"済み"},
+            {value:"Sleep",label:"保留"},
+            {value:"Rejected",label:"ボツ"},
+        ];
+    static type_options: IValueOptions[] = [
+            {label:"観光",value:"sightseeing"}, 
+            {label:"食事",value:"meal"}, 
+            {label:"移動",value:'move'},
+            {label:"宿泊施設",value:'hotel'},
+            {label:"個人宅",value:'home'},
+            {label:"駐車場",value:'parking'},
+            {label:"駅",value:'station'},
+            {label:"空港",value:'airport'},
+            {label:"港",value:'port'},
+            {label:"行動",value:'action'},
+            {label:"手続き",value:'procedure'},
+            {label:"サービス",value:'service'},
+            {label:"終了",value:'end'}
+        ];
+    static auto_options: IValueOptions[] = [
+            {value:"",label:"なし"},
+            {value:"pre",label:"前"},
+            {value:"post",label:"後"}
+        ];
+
     // プロパティ
     title: string = "";
     name: string = "";
     deparure_date: Dayjs = dayjs(jsondata.plan.deparure_date);
     members: number|null = null;
     purpose: string = "";
+    status: string = CPlan.status_options[0].value;
     // プライベート
     private schedules: CScheduleList = new CScheduleList(jsondata);
     private destinations: CDestinationList = new CDestinationList(jsondata);
     private references: CReferenceList = new CReferenceList(jsondata);
     private bringitems: CBringItemList = new CBringItemList(jsondata);
+    private actionitems: CActionItemList = new CActionItemList(jsondata);
     // 集計情報
     public start_date: String="";
     public end_date: String="";
@@ -63,11 +94,13 @@ export class CPlan {
         this.deparure_date = dayjs(data.plan.deparure_date);
         this.members = data.plan.members;
         this.purpose = data.plan.purpose;
+        this.status = data.plan.status;
 
         this.schedules = new CScheduleList(data);
         this.destinations = new CDestinationList(data);
         this.references = new CReferenceList(data);
         this.bringitems = new CBringItemList(data);
+        this.actionitems = new CActionItemList(data);
     }
 
     /**
@@ -93,7 +126,7 @@ export class CPlan {
             reference = data.reference;
         }
         this.references = new CReferenceList({...data,reference:reference});
-        //  referenceは後から追加したため、サーバから返ってくるデータに含まれていない場合もあるため対応する
+        //  bringitemは後から追加したため、サーバから返ってくるデータに含まれていない場合もあるため対応する
         let bringitem:any[];
         if (!("bringitem" in data)) {
             bringitem = [];
@@ -101,6 +134,20 @@ export class CPlan {
             bringitem = data.bringitem;
         }
         this.bringitems = new CBringItemList({...data,bringitem:bringitem});
+        //  actionは後から追加したため、サーバから返ってくるデータに含まれていない場合もあるため対応する
+        let actionitem:any[];
+        if (!("actionitem" in data)) {
+            actionitem = [];
+        } else {
+            actionitem = data.actionitem;
+        }
+        this.actionitems = new CActionItemList({...data,actionitem:actionitem});
+        // statusはあとから追加したため無い場合は初期値を設定
+        if (!("status" in data)) {
+            this.status = CPlan.status_options[0].value;
+        } else {
+            this.status = data.plan.status;
+        }
     }
 
     /**
@@ -187,36 +234,27 @@ export class CPlan {
      * typeのValueOptions
      */
     public getTypeValueOptions():IValueOptions[] {
-        return ([
-            {label:"観光",value:"sightseeing"}, 
-            {label:"食事",value:"meal"}, 
-            {label:"移動",value:'move'},
-            {label:"宿泊施設",value:'hotel'},
-            {label:"個人宅",value:'home'},
-            {label:"駐車場",value:'parking'},
-            {label:"駅",value:'station'},
-            {label:"空港",value:'airport'},
-            {label:"港",value:'port'},
-            {label:"行動",value:'action'},
-            {label:"手続き",value:'procedure'},
-            {label:"サービス",value:'service'},
-            {label:"終了",value:'end'}
-        ]);
+        return CPlan.type_options;
     }
     /**
      * 通貨の文字列取得
      */
     public getTypeName(key:string):string {
-        return this._getOptionLabel(key,"type");
+        return CPlan.getOptionLabel(key,"type");
     }
-    private _getOptionLabel(key:string, mode:string):string {
+    /**
+     * 
+     */
+    public static getOptionLabel(key:string, mode:string):string {
         let options:IValueOptions[];
         if (mode == "type") {
-            options  = (this.getTypeValueOptions() as unknown[]) as IValueOptions[];
+            options  = (CPlan.type_options as unknown[]) as IValueOptions[];
         } else if (mode == "currency") {
-            options  = (this.getCurrencyValueOptions() as unknown[]) as IValueOptions[];
+            options  = (CPlan.currency_options as unknown[]) as IValueOptions[];
+        } else if (mode == "start_time_auto") {
+            options  = (CPlan.auto_options as unknown[]) as IValueOptions[];
         } else {
-            options  = (this.getAutoValueOptions() as unknown[]) as IValueOptions[];
+            options  = (CPlan.status_options as unknown[]) as IValueOptions[];
         }
         for (let row of options) {
             if (row.value == key) {
@@ -229,28 +267,37 @@ export class CPlan {
     /**
      * currencyのValueOptions
      */
-    public getCurrencyValueOptions():object[] {
+    public getCurrencyValueOptions():IValueOptions[] {
         return  CPlan.currency_options;
     }
     /**
      * 通貨の文字列取得
      */
     public getCurrencyName(key:string):string {
-        return this._getOptionLabel(key,"currency");
+        return CPlan.getOptionLabel(key,"currency");
+    }
+
+    /**
+     * currencyのValueOptions
+     */
+    public static getStatusValueOptions():IValueOptions[] {
+        return  CPlan.status_options;
+    }
+    /**
+     * 上智の文字列取得
+     */
+    public static getStatusName(key:string):string {
+        return CPlan.getOptionLabel(key,"status");
     }
 
     /**
      * start_time_autoのValueOptions
      */
-    public getAutoValueOptions():object[] {
-        return ([
-            {value:"",label:"なし"},
-            {value:"pre",label:"前"},
-            {value:"post",label:"後"}
-        ]);
+    public getAutoValueOptions():IValueOptions[] {
+        return CPlan.auto_options;
     }
     public getAutoName(key:string):string {
-        return this._getOptionLabel(key,"start_time_auto");
+        return CPlan.getOptionLabel(key,"start_time_auto");
     }
 
     /**
@@ -343,12 +390,14 @@ export class CPlan {
                 title:this.title,
                 deparure_date:this.deparure_date.format("YYYY-MM-DD"),
                 members: this.members,
-                purpose: this.purpose
+                purpose: this.purpose,
+                status: this.status,
             },
             schedule: this.schedules.getSaveData(),
             destination: this.destinations.getSaveData(),
             reference: this.references.getSaveData(),
             bringitem: this.bringitems.getSaveData(),
+            actionitem: this.actionitems.getSaveData(),
         }
         return data;
     }
@@ -389,19 +438,19 @@ export class CPlan {
     }
 
     /**
-     * 参考の配列
+     * 持ち物の配列
      */
     public getBringItemRows():IBringItem[] {
         return this.bringitems.getRows();
     }
     /**
-     * 新規参考のObject
+     * 新規持ち物のObject
      */
     public getNewBringItem() {
         return this.bringitems.getNewData();
     }
     /**
-     * 参考の追加
+     * 持ち物の追加
      *
      * @param data 
      */
@@ -409,7 +458,7 @@ export class CPlan {
         this.bringitems.updateData(data);
     }
     /**
-     * 参考を削除する
+     * 持ち物を削除する
      * 
      * @param id ID
      */
@@ -417,7 +466,7 @@ export class CPlan {
         this.bringitems.delData(id);
     }
     /**}
-     * 参考を取得する
+     * 持ち物を取得する
      */
     public getBringItem(id:number) {
         return this.bringitems.getData(id);
@@ -427,6 +476,47 @@ export class CPlan {
      */
     public getBringItemTypeValueOptions():IValueOptions[] {
         return this.bringitems.getTypeValueOptions();
+    }        
+
+    /**
+     * アクションアイテムの配列取得
+     */
+    public getActionItemRows():IActionItem[] {
+        return this.actionitems.getRows();
+    }
+    /**
+     * 新規アクションアイテムのObject
+     */
+    public getNewActionItem() {
+        return this.actionitems.getNewData();
+    }
+    /**
+     * アクションアイテムの追加
+     *
+     * @param data 
+     */
+    public updateActionItem(data:object) {
+        this.actionitems.updateData(data);
+    }
+    /**
+     * アクションアイテムを削除する
+     * 
+     * @param id ID
+     */
+    public delActionItem(id:number) {
+        this.actionitems.delData(id);
+    }
+    /**}
+     * アクションアイテムを取得する
+     */
+    public getActionItem(id:number) {
+        return this.actionitems.getData(id);
+    }
+    /**
+     * アクションアイテムタイプの選択肢
+     */
+    public getActionItemTypeValueOptions():IValueOptions[] {
+        return this.actionitems.getTypeValueOptions();
     }        
 }
 

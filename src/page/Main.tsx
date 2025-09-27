@@ -22,8 +22,10 @@ import TourIcon from '@mui/icons-material/Tour';
 import SaveIcon from '@mui/icons-material/Save';
 import GradingIcon from '@mui/icons-material/Grading';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import MyAppBar from "../component/MyAppBar";
 import BringItemPanel from './BringItemPanel';
+import ActionItemPanel from './ActionItemPanel';
 import {config,convMobileText} from "../lib/Config"
 
 function Main() {
@@ -70,6 +72,7 @@ function Main() {
               <Tab icon={<TourIcon />} iconPosition="start" label={convMobileText("行き先")} value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
               <Tab icon={<GradingIcon />} iconPosition="start" label={convMobileText("工程表")} value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
               <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持ち物")} value="bringitem"  sx={{...tag_style, bgcolor: '#cfffd4'}}/>
+              <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={convMobileText("準備")} value="actionitem"  sx={{...tag_style, bgcolor: '#e0ffff'}}/>
               <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
             </TabList>
           </Box>
@@ -101,6 +104,11 @@ function Main() {
           <TabPanel value="bringitem" sx={{bgcolor: '#cfffd4',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <BringItemPanel></BringItemPanel>
+            </Box>
+          </TabPanel>
+          <TabPanel value="actionitem" sx={{bgcolor: '#e0ffff',padding: panel_padding}}>
+            <Box sx={{bgcolor: '#ffffff'}}>
+              <ActionItemPanel></ActionItemPanel>
             </Box>
           </TabPanel>
           <TabPanel value="save" sx={{bgcolor: '#f8fbf8',padding: panel_padding}}>

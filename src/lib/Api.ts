@@ -73,4 +73,5 @@ export interface IgetListRow {
     title:string;
     purpose:string;
     deparure_date:string;                
+    status:string;
 }

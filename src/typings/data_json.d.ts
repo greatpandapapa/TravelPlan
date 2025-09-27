@@ -4,6 +4,7 @@ export interface IPlan {
     deparure_date: string;
     members: number;
     purpose: string;
+    status: string;
 }
 export interface IBaseListItem {
     id: number;
@@ -54,6 +55,7 @@ export interface DataJson {
     schedule: ISchedule[],
     destination: IDestination[],
     bringitem: IBringItem[]
+    actionitem: IActionItem[]
 }
 
 declare module '*.json' {
@@ -98,4 +100,13 @@ export interface IBringItem extends IBaseListItem {
     type: string;
     memo: string;
     checked: boolean;
+} 
+
+export interface IActionItem extends IBaseListItem {
+    id: number;
+    name: string;
+    type: string;
+    limit_date: Date|null;
+    memo: string;
+    done: boolean;
 } 

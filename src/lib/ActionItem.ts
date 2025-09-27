@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import {
     DataJson,
-    IBringItem,
+    IActionItem,
     IValueOptions,
 } from "../typings/data_json";
 import {
@@ -12,9 +12,9 @@ import {
 /**
  * 持ち物リスト
  */
-export class CBringItemList extends CBaseList<CBringItem> {
+export class CActionItemList extends CBaseList<CActionItem> {
     // プライベート
-    protected list: CBringItem[] = [];
+    protected list: CActionItem[] = [];
 
     /**
      * コンストラクタ
@@ -23,7 +23,7 @@ export class CBringItemList extends CBaseList<CBringItem> {
      */
     constructor(data: DataJson) {
         super();
-         for (let dt of data.bringitem) {
+         for (let dt of data.actionitem) {
             this.list.push(this._factoryObject(dt));
         }
     }
@@ -31,8 +31,8 @@ export class CBringItemList extends CBaseList<CBringItem> {
     /**
      * 空オブジェクトの生成（継承先でオーバーライトする）
      */
-    protected override _factoryObject(data:IBringItem):CBringItem {
-        return new CBringItem(data);
+    protected override _factoryObject(data:IActionItem):CActionItem {
+        return new CActionItem(data);
     }
     /**
      * 持ち物タイプの選択肢
@@ -40,15 +40,10 @@ export class CBringItemList extends CBaseList<CBringItem> {
     public getTypeValueOptions():IValueOptions[] {
         return ([
             {label:"-",value:""},
-            {label:"お金",value:"money"},
-            {label:"チケット",value:"ticket"}, 
-            {label:"身分証明",value:"id"}, 
-            {label:"衣類",value:"clothes"}, 
-            {label:"電子機器",value:"electronic"}, 
-            {label:"娯楽",value:"entertainment"}, 
-            {label:"情報",value:"information"}, 
-            {label:"健康",value:"healthcare"}, 
-            {label:"天候対策",value:"weather"}, 
+            {label:"計画",value:"plan"},
+            {label:"予約",value:"reservation"}, 
+            {label:"申請",value:"admition"}, 
+            {label:"購入",value:"buy"}, 
             {label:"その他",value:"other"},
         ]);
     }
@@ -57,41 +52,45 @@ export class CBringItemList extends CBaseList<CBringItem> {
 /**
  * 持ち物
  */
-export class CBringItem extends CBaseListItem implements IBringItem {
+export class CActionItem extends CBaseListItem implements IActionItem {
     name: string;
     type: string;
+    limit_date: Date|null;
     memo: string;
-    checked: boolean;
+    done: boolean;
 
     /**
      * コンストラクタ
      * 
      * @param data JSONデータ
      */
-    constructor(data?: IBringItem) {
+    constructor(data?: IActionItem) {
         if (data === undefined) {
             super({id:0});
             this.name = "";
             this.type = "";
+            this.limit_date = null;
             this.memo = ""; 
-            this.checked = false;
+            this.done = false;
         } else {
             super(data);
             this.name = data.name;
             this.type = data.type;
+            this.limit_date = data.limit_date;
             this.memo = data.memo;
-            this.checked = data.checked;    
+            this.done = data.done;    
         }
     }
 
-    public update(data: IBringItem) {
+    public update(data: IActionItem) {
         this.name = data.name;
         this.type = data.type;
+        this.limit_date = data.limit_date;
         this.memo = data.memo;
-        this.checked = data.checked;
+        this.done = data.done;
     }
 
-    public getData():IBringItem {
-        return {id:this.id,name:this.name,type:this.type,memo:this.memo,checked:this.checked};
+    public getData():IActionItem {
+        return {id:this.id,name:this.name,type:this.type,limit_date:this.limit_date,memo:this.memo,done:this.done};
     } 
 }

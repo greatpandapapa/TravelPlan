@@ -10,12 +10,18 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Link,useNavigate  } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
 import { ChangeEvent, useState } from 'react';
 import MyAppBar from "../component/MyAppBar";
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import {CPlan} from "../lib/Plan";
+import { IValueOptions } from '../typings/data_json';
 
 /**
  * ファイルからJSONデータを読み込み
@@ -56,6 +62,7 @@ function LoadJsonFile() {
 function ListServerFile() {
   const [loaded,setLoaded] = React.useState<boolean>(false);
   const [rows,setRows] = React.useState<IgetListRow[]>([]);
+  const [status,setStatus] = React.useState("Plan");
 
   if (!loaded) {
     API.getList((response)=>{
@@ -76,20 +83,9 @@ function ListServerFile() {
     }
   }
 
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell component="th">名前</TableCell>
-            <TableCell component="th">タイトル</TableCell>
-            <TableCell component="th">目的</TableCell>
-            <TableCell component="th">出発日</TableCell>
-            <TableCell component="th"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {rows.map((row) => (
+  const outputRow = (row:IgetListRow) => {
+    if (row.status === status || status == "all"){
+        return (
             <TableRow>
               <TableCell align="left">
                 <Link to={"/main"} state={{from:"server",name:row.name}}>{row.name}</Link>
@@ -97,16 +93,54 @@ function ListServerFile() {
               <TableCell align="left">{row.title}</TableCell>
               <TableCell align="left">{row.purpose}</TableCell>
               <TableCell align="left">{row.deparure_date}</TableCell>
+              <TableCell align="left">{CPlan.getStatusName(row.status)}</TableCell>
               <TableCell align="center">
                 <IconButton aria-label="Delete" onClick={(e:React.MouseEvent)=>{handleDelete(row.name)}}>
                   <DeleteIcon />
                 </IconButton>
               </TableCell>
             </TableRow>
+        );
+    } else {
+        return;
+    }
+}
+
+  return (
+   <Stack spacing={2} sx={{width: '100%'}} >
+      <RadioGroup
+        row
+        defaultValue={status}
+        name="状態"
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setStatus(event.target.value);
+         }}                       
+      >
+        <FormControlLabel value={"all"} control={<Radio />} label="全て" />
+        {CPlan.getStatusValueOptions().map((option:IValueOptions) => (
+          <FormControlLabel value={option.value} control={<Radio />} label={option.label} />
+        ))}
+      </RadioGroup>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell component="th">名前</TableCell>
+              <TableCell component="th">タイトル</TableCell>
+              <TableCell component="th">目的</TableCell>
+              <TableCell component="th">出発日</TableCell>
+              <TableCell component="th">状態</TableCell>
+              <TableCell component="th"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {rows.map((row) => (
+            outputRow(row)
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Stack>
   );
 }
 

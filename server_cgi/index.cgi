@@ -92,7 +92,12 @@ sub listFile {
         my $file_cnt = file_get_contents($filename);
         my $data = $json->decode($file_cnt);
         my ($basename,$dir,$suffix) = fileparse($filename, qr/\..*$/);
-        push(@list,{name => $basename,title => $data->{plan}->{title},purpose => $data->{plan}->{purpose}});
+        push(@list,{name => $basename,
+                    title => $data->{plan}->{title},
+                    purpose => $data->{plan}->{purpose},
+                    deparure_date => $data->{plan}->{deparure_date},
+                    status => $data->{plan}->{status},
+                });
     }
     successExit(\@list);
 }
