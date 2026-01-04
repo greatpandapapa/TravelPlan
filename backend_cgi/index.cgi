@@ -148,7 +148,7 @@ sub saveFile {
         # リビジョンチェック        
         if ($cur_data->{plan}->{rev} ne "") {
             if ($cur_data->{plan}->{rev} != $data->{plan}->{rev}) {
-                warnningExit({"mesg"=>"ファイルが他のユーザにより更新されています"]},2);
+                warnningExit({"mesg"=>"ファイルが他のユーザにより更新されています"},2);
             }
             # Revをインクリメント
             $data->{plan}->{rev}++;
