@@ -19,10 +19,11 @@ export class API {
      * @param function callback 
      * @returns 
      */
-    static sendPostRequest(params:object,callback:(response_data:object) => void) {
+    static sendPostRequest(params:object,callback:(response_data:IPostResponse) => void) {
         return axios.post(URL,params)
         .then(function (response) {
-            if (response.data.code != 0) {
+            // 0:Success,1-10:Warnning,11-:Error
+            if (response.data.code > 10) {
                 throw new Error('サーバAPI呼び出しがエラー応答でした');
             }
             callback(response.data);
@@ -34,13 +35,13 @@ export class API {
     }
 
     // データの読み込み
-    static loadData(name:string,callback:(response_data:object) => void) {
+    static loadData(name:string,callback:(response_data:ILoadDataResponse) => void) {
         const params = {"controller":"Store","action":"load","name":name};
         return API.sendPostRequest(params,callback);
     }
 
     // データの保存
-    static saveData(name:string,data:object,callback:(response_data:object) => void) {
+    static saveData(name:string,data:object,callback:(response_data:IPostResponse) => void) {
         const params = {"controller":"Store","action":"save","name":name,"data":data};
         return API.sendPostRequest(params,callback);
     }
@@ -56,6 +57,10 @@ export class API {
         const params = {"controller":"Store","action":"delete","name":name};
         return API.sendPostRequest(params,callback);
     }
+}
+export interface IPostResponse {
+    code: number,
+    result: any
 }
 export interface ILoadDataResponse {
     code: number,
@@ -74,4 +79,7 @@ export interface IgetListRow {
     purpose:string;
     deparure_date:string;                
     status:string;
+    create_date:string;                
+    update_date:string;                
+    rev:string;    
 }

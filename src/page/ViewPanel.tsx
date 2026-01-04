@@ -152,6 +152,7 @@ function ViewPanel(gprops:ViewPanelProps) {
               return (<Grid item xs={1} sx={{textAlign: "left"}}>{plan.total_fee[cc.value].toLocaleString()}{cc.label}</Grid>);
             }
           })}
+          {(plan.total_fee["TOTAL_YEN"] > 0)? <Grid item xs={2} sx={{textAlign: "left"}}>総額:{plan.total_fee["TOTAL_YEN"].toLocaleString()}円</Grid>:""}
         </Grid>
         </Box>
         {ScheduleTable()}

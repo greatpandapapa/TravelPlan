@@ -63,6 +63,20 @@ sub successExit {
     exit;
 }
 
+## ワーニング終了
+sub warnningExit {
+    my $result = shift(@_);
+    my $code = shift(@_);
+
+    $resp = {
+            code  => $code,
+            result => $result,
+    };
+    print $cgi->header({type=>'application/json', charset=>'utf-8',-access_control_allow_origin => "*"});
+    print $json->encode($resp);
+    exit;
+}
+
 ## ファイルの中身を取得する
 sub file_get_contents {
     my $filename = shift(@_);
@@ -97,6 +111,9 @@ sub listFile {
                     purpose => $data->{plan}->{purpose},
                     deparure_date => $data->{plan}->{deparure_date},
                     status => $data->{plan}->{status},
+                    create_date => $data->{plan}->{create_date},
+                    update_date => $data->{plan}->{update_date},
+                    rev => $data->{plan}->{rev},
                 });
     }
     successExit(\@list);
@@ -120,16 +137,28 @@ sub loadFile {
 sub saveFile {
     my $request = shift(@_);
 
-    $name = $request->{"name"};
+    my $name = $request->{"name"};
+    my $filename = $data_path."/".$name.".json";
     if ($name ne "_template") {
         $data = $request->{"data"};
 
-        $enc_json = $json->encode($data);
+        my $file_cnt = file_get_contents($filename);
+        my $cur_data = $json->decode($file_cnt);
 
-        $filename = $data_path."/".$name.".json";
+        # リビジョンチェック        
+        if ($cur_data->{plan}->{rev} ne "") {
+            if ($cur_data->{plan}->{rev} != $data->{plan}->{rev}) {
+                warnningExit({"mesg"=>"ファイルが他のユーザにより更新されています"]},2);
+            }
+            # Revをインクリメント
+            $data->{plan}->{rev}++;
+        }
+        my $enc_json = $json->encode($data);
         file_put_contents($filename,$enc_json);
+        successExit("OK");
+    } else {
+        warnningExit({"mesg"=>"_templateというファイル名では保存できません"},2);
     }
-    successExit("OK");
 }
 # JSONデータを削除する
 sub deleteFile {

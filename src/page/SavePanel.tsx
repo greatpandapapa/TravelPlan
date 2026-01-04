@@ -10,11 +10,19 @@ import Typography from '@mui/material/Typography';
  * スケジュール編集パネル
  */
 function SavePanel() {
-    const [saved,setSaved] = useState(false);
+    const [saved,setSaved] = useState<string>("");
+    const [resp_mesg,setRespMesg] = useState<string>("");
 
     const saveData = () => {
         API.saveData(plan.name,plan.getSaveData(),(response)=>{
-            setSaved(true);
+            // 成功の場合
+            if (response.code == 0) {
+                plan.incRev();
+                setSaved("success");
+            } else {
+                setSaved("error");
+                setRespMesg(response.result.mesg);
+            }
         });      
     };
 
@@ -35,7 +43,8 @@ function SavePanel() {
             <Box>
             <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start',verticalAlign:'center' }}>
                 サーバに保存しますか？<Button variant="outlined" size="small" onClick={saveData} sx={{bgcolor: '#ffffff'}}>はい</Button>
-                {saved && "保存しました"}
+                {saved == "success" && "保存しました"}
+                {saved == "error" && resp_mesg}
             </Box>
             <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start' }}>
               <ExportLink/>

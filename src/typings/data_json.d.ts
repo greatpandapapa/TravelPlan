@@ -5,6 +5,12 @@ export interface IPlan {
     members: number;
     purpose: string;
     status: string;
+    create_date: string;
+    update_date: string;
+    rev: number;
+    usd_rate: number;
+    eur_rate: number;
+    local_rate: number;
 }
 export interface IBaseListItem {
     id: number;
@@ -30,11 +36,13 @@ export interface IDestination extends IBaseListItem {
     type: string;
     name: string;
     address: string;
+    tel_number: string;
     reservation: string;
     reservation_site: string;
     reservation_url: string;
     fee: number;
     currency: string;
+    pay: string;
     source: string;
     url: string;
     url2: string;

@@ -8,6 +8,7 @@ import {
     IReference,
     IBringItem,
     IActionItem,
+    IPlan,
 } from "../typings/data_json";
 import jsondata from "./_template.json"
 import ja from 'dayjs/locale/ja';
@@ -16,6 +17,7 @@ import {CDestinationList,CDestination} from "./Destination";
 import {CReferenceList} from "./Reference";
 import {CBringItemList} from "./BringItem";
 import {CActionItemList} from "./ActionItem";
+import {toDateString} from "./Common";
 
 // 日付の曜日を日本語にするため
 dayjs.locale(ja);
@@ -65,6 +67,12 @@ export class CPlan {
     members: number|null = null;
     purpose: string = "";
     status: string = CPlan.status_options[0].value;
+    create_date: string = toDateString(new Date());
+    update_date: string = toDateString(new Date());
+    rev: number = 0;
+    usd_rate: number = 150;
+    eur_rate: number = 180;
+    local_rate: number = 1;
     // プライベート
     private schedules: CScheduleList = new CScheduleList(jsondata);
     private destinations: CDestinationList = new CDestinationList(jsondata);
@@ -89,12 +97,22 @@ export class CPlan {
      */
     public loadTemplateData() {
         const data = jsondata;
+        // 日付を今日の日付にする
+        data.plan.create_date = toDateString(new Date());
+        data.plan.update_date = toDateString(new Date());
+
         this.title = data.plan.title;
         this.name = data.plan.name;
         this.deparure_date = dayjs(data.plan.deparure_date);
         this.members = data.plan.members;
         this.purpose = data.plan.purpose;
         this.status = data.plan.status;
+        this.create_date = data.plan.create_date;
+        this.update_date = data.plan.update_date;
+        this.rev = data.plan.rev;
+        this.usd_rate = data.plan.usd_rate;
+        this.eur_rate = data.plan.eur_rate;
+        this.local_rate = data.plan.local_rate;
 
         this.schedules = new CScheduleList(data);
         this.destinations = new CDestinationList(data);
@@ -147,6 +165,38 @@ export class CPlan {
             this.status = CPlan.status_options[0].value;
         } else {
             this.status = data.plan.status;
+        }
+        // create_date,update_date,revは後から追加したので無かった場合の対応
+        if (data.plan.create_date === undefined) {
+            this.create_date = toDateString(new Date());
+        } else {
+            this.create_date = data.plan.create_date;
+        }
+        if (data.plan.update_date === undefined) {
+            this.update_date = toDateString(new Date());
+        } else {
+            this.update_date = data.plan.update_date;
+        }
+        if (data.plan.rev === undefined) {
+            this.rev = 0;
+        } else {
+            this.rev = data.plan.rev;
+        }
+        // usd_rate,eur_rate,local_rateは後から追加したので無かった場合の対応
+        if (data.plan.usd_rate === undefined) {
+            this.usd_rate = 150;
+        } else {
+            this.usd_rate = data.plan.usd_rate;
+        }
+        if (data.plan.eur_rate === undefined) {
+            this.eur_rate = 180;
+        } else {
+            this.eur_rate = data.plan.eur_rate;
+        }
+        if (data.plan.local_rate === undefined) {
+            this.local_rate = 1;
+        } else {
+            this.local_rate = data.plan.local_rate;
         }
     }
 
@@ -326,10 +376,26 @@ export class CPlan {
         CPlan.currency_options.forEach((cc)=>{
             this.total_fee[cc.value] = 0;
         });
+        this.total_fee["TOTAL_YEN"] = 0;
         for(let i=0;i<rows.length;i++) {
             if (rows[i].dest_id != null) {
                 if (! dest_fee_sumed.includes(rows[i].dest_id)) {
-                    this.total_fee[rows[i].destination.currency] += Number(rows[i].destination.fee);
+                    // 個別なら人数分をかける
+                    if (rows[i].destination.pay == "Every" && plan.members !== null) {
+                        rows[i].destination.fee = rows[i].destination.fee * plan.members;
+                    }
+                    let fee = Number(rows[i].destination.fee);
+                    this.total_fee[rows[i].destination.currency] += fee;
+                    // 総額の加算
+                    if (rows[i].destination.currency == "Yen") {
+                        this.total_fee["TOTAL_YEN"] += fee;
+                    } else if (rows[i].destination.currency == "Dollar") {
+                        this.total_fee["TOTAL_YEN"] += fee * this.usd_rate;
+                    } else if (rows[i].destination.currency == "Euro") {
+                        this.total_fee["TOTAL_YEN"] += fee * this.eur_rate;
+                    } else if (rows[i].destination.currency == "Local") {
+                        this.total_fee["TOTAL_YEN"] += fee * this.local_rate;
+                    }
                     dest_fee_sumed.push(rows[i].dest_id);
                 }
             }
@@ -392,6 +458,12 @@ export class CPlan {
                 members: this.members,
                 purpose: this.purpose,
                 status: this.status,
+                create_date: this.create_date,
+                update_date: this.update_date,
+                rev: this.rev,
+                usd_rate: this.usd_rate,
+                eur_rate: this.eur_rate,
+                local_rate: this.local_rate,
             },
             schedule: this.schedules.getSaveData(),
             destination: this.destinations.getSaveData(),
@@ -400,6 +472,13 @@ export class CPlan {
             actionitem: this.actionitems.getSaveData(),
         }
         return data;
+    }
+    
+    /**
+     * Revを上げる
+     */
+    public incRev() {
+        this.rev++;
     }
 
     /**

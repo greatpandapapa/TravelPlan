@@ -5,7 +5,13 @@
         "deparure_date": "2024-7-12",
         "members": 1,
         "purpose": "",
-        "status": "Plan"
+        "status": "Plan",
+        "create_date": "2024-7-12",
+        "update_date": "2024-7-12",
+        "rev": 0,
+        "usd_rate": 150,
+        "eur_rate": 180,
+        "local_rate": 1
     },
     "reference": [],
     "schedule": [
@@ -26,11 +32,13 @@
             "type": "",
             "name": "",
             "address": "",
+            "tel_number": "",
             "reservation": "",
             "reservation_site": "",
             "reservation_url": "",
             "fee": 0,
             "currency": "Yen",
+            "pay": "Total",
             "source": "",
             "url": "",
             "url2": "",

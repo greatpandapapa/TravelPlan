@@ -63,7 +63,7 @@ export function DestinationGrid(props:DestinationGridProps) {
     { 
       field: 'id', 
       headerName: 'ID', 
-      width: 100, 
+      width: 80, 
       editable: false },
     {
       field: 'type',
@@ -84,7 +84,15 @@ export function DestinationGrid(props:DestinationGridProps) {
       field: 'address',
       headerName: '住所',
       type: 'string',
-      width: 300,
+      width: 250,
+      align: 'left',
+      headerAlign: 'left',
+    },
+    {
+      field: 'tel_number',
+      headerName: 'TEL',
+      type: 'string',
+      width: 120,
       align: 'left',
       headerAlign: 'left',
     },
@@ -120,7 +128,7 @@ export function DestinationGrid(props:DestinationGridProps) {
       field: 'url',
       headerName: '情報源',
       type: 'string',
-      width: 150,
+      width: 120,
       align: 'center',
       headerAlign: 'center',
       renderCell: ({id}) => {
@@ -170,7 +178,7 @@ export function DestinationGrid(props:DestinationGridProps) {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: 80,
       cellClassName: 'actions',
       getActions: ({ id }) => {
         return [
@@ -294,7 +302,15 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 }}>
                 </TextField>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
+                <TextField id="tel_number" name="tel_number" label="TEL" size="small" sx={{width:300}}
+                value={props.destination.tel_number}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  props.updateForm({...props.destination,tel_number:event.target.value});
+                }}>
+                </TextField>
+              </Grid>
+              <Grid item xs={6}>
                 <TextField id="reservation" name="reservation" label="予約番号" size="small" sx={{width:300}}
                 value={props.destination.reservation}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -318,14 +334,14 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 }}>
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField id="fee" name="fee" label="金額" size="small" type="number" value={props.destination.fee}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,fee:(event.target.value as unknown)as number});
                 }}>
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField id="currency" name="currency" label="通貨" size="small" sx={{width:200}}
                   value={props.destination.currency} select
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -335,6 +351,16 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                   <MenuItem key="Dollar" value="Dollar">ドル</MenuItem>
                   <MenuItem key="Euro" value="Euro">ユーロ</MenuItem>
                   <MenuItem key="Local" value="Local">現地通貨</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={4}>
+                <TextField id="pay" name="pay" label="支払い" size="small" sx={{width:100}}
+                  value={props.destination.pay} select
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                    props.updateForm({...props.destination,pay:event.target.value});
+                  }}>
+                  <MenuItem key="Total" value="Total">総額</MenuItem>
+                  <MenuItem key="Every" value="Every">個別</MenuItem>
                 </TextField>
               </Grid>
               <Grid item xs={3}>

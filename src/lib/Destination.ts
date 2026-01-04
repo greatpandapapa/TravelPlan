@@ -77,11 +77,13 @@ export class CDestination extends CBaseListItem implements IDestination {
     type: string = "";
     name: string = "";
     address: string = "";
+    tel_number: string = "";
     reservation: string = "";
     reservation_site: string = "";
     reservation_url: string = "";
     fee: number = 0;
     currency: string = "";
+    pay: string = "total";
     source: string = "";
     url: string = "";
     url2: string = "";
@@ -103,11 +105,13 @@ export class CDestination extends CBaseListItem implements IDestination {
             this.type = data.type;
             this.name = data.name;
             this.address = data.address;
+            this.tel_number = data.tel_number;
             this.reservation = data.reservation;
             this.reservation_site = data.reservation_site;
             this.reservation_url = data.reservation_url;
             this.fee = data.fee;
             this.currency = data.currency
+            this.pay = data.pay;
             this.source = data.source;
             this.url = data.url;
             this.url2 = data.url2;
@@ -131,11 +135,13 @@ export class CDestination extends CBaseListItem implements IDestination {
         this.type = data.type;
         this.name = data.name;
         this.address = data.address;
+        this.tel_number = data.tel_number;
         this.reservation = data.reservation;
         this.reservation_site = data.reservation_site;
         this.reservation_url = data.reservation_url;
         this.fee = data.fee;
         this.currency = data.currency
+        this.pay = data.pay;
         this.source = data.source;
         this.url = data.url;
         this.url2 = data.url2;
@@ -160,6 +166,9 @@ export class CDestination extends CBaseListItem implements IDestination {
         }
         if (this.map_url == undefined || this.map_url == null) {
             this.map_url = "";
+        }
+        if (this.pay == undefined) {
+            this.pay = "Total";            
         }
     }
 
