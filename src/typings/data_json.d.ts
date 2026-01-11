@@ -28,6 +28,7 @@ export interface ISchedule extends IBaseListItem {
     type: string;
     name: string;
     stay_minutes: number;
+    tz_ajust: number|null;
     dest_id: number|null;
     pre_id: number|null;
 }
@@ -76,7 +77,7 @@ export interface IScheduleRows extends ISchedule {
     no: number;
     grp_id: number;
     dayn: string;
-    end_time: string,
+    end_time: string|null;
 }
 
 export interface IScheduleTable  extends IScheduleRows {

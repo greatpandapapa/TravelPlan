@@ -29,6 +29,9 @@ export class CScheduleList {
     constructor(data: DataJson) {
         this.max_id = 0;
         for (let sc of data.schedule) {
+            if (sc.tz_ajust === undefined) {
+                sc.tz_ajust = null;
+            }
             this.schedule.push(new CSchedule(sc));
         }
         this.latest_id = 0;
@@ -112,9 +115,16 @@ export class CScheduleList {
                 rows[i].start_time = rows[i-1].end_time;
                 rows[i].grp_id = rows[i-1].grp_id;
             }
+            // end_timeの設定
             if (rows[i].start_time != "") {
                 rows[i].end_time = dayjs(rows[i].start_time,"H:mm").add(rows[i].stay_minutes,"m").format("H:mm");
             } 
+            // 時差（tz_ajust）の補正
+            let ajust:number|null = rows[i].tz_ajust;
+            if (ajust !== null) {
+                console.log(ajust);
+                rows[i].end_time = dayjs(rows[i].end_time,"H:mm").add(ajust,"h").format("H:mm");
+            }
         }
         // autoの時間計算(後)
         for(let i = rows.length-2; i > 0; i--) {
@@ -243,6 +253,7 @@ export class CScheduleList {
             "start_time_auto": "pre",
             "start_time": "",
             "stay_minutes": 0,
+            "tz_ajust": null,
             "type": "action",
             "name": "",
             "dest_id": null
@@ -685,6 +696,7 @@ export class CScheduleList {
                 start_time_auto: sc.start_time_auto,
                 start_time: sc.start_time,
                 stay_minutes: sc.stay_minutes,
+                tz_ajust: sc.tz_ajust,
                 type: sc.type,
                 name: sc.name,
                 dest_id: sc.dest_id,
@@ -704,6 +716,7 @@ export class CSchedule {
     start_time_auto: string;
     start_time: string|null;
     stay_minutes: number;
+    tz_ajust: number|null;
     end_time: string;
     type: string;
     name: string;
@@ -715,6 +728,7 @@ export class CSchedule {
         this.start_time_auto = data.start_time_auto;
         this.start_time = data.start_time;
         this.stay_minutes = data.stay_minutes;
+        this.tz_ajust = data.tz_ajust;
         this.end_time = "";
         this.type = data.type;
         this.name =data.name;
@@ -727,6 +741,7 @@ export class CSchedule {
         this.start_time_auto = data.start_time_auto;
         this.start_time = data.start_time;
         this.stay_minutes = data.stay_minutes;
+        this.tz_ajust = data.tz_ajust;
         this.end_time = "";
         this.type = data.type;
         this.name =data.name;

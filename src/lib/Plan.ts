@@ -397,6 +397,8 @@ export class CPlan {
                         this.total_fee["TOTAL_YEN"] += fee * this.local_rate;
                     }
                     dest_fee_sumed.push(rows[i].dest_id);
+                } else {
+                    rows[i].destination.fee = 0;
                 }
             }
         }
@@ -459,7 +461,7 @@ export class CPlan {
                 purpose: this.purpose,
                 status: this.status,
                 create_date: this.create_date,
-                update_date: this.update_date,
+                update_date: toDateString(new Date()),
                 rev: this.rev,
                 usd_rate: this.usd_rate,
                 eur_rate: this.eur_rate,

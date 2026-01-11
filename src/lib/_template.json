@@ -20,6 +20,7 @@
             "start_time_auto": "",
             "start_time": "7:00",
             "stay_minutes": 30,
+            "tz_ajust": null,
             "type": "end",
             "name": "",
             "dest_id": null,

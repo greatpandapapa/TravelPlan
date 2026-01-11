@@ -43,6 +43,7 @@ function ViewPanel(gprops:ViewPanelProps) {
             <SlimTableCell align="center" component="th">開始</SlimTableCell>
             <SlimTableCell align="center" component="th">終了</SlimTableCell>
             <SlimTableCell align="center" component="th">滞在</SlimTableCell>
+            <SlimTableCell align="center" component="th">TZ</SlimTableCell>
             <SlimTableCell align="center" component="th">タイプ</SlimTableCell>
             <SlimTableCell align="center" component="th">予定</SlimTableCell>
             <SlimTableCell align="center" component="th">住所</SlimTableCell>
@@ -109,6 +110,7 @@ function ViewPanel(gprops:ViewPanelProps) {
         {props.row.start_time != props.row.end_time && props.row.end_time} 
       </SlimTableCell>
       <SlimTableCell align="right">{props.row.stay_minutes}</SlimTableCell>
+      <SlimTableCell align="right">{props.row.tz_ajust}</SlimTableCell>
       <SlimTableCell align="left">{props.row.type_label}</SlimTableCell>
       <SlimTableCell align="left">
         {props.row.destination.alert != "" && (<Typography sx={{color:"#FF0000"}}>★:{props.row.destination.alert}</Typography>)} 

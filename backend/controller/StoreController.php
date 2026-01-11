@@ -39,6 +39,8 @@ class StoreController extends Controller {
                     // Revをインクリメント
                     $data["plan"]["rev"]++;
                 }
+            } else {
+                $data["plan"]["rev"] = 1;
             }
 
             // ファイル保存

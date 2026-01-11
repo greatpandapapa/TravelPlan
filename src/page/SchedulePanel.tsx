@@ -2,6 +2,7 @@ import {useState,useCallback,memo} from 'react';
 import Box from '@mui/material/Box';
 import { plan } from '../lib/Plan';
 import {useWindowSize} from '../lib/useWindowsSize';
+import dayjs, { Dayjs } from 'dayjs';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -29,6 +30,7 @@ import {
 } from '@mui/x-data-grid';
 
 import {StripedDataGrid, StripedDataGridByGroup} from '../component/CustomMui';
+import { IScheduleRows } from '../typings/data_json';
 
 type ScheduleGridProps = {
   mode: string;
@@ -93,14 +95,35 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     }
   };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    
+  // スケジュールデータの更新
+  const processRowUpdate = (newRow: GridRowModel) => {   
+    // 古い情報を取得
+    let i;
+    for(i=0;i<rows.length;i++) {
+      if (rows[i].id === newRow.id) {
+        break;
+      }
+    }
+    let oldRow = rows[i] as IScheduleRows;
+    // end_timeとstay_minutesのどちらが更新されているかを確認し、
+    // end_timeが更新されていたらend_timeからstay_minutesを算出してセットする
+    if (newRow.end_time != oldRow.end_time && newRow.stay_minutes == oldRow.stay_minutes) {
+      let stime = dayjs(newRow.start_time,"H:mm");
+      let etime = dayjs(newRow.end_time,"H:mm");
+      let m:number = etime.diff(stime,"m");
+      newRow.stay_minutes = m;
+    }
+
     plan.updateSchedule(newRow as object)
     const initialRows: GridRowsProp = plan.getScheduleRows(); 
     setRows(initialRows);
-
+    for(i=0;i<initialRows.length;i++) {
+      if (initialRows[i].id === newRow.id) {
+        break;
+      }
+    }
+    // DataGridの譲歩を更新
+    const updatedRow = { ...initialRows[i], isNew: false };
     return updatedRow;
   };
 
@@ -127,16 +150,16 @@ export function ScheduleGrid(props:ScheduleGridProps) {
       type: 'string',
       width: 160,
       align: 'left',
-      headerAlign: 'left',
+      headerAlign: 'center',
       editable: false,
     },
     {
       field: 'start_time_auto',
       headerName: '連結',
       type: 'singleSelect',
-      width: 90,
+      width: 80,
       align: 'left',
-      headerAlign: 'left',
+      headerAlign: 'center',
       editable: enable_editable,
       disableColumnMenu: true,
       valueOptions: plan.getAutoValueOptions(),
@@ -145,18 +168,36 @@ export function ScheduleGrid(props:ScheduleGridProps) {
       field: 'start_time',
       headerName: '開始時刻',
       type: 'string',
-      width: 145,
-      align: 'left',
-      headerAlign: 'left',
+      width: 80,
+      align: 'center',
+      headerAlign: 'center',
+      editable: enable_editable,
+    },
+    {
+      field: 'end_time',
+      headerName: '終了時刻',
+      type: 'string',
+      width: 80,
+      align: 'center',
+      headerAlign: 'center',
       editable: enable_editable,
     },
     {
       field: 'stay_minutes',
       headerName: '滞在時間',
       type: 'number',
-      width: 145,
-      align: 'left',
-      headerAlign: 'left',
+      width: 100,
+      align: 'right',
+      headerAlign: 'center',
+      editable: enable_editable,
+    },
+    {
+      field: 'tz_ajust',
+      headerName: 'TZ',
+      type: 'number',
+      width: 100,
+      align: 'right',
+      headerAlign: 'center',
       editable: enable_editable,
     },
     {
