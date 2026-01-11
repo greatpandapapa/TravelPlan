@@ -152,6 +152,8 @@ sub saveFile {
             }
             # Revをインクリメント
             $data->{plan}->{rev}++;
+        } else {
+            $data->{plan}->{rev} = 1;
         }
         my $enc_json = $json->encode($data);
         file_put_contents($filename,$enc_json);
