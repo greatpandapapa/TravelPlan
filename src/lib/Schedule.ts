@@ -89,11 +89,6 @@ export class CScheduleList {
         let grp_id: number = 0;
         let grp_head: boolean;
 
-        let dayn = 0;
-
-        // 最初の行
-        ddate = deparure_date;
-
         const sorted_idx = this._getSortedIndex();
         grp_id = 0;
         grp_head = true;
@@ -101,29 +96,39 @@ export class CScheduleList {
             let idx:number = sorted_idx[i];
             sc = this.schedule[idx];
             grp_id = sc.id;
-            rows.push(this._convScheduleRow(sc,no++,grp_id,ddate));
-            // 日付の加算
-            if (sc.type == "end") {
-                dayn++;
-                ddate = deparure_date.add(dayn,"d");
-            }
+            rows.push(this._convScheduleRow(sc,no++,grp_id));
         }
 
-        // autoの時間計算（前）
+        // 最初の日
+        let dayn = 0;
+        ddate = deparure_date;
         for(let i = 0; i < rows.length; i++) {
+            rows[i].dayn = ddate.format("YYYY-MM-DD(ddd)")
+            // autoの時間計算（前）
             if (i !=0 && rows[i].start_time_auto == "pre") {
                 rows[i].start_time = rows[i-1].end_time;
                 rows[i].grp_id = rows[i-1].grp_id;
             }
             // end_timeの設定
             if (rows[i].start_time != "") {
-                rows[i].end_time = dayjs(rows[i].start_time,"H:mm").add(rows[i].stay_minutes,"m").format("H:mm");
+                let etime:Dayjs = dayjs(rows[i].start_time,"H:mm").add(rows[i].stay_minutes,"m");
+                let etime2:Dayjs = dayjs(rows[i].start_time,"H:mm");
+                rows[i].end_time = etime.format("H:mm");
+                // 時差（tz_ajust）の補正
+                let ajust:number|null = rows[i].tz_ajust;
+                if (ajust !== null) {
+                    rows[i].end_time = etime.add(ajust,"h").format("H:mm");
+                }
+                // 12時を超えたら日付を次の日へ(単純にdiff取ると差が24時間以内になるので)
+                if (dayjs(etime.format('yyyy-MM-DD')).diff(dayjs(etime2.format('yyyy-MM-DD')),"d") > 0) {
+                    dayn++;
+                    ddate = deparure_date.add(dayn,"d");
+                }
             } 
-            // 時差（tz_ajust）の補正
-            let ajust:number|null = rows[i].tz_ajust;
-            if (ajust !== null) {
-                console.log(ajust);
-                rows[i].end_time = dayjs(rows[i].end_time,"H:mm").add(ajust,"h").format("H:mm");
+            // 日付の加算
+            if (rows[i].type == "end") {
+                dayn++;
+                ddate = deparure_date.add(dayn,"d");
             }
         }
         // autoの時間計算(後)
@@ -156,12 +161,12 @@ export class CScheduleList {
     /**
      * SchedulePanelのDataGrid用のデータに変換する
      */
-    private _convScheduleRow( sc:CSchedule, no:number, grp_id:number, ddate:Dayjs):IScheduleRows {
+    private _convScheduleRow( sc:CSchedule, no:number, grp_id:number):IScheduleRows {
         return {
             ...sc,
             no:no,
             grp_id:grp_id,
-            dayn:ddate.format("YYYY-MM-DD(ddd)"),
+            dayn:"",
             end_time: ""
         };
     }

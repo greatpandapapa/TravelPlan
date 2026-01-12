@@ -11,7 +11,8 @@
         "rev": 0,
         "usd_rate": 150,
         "eur_rate": 180,
-        "local_rate": 1
+        "local_rate": 1,
+        "local_currency_name": "現地通貨"
     },
     "reference": [],
     "schedule": [

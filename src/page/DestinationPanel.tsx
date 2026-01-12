@@ -265,6 +265,11 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
     typeOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
 
+  let currencyOptions:ReactElement[]=[];
+  plan.getCurrencyValueOptions().map((opt)=>{
+    currencyOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
+  });
+
   interface IOptions {
     value: string,
     label: string
@@ -338,7 +343,8 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 <TextField id="fee" name="fee" label="金額" size="small" type="number" value={props.destination.fee}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,fee:(event.target.value as unknown)as number});
-                }}>
+                }}
+                InputProps={{inputProps: {style: { textAlign: "right" }}}}>
                 </TextField>
               </Grid>
               <Grid item xs={4}>
@@ -347,10 +353,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     props.updateForm({...props.destination,currency:event.target.value});
                   }}>
-                  <MenuItem key="Yen" value="Yen">円</MenuItem>
-                  <MenuItem key="Dollar" value="Dollar">ドル</MenuItem>
-                  <MenuItem key="Euro" value="Euro">ユーロ</MenuItem>
-                  <MenuItem key="Local" value="Local">現地通貨</MenuItem>
+                  {currencyOptions}
                 </TextField>
               </Grid>
               <Grid item xs={4}>

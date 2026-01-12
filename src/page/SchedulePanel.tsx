@@ -110,6 +110,10 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     if (newRow.end_time != oldRow.end_time && newRow.stay_minutes == oldRow.stay_minutes) {
       let stime = dayjs(newRow.start_time,"H:mm");
       let etime = dayjs(newRow.end_time,"H:mm");
+      // etimeの方が遅ければ24時間経過と考える
+      if (stime > etime) {
+        etime = etime.add(1,"d");
+      }
       let m:number = etime.diff(stime,"m");
       newRow.stay_minutes = m;
     }

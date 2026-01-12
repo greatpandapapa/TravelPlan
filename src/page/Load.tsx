@@ -92,7 +92,6 @@ function ListServerFile() {
               </TableCell>
               <TableCell align="left">{row.title}</TableCell>
               <TableCell align="left">{row.purpose}</TableCell>
-              <TableCell align="left">{row.deparure_date}</TableCell>
               <TableCell align="center">{row.create_date}</TableCell>
               <TableCell align="center">{row.update_date}</TableCell>
               <TableCell align="center">{row.rev}</TableCell>
@@ -131,7 +130,6 @@ function ListServerFile() {
               <TableCell component="th">名前</TableCell>
               <TableCell component="th">タイトル</TableCell>
               <TableCell component="th">目的</TableCell>
-              <TableCell component="th">出発日</TableCell>
               <TableCell component="th">作成日</TableCell>
               <TableCell component="th">更新日</TableCell>
               <TableCell component="th">Rev</TableCell>

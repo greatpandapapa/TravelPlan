@@ -26,6 +26,7 @@ function PlanPanel() {
     const [usd_rate, setUSDRate] = useState<number>(plan.usd_rate);
     const [eur_rate, setEURRate] = useState<number>(plan.eur_rate);
     const [local_rate, setLocalRate] = useState<number>(plan.local_rate);
+    const [local_currency_name, setLocalCurrencyName] = useState<string>(plan.local_currency_name);
     // ステータスの選択肢
     const status_menuItems = CPlan.getStatusValueOptions().map((option) => (
         <MenuItem value={option.value}>{option.label}</MenuItem>
@@ -101,23 +102,32 @@ function PlanPanel() {
                         plan.purpose = event.target.value;
                         setPurpose(plan.purpose);}}/>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <TextField label="ドル為替" type="number" fullWidth size="small" value={usd_rate}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.usd_rate = Number(event.target.value);
-                        setUSDRate(plan.usd_rate);}}/>
+                        setUSDRate(plan.usd_rate);}}
+                    InputProps={{inputProps: {style: { textAlign: "right" }}}}/>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <TextField label="ユーロ為替" type="number" fullWidth size="small" value={eur_rate}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.eur_rate = Number(event.target.value);
-                        setEURRate(plan.eur_rate);}}/>
+                        setEURRate(plan.eur_rate);}}
+                    InputProps={{inputProps: {style: { textAlign: "right" }}}}/>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
+                    <TextField label="現地通過名" type="string" fullWidth size="small" value={local_currency_name}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        plan.local_currency_name = event.target.value;
+                        setLocalCurrencyName(plan.local_currency_name);}}/>
+                </Grid>
+                <Grid item xs={3}>
                     <TextField label="現地通過為替" type="number" fullWidth size="small" value={local_rate}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.local_rate = Number(event.target.value);
-                        setLocalRate(plan.local_rate);}}/>
+                        setLocalRate(plan.local_rate);}}
+                    InputProps={{inputProps: {style: { textAlign: "right" }}}}/>
                 </Grid>
             </Grid>
             <ReferenceList edit={true}/>

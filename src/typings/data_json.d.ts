@@ -11,6 +11,7 @@ export interface IPlan {
     usd_rate: number;
     eur_rate: number;
     local_rate: number;
+    local_currency_name: string;
 }
 export interface IBaseListItem {
     id: number;

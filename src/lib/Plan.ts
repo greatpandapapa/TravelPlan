@@ -17,7 +17,7 @@ import {CDestinationList,CDestination} from "./Destination";
 import {CReferenceList} from "./Reference";
 import {CBringItemList} from "./BringItem";
 import {CActionItemList} from "./ActionItem";
-import {toDateString} from "./Common";
+import {toDateString,toDateTimeString} from "./Common";
 
 // 日付の曜日を日本語にするため
 dayjs.locale(ja);
@@ -73,6 +73,7 @@ export class CPlan {
     usd_rate: number = 150;
     eur_rate: number = 180;
     local_rate: number = 1;
+    local_currency_name = "";
     // プライベート
     private schedules: CScheduleList = new CScheduleList(jsondata);
     private destinations: CDestinationList = new CDestinationList(jsondata);
@@ -98,8 +99,8 @@ export class CPlan {
     public loadTemplateData() {
         const data = jsondata;
         // 日付を今日の日付にする
-        data.plan.create_date = toDateString(new Date());
-        data.plan.update_date = toDateString(new Date());
+        data.plan.create_date = toDateTimeString(new Date());
+        data.plan.update_date = toDateTimeString(new Date());
 
         this.title = data.plan.title;
         this.name = data.plan.name;
@@ -113,12 +114,20 @@ export class CPlan {
         this.usd_rate = data.plan.usd_rate;
         this.eur_rate = data.plan.eur_rate;
         this.local_rate = data.plan.local_rate;
+        this.local_currency_name = data.plan.local_currency_name;
 
         this.schedules = new CScheduleList(data);
         this.destinations = new CDestinationList(data);
         this.references = new CReferenceList(data);
         this.bringitems = new CBringItemList(data);
         this.actionitems = new CActionItemList(data);
+
+        this._setLocalCurrencyName();
+    }
+
+    // 現地通貨の選択肢名を設定
+    private _setLocalCurrencyName():void {
+        CPlan.currency_options[3].label = this.local_currency_name;
     }
 
     /**
@@ -198,6 +207,14 @@ export class CPlan {
         } else {
             this.local_rate = data.plan.local_rate;
         }
+        // 現地通貨名を指定
+        if (data.plan.local_currency_name === undefined) {
+            this.local_currency_name = "現地通貨";
+        } else {
+            this.local_currency_name = data.plan.local_currency_name;
+        }     
+
+        this._setLocalCurrencyName();
     }
 
     /**
@@ -320,6 +337,7 @@ export class CPlan {
     public getCurrencyValueOptions():IValueOptions[] {
         return  CPlan.currency_options;
     }
+
     /**
      * 通貨の文字列取得
      */
@@ -452,6 +470,7 @@ export class CPlan {
      * セーブデータの作成
      */
     public getSaveData():object {
+        this.update_date = toDateTimeString(new Date());
         let data = {
             plan: {
                 name:this.name,
@@ -461,11 +480,12 @@ export class CPlan {
                 purpose: this.purpose,
                 status: this.status,
                 create_date: this.create_date,
-                update_date: toDateString(new Date()),
+                update_date: this.update_date,
                 rev: this.rev,
                 usd_rate: this.usd_rate,
                 eur_rate: this.eur_rate,
                 local_rate: this.local_rate,
+                local_currency_name: this.local_currency_name,
             },
             schedule: this.schedules.getSaveData(),
             destination: this.destinations.getSaveData(),
