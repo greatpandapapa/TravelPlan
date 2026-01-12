@@ -43,12 +43,23 @@ function PlanPanel() {
     return (
         <Box width={800}>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12}>
+                <Grid item xs={9}>
                     <TextField label="filename" fullWidth size="small" value={name}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.name = event.target.value;
                         setName(plan.name);
                       }}/>
+                </Grid>
+                <Grid item xs={3}>
+                    <FormControl fullWidth>
+                    <InputLabel size="small" id="masterplan-select-label">状態</InputLabel>
+                    <Select value={status} sx={{width:150}} label="ステータス" size="small"
+                      onChange={(event) => {
+                            plan.status = event.target.value;
+                            setStatus(plan.status);
+                        }}>
+                        {status_menuItems}
+                    </Select></FormControl>
                 </Grid>
                 <Grid item xs={1}><Box fontSize={16}>作成日</Box></Grid>
                 <Grid item xs={3}><Box fontSize={16} sx={{border:"solid #CCCCCC"}}>{plan.create_date}</Box></Grid>
@@ -63,7 +74,7 @@ function PlanPanel() {
                         setTitle(plan.title);
                       }}/>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <DateField label="出発日" size="small" format="YYYY-MM-DD" sx={{width:150}} value={ddate}
                     onChange={(newdate) => {
                         if (newdate != null) {
@@ -72,7 +83,7 @@ function PlanPanel() {
                         setDDate(plan.deparure_date);
                     }}/>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <FormControl fullWidth>
                     <InputLabel size="small" id="masterplan-select-label">人数</InputLabel>
                     <Select value={members} sx={{width:150}} label="人数" size="small"
@@ -85,17 +96,7 @@ function PlanPanel() {
                         ))}
                     </Select></FormControl>
                 </Grid>
-                <Grid item xs={4}>
-                    <FormControl fullWidth>
-                    <InputLabel size="small" id="masterplan-select-label">状態</InputLabel>
-                    <Select value={status} sx={{width:150}} label="ステータス" size="small"
-                      onChange={(event) => {
-                            plan.status = event.target.value;
-                            setStatus(plan.status);
-                        }}>
-                        {status_menuItems}
-                    </Select></FormControl>
-                </Grid>
+                <Grid item xs={6}></Grid>
                 <Grid item xs={12}>
                     <TextField label="目的" multiline rows={3} fullWidth size="small" value={purpose}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
