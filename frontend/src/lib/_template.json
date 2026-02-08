@@ -1,0 +1,60 @@
+{
+    "plan": {
+        "title": "Template",
+        "name": "template",
+        "deparure_date": "2024-7-12",
+        "members": 1,
+        "purpose": "",
+        "status": "Plan",
+        "create_date": "2024-7-12",
+        "update_date": "2024-7-12",
+        "rev": 0,
+        "usd_rate": 150,
+        "eur_rate": 180,
+        "local_rate": 1,
+        "local_currency_name": "現地通貨"
+    },
+    "reference": [],
+    "schedule": [
+        {
+            "id": 1,
+            "start_time_auto": "",
+            "start_time": "7:00",
+            "stay_minutes": 30,
+            "tz_ajust": null,
+            "type": "end",
+            "name": "",
+            "dest_id": null,
+            "pre_id": null
+        }
+    ],
+    "destination": [
+        {
+            "id": 1,
+            "type": "",
+            "name": "",
+            "address": "",
+            "tel_number": "",
+            "reservation": "",
+            "reservation_site": "",
+            "reservation_url": "",
+            "fee": 0,
+            "currency": "Yen",
+            "pay": "Total",
+            "source": "",
+            "url": "",
+            "url2": "",
+            "map_url": "",
+            "memo": "",
+            "hd_sun": false,
+            "hd_mon": false,
+            "hd_tue": false,
+            "hd_wed": false,
+            "hd_thu": false,
+            "hd_fri": false,
+            "hd_sat": false                    
+        }
+    ],
+    "bringitem": [],
+    "actionitem": []
+}
