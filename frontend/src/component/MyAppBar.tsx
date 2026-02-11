@@ -5,6 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate,useLocation } from "react-router-dom";
 import Box from '@mui/material/Box';
 import {config} from "../lib/Config";
+import { plan } from '../lib/Plan';
 
 export function MyAppBar() {
     const navigate = useNavigate();
@@ -13,7 +14,9 @@ export function MyAppBar() {
     function onClickAppBaButton() {
       let result = true;
       if (location.pathname != "/") {
-        result = window.confirm("変更を破棄し、ロード画面に戻っても良いですか？");
+        if (plan.isModified()) {
+          result = window.confirm("変更されています。変更を破棄してロード画面に戻りますか？");
+        }
       }
       if (result) {
         navigate('/')

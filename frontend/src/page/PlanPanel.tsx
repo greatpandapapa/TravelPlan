@@ -122,7 +122,9 @@ function PlanPanel() {
                     <TextField label="現地通過名" type="string" fullWidth size="small" value={local_currency_name}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.local_currency_name = event.target.value;
-                        setLocalCurrencyName(plan.local_currency_name);}}/>
+                        setLocalCurrencyName(plan.local_currency_name);
+                        plan.setLocalCurrencyName();
+                    }}/>
                 </Grid>
                 <Grid item xs={3}>
                     <TextField label="現地通過為替" type="number" fullWidth size="small" value={local_rate}

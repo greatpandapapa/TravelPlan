@@ -24,6 +24,8 @@
             "tz_ajust": null,
             "type": "end",
             "name": "",
+            "fee": null,
+            "currency": "Yen",
             "dest_id": null,
             "pre_id": null
         }

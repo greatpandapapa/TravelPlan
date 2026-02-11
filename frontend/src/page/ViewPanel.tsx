@@ -130,7 +130,7 @@ function ViewPanel(gprops:ViewPanelProps) {
         <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
       </SlimTableCell>
       <SlimTableCell align="right">
-        {(props.row.destination.fee !=0) && (props.row.destination.fee.toLocaleString() + props.row.destination.currency_label)}
+        {(props.row.fee !=0 && props.row.fee != null) && (props.row.fee.toLocaleString() + props.row.currency_label)}
       </SlimTableCell>
       <SlimTableCell align="center">
         {(props.row.destination.map_url != "") && (

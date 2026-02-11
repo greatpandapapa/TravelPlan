@@ -121,7 +121,6 @@ export class CScheduleList {
                     rows[i].end_time = etime.format("H:mm");
                 }
                 // 12時を超えたら日付を次の日へ(単純にdiff取ると差が24時間以内になるので)
-                console.log(dayjs(etime.format('yyyy-MM-DD')).diff(dayjs(etime2.format('yyyy-MM-DD')),"d"));
                 if (dayjs(etime.format('yyyy-MM-DD')).diff(dayjs(etime2.format('yyyy-MM-DD')),"d") > 0) {
                     dayn++;
                     ddate = deparure_date.add(dayn,"d");
@@ -272,6 +271,8 @@ export class CScheduleList {
             "tz_ajust": null,
             "type": "action",
             "name": "",
+            "fee": null,
+            "currency": "Yen",
             "dest_id": null
         };
         this.schedule.push(new CSchedule(json));
@@ -715,6 +716,8 @@ export class CScheduleList {
                 tz_ajust: sc.tz_ajust,
                 type: sc.type,
                 name: sc.name,
+                fee: sc.fee,
+                currency: sc.currency,
                 dest_id: sc.dest_id,
                 pre_id: sc.pre_id          
             });
@@ -736,6 +739,8 @@ export class CSchedule {
     end_time: string;
     type: string;
     name: string;
+    fee: number|null;
+    currency: string;
     dest_id: number|null;
     pre_id: number|null;
 
@@ -748,8 +753,23 @@ export class CSchedule {
         this.end_time = "";
         this.type = data.type;
         this.name =data.name;
+        this.currency = data.currency;
         this.dest_id = data.dest_id;
         this.pre_id = data.pre_id;
+        if (data.currency === undefined) {
+            this.currency = "";
+        } else {
+            this.currency = data.currency;
+        }
+        if (data.fee === undefined) {
+            this.fee = null;
+            this.currency = "";
+        } else {
+            this.fee = data.fee;
+        }
+        if (this.fee == null) {
+            this.currency = "";
+        }
     }
 
     public update(data:ISchedule) {
@@ -761,7 +781,12 @@ export class CSchedule {
         this.end_time = "";
         this.type = data.type;
         this.name =data.name;
+        this.fee = data.fee;
+        this.currency = data.currency;
         this.dest_id = data.dest_id;
         this.pre_id = data.pre_id;
+        if (this.fee == null) {
+            this.currency = "";
+        }
     }
 }

@@ -84,6 +84,8 @@ export class CPlan {
     public start_date: String="";
     public end_date: String="";
     public total_fee: {[index: string]: number} = {}
+    // 更新ありフラグ
+    private modify:boolean = false;
 
     /**
      * コンストラクタ
@@ -122,12 +124,9 @@ export class CPlan {
         this.bringitems = new CBringItemList(data);
         this.actionitems = new CActionItemList(data);
 
-        this._setLocalCurrencyName();
-    }
-
-    // 現地通貨の選択肢名を設定
-    private _setLocalCurrencyName():void {
-        CPlan.currency_options[3].label = this.local_currency_name;
+        this.setLocalCurrencyName();
+        // 更新なし状態にセット
+        this.unsetModified();
     }
 
     /**
@@ -214,7 +213,27 @@ export class CPlan {
             this.local_currency_name = data.plan.local_currency_name;
         }     
 
-        this._setLocalCurrencyName();
+        this.setLocalCurrencyName();
+        // 更新なし状態にセット
+        this.unsetModified();
+    }
+
+    // 現地通貨の選択肢名を設定
+    public setLocalCurrencyName():void {
+        CPlan.currency_options[3].label = this.local_currency_name;
+    }
+
+    // 湖心更新なしにリセット
+    public unsetModified() {
+        this.modify = false;
+    }
+    // 更新あり状態にする
+    public modified():void {
+        this.modify = true;
+    }
+    // 更新状態を確認する
+    public isModified():boolean {
+        return this.modify;
     }
 
     /**
@@ -230,6 +249,7 @@ export class CPlan {
      * @param id IDの下に追加する
      */
     public addSchedule(id:number):number {
+        this.modified();
         return this.schedules.addSchedule(id);
     }
     /**
@@ -238,6 +258,7 @@ export class CPlan {
      * @param data 
      */
     public updateSchedule(data:object) {
+        this.modified();
         this.schedules.updateSchedule(data);
     }
     /**
@@ -246,6 +267,7 @@ export class CPlan {
      * @param id ID
      */
     public delSchedule(id:number) {
+        this.modified();
         this.schedules.delSchedule(id);
     }
     /**
@@ -265,6 +287,7 @@ export class CPlan {
      * 新規目的地用のObject
      */
     public getNewDestination():CDestination {
+        this.modified();
         return this.destinations.getNewData();
     }
 
@@ -280,6 +303,7 @@ export class CPlan {
      * @param data 
      */
     public updateDestination(data:object) {
+        this.modified();
         this.destinations.updateData(data);
     }
     /**
@@ -288,6 +312,7 @@ export class CPlan {
      * @param id ID
      */
     public delDestination(id:number) {
+        this.modified();
         this.destinations.delData(id);
     }
     /**}
@@ -378,10 +403,11 @@ export class CPlan {
             sc = {...row,
                   destination: this.destinations.getNewTableRow(),
                   type_label: this.getTypeName(row.type),
-                  start_time_auto_label: this.getAutoName(row.start_time_auto)};
+                  start_time_auto_label: this.getAutoName(row.start_time_auto),
+                  currency_label: "",
+                };
             if (row.dest_id != null) {
                 sc.destination = {...this.destinations.getDestinationTableRow(row.dest_id)};
-                sc.destination.currency_label = this.getCurrencyName(sc.destination.currency);
             }
             rows.push(sc);
         });
@@ -402,26 +428,68 @@ export class CPlan {
                     if (rows[i].destination.pay == "Every" && plan.members !== null) {
                         rows[i].destination.fee = rows[i].destination.fee * plan.members;
                     }
-                    let fee = Number(rows[i].destination.fee);
-                    this.total_fee[rows[i].destination.currency] += fee;
-                    // 総額の加算
-                    if (rows[i].destination.currency == "Yen") {
-                        this.total_fee["TOTAL_YEN"] += fee;
-                    } else if (rows[i].destination.currency == "Dollar") {
-                        this.total_fee["TOTAL_YEN"] += fee * this.usd_rate;
-                    } else if (rows[i].destination.currency == "Euro") {
-                        this.total_fee["TOTAL_YEN"] += fee * this.eur_rate;
-                    } else if (rows[i].destination.currency == "Local") {
-                        this.total_fee["TOTAL_YEN"] += fee * this.local_rate;
-                    }
+                    // スケジュールのfeeとマージ
+                    this._margeFee(rows[i]);
                     dest_fee_sumed.push(rows[i].dest_id);
                 } else {
                     rows[i].destination.fee = 0;
                 }
             }
+            let fee:number|null = rows[i].fee;
+            if (fee != null) {
+                // 総額の加算
+                this.total_fee[rows[i].currency] += Number(fee);
+                this.total_fee["TOTAL_YEN"] += Number(this._exchagneYen(fee,rows[i].currency));
+            }
+            rows[i].currency_label = this.getCurrencyName(rows[i].currency);
         }
 
         return filter.do();
+    }
+
+    // 日本円に両替
+    private _exchagneYen(fee:number,currency:string):number {
+        let yen:number = 0;
+        if (currency == "Yen") {
+            yen = fee;
+        } else if (currency == "Dollar") {
+            yen = fee * this.usd_rate;
+        } else if (currency == "Euro") {
+            yen = fee * this.eur_rate;
+        } else if (currency == "Local") {
+            yen = fee * this.local_rate;
+        }
+        return yen;
+    }
+
+    /**
+     * スケジュールの予算と行き先の予算をマージ
+     *
+     * sc.feeとsc.sc.destination.feeを統合する
+     * 通貨が違う場合は日本円に変換して統合する
+     */
+    private _margeFee(sc:IScheduleTable):void {
+        if ((sc.fee == 0 || sc.fee == null) && sc.destination.fee != 0) {
+            // sc.feeをsc.destination.feeで上書き
+            sc.fee = sc.destination.fee;
+            sc.currency = sc.destination.currency;
+        } else if (sc.fee != 0 && sc.fee !== null && sc.destination.fee == 0) {
+            // 何もしない
+        } else if (sc.fee != 0 && sc.fee !== null && sc.destination.fee != 0  && sc.destination.fee !== null) {
+            // マージする
+            // 通貨が同じ
+            if (sc.currency == sc.destination.currency) {
+                console.log(sc);
+                sc.fee += sc.destination.fee;
+            } else {
+                // 円換算してマージ
+                let yen:number;
+                yen = this._exchagneYen(sc.fee,sc.currency);
+                yen += this._exchagneYen(sc.destination.fee,sc.destination.currency);
+                sc.fee = yen;
+                sc.currency = "Yen";
+            }
+        }
     }
 
     /**
@@ -463,6 +531,7 @@ export class CPlan {
      * スケジュールの移動
      */
     public moveSchedule(target_id:number,dest_id:number) {
+        this.modified();
         this.schedules.moveSchedule(target_id,dest_id);
     }
 
@@ -501,6 +570,7 @@ export class CPlan {
      */
     public incRev() {
         this.rev++;
+        this.unsetModified();
     }
 
     /**
@@ -513,6 +583,7 @@ export class CPlan {
      * 新規参考のObject
      */
     public getNewReference() {
+        this.modified();
         return this.references.getNewData();
     }
     /**
@@ -521,6 +592,7 @@ export class CPlan {
      * @param data 
      */
     public updateReference(data:object) {
+        this.modified();
         this.references.updateData(data);
     }
     /**
@@ -529,6 +601,7 @@ export class CPlan {
      * @param id ID
      */
     public delReference(id:number) {
+        this.modified();
         this.references.delData(id);
     }
     /**}
@@ -548,6 +621,7 @@ export class CPlan {
      * 新規持ち物のObject
      */
     public getNewBringItem() {
+        this.modified();
         return this.bringitems.getNewData();
     }
     /**
@@ -556,6 +630,7 @@ export class CPlan {
      * @param data 
      */
     public updateBringItem(data:object) {
+        this.modified();
         this.bringitems.updateData(data);
     }
     /**
@@ -564,6 +639,7 @@ export class CPlan {
      * @param id ID
      */
     public delBringItem(id:number) {
+        this.modified();
         this.bringitems.delData(id);
     }
     /**}
@@ -589,6 +665,7 @@ export class CPlan {
      * 新規アクションアイテムのObject
      */
     public getNewActionItem() {
+        this.modified();
         return this.actionitems.getNewData();
     }
     /**
@@ -597,6 +674,7 @@ export class CPlan {
      * @param data 
      */
     public updateActionItem(data:object) {
+        this.modified();
         this.actionitems.updateData(data);
     }
     /**
@@ -605,6 +683,7 @@ export class CPlan {
      * @param id ID
      */
     public delActionItem(id:number) {
+        this.modified();
         this.actionitems.delData(id);
     }
     /**}

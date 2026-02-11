@@ -39,7 +39,7 @@ export class CDestinationList extends CBaseList<CDestination> {
      * 新規データを生成する
      */
     public getNewTableRow():IDestinationTable {
-        return {...new CDestination(),alert:"",currency_label:""};
+        return {...new CDestination(),alert:""};
     }
 
     /**
@@ -64,7 +64,7 @@ export class CDestinationList extends CBaseList<CDestination> {
      */
     public  getDestinationTableRow(id:number):IDestinationTable {
         let dt:CDestination = this.getData(id);
-        let row:IDestinationTable = {...dt,alert:"",currency_label:""};
+        let row:IDestinationTable = {...dt,alert:""};
         return row;
     }
 }

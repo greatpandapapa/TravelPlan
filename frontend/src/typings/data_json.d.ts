@@ -30,6 +30,8 @@ export interface ISchedule extends IBaseListItem {
     name: string;
     stay_minutes: number;
     tz_ajust: number|null;
+    fee: number|null;
+    currency: string;
     dest_id: number|null;
     pre_id: number|null;
 }
@@ -84,6 +86,7 @@ export interface IScheduleRows extends ISchedule {
 export interface IScheduleTable  extends IScheduleRows {
     type_label: string,
     start_time_auto_label: string,
+    currency_label: string;
     destination: IDestinationTable;
 }
 
@@ -95,7 +98,6 @@ export interface IScheduleNestedTable {
 }
 
 export interface IDestinationTable extends IDestination {
-    currency_label: string;
     alert: string;
 }
 
