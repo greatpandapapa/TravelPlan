@@ -15,7 +15,7 @@ dayjs.locale("ja_JP");
 function App() {
   const theme = createTheme({
     typography: {
-      fontSize: 11,
+      fontSize: 14,
     },
     spacing: 4,
     mixins: {

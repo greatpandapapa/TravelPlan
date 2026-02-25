@@ -9,6 +9,8 @@ import {
     IBringItem,
     IActionItem,
     IPlan,
+    ISchedule,
+    INumberValueOptions,
 } from "../typings/data_json";
 import jsondata from "./_template.json"
 import ja from 'dayjs/locale/ja';
@@ -49,6 +51,7 @@ export class CPlan {
             {label:"駅",value:'station'},
             {label:"空港",value:'airport'},
             {label:"港",value:'port'},
+            {label:"バス亭",value:'busstop'},
             {label:"行動",value:'action'},
             {label:"手続き",value:'procedure'},
             {label:"サービス",value:'service'},
@@ -252,6 +255,12 @@ export class CPlan {
         this.modified();
         return this.schedules.addSchedule(id);
     }
+    public getNewSchedule():ISchedule {
+        return this.schedules.getNewSchedule();
+    }
+    public getSchedule(id:number):ISchedule {
+        return this.schedules.getSchedule(id);
+    }
     /**
      * スケジュールの追加
      *
@@ -287,14 +296,13 @@ export class CPlan {
      * 新規目的地用のObject
      */
     public getNewDestination():CDestination {
-        this.modified();
         return this.destinations.getNewData();
     }
 
     /**
      * SelectのValueOptionを出力する
      */
-    public getDestinationValueOptions():Object[] {
+    public getDestinationValueOptions():INumberValueOptions[] {
         return this.destinations.getDestinationValueOptions();
     }
     /**

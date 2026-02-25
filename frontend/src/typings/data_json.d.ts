@@ -106,6 +106,11 @@ export interface IValueOptions {
     value: string,
 }
  
+export interface INumberValueOptions {
+    label: string,
+    value: number,
+}
+
 export interface IBringItem extends IBaseListItem {
     id: number;
     name: string;

@@ -8,7 +8,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import PlanPanel from './PlanPanel';
 import {ScheduleEditPanel} from './SchedulePanel';
 import ViewPanel from './ViewPanel';
-import SortPanel from './SortPanel';
+import ReOrderPanel from './ReOrderPanel';
 import SavePanel from './SavePanel';
 import DestinationPanel from './DestinationPanel';
 import {API,ILoadDataResponse} from "../lib/Api";
@@ -23,6 +23,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import GradingIcon from '@mui/icons-material/Grading';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import MyAppBar from "../component/MyAppBar";
 import BringItemPanel from './BringItemPanel';
 import ActionItemPanel from './ActionItemPanel';
@@ -74,6 +75,7 @@ function Main() {
               <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持ち物")} value="bringitem"  sx={{...tag_style, bgcolor: '#cfffd4'}}/>
               <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={convMobileText("準備")} value="actionitem"  sx={{...tag_style, bgcolor: '#e0ffff'}}/>
               <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
+              <Tab icon={<LocalPrintshopIcon />} iconPosition="start" label={convMobileText("印刷")} value="print"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
             </TabList>
           </Box>
           <TabPanel value="plan" sx={{bgcolor: '#e0ffff',padding: panel_padding,paddingTop:'20px'}}>
@@ -88,7 +90,7 @@ function Main() {
           </TabPanel>
           <TabPanel value="schedulesort" sx={{bgcolor: '#e6e6fa',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
-              <SortPanel></SortPanel>
+              <ReOrderPanel></ReOrderPanel>
             </Box>
           </TabPanel>
           <TabPanel value="destination"  sx={{bgcolor: '#ffffe0',padding: panel_padding}}>
@@ -98,7 +100,7 @@ function Main() {
           </TabPanel>
           <TabPanel value="publish" sx={{bgcolor: '#fce1fc',padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
-              <ViewPanel mode="view"></ViewPanel>
+              <ViewPanel></ViewPanel>
             </Box>
           </TabPanel>
           <TabPanel value="bringitem" sx={{bgcolor: '#cfffd4',padding: panel_padding}}>
@@ -114,6 +116,11 @@ function Main() {
           <TabPanel value="save" sx={{bgcolor: '#f8fbf8',padding: panel_padding}}>
             <Box>
               <SavePanel></SavePanel>
+            </Box>
+          </TabPanel>
+          <TabPanel value="print" sx={{bgcolor: '#ffffe0',padding: panel_padding}}>
+            <Box sx={{bgcolor: '#ffffff'}}>
+              <ViewPanel printMode></ViewPanel>
             </Box>
           </TabPanel>
         </TabContext>

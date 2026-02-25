@@ -270,11 +270,6 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
     currencyOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
 
-  interface IOptions {
-    value: string,
-    label: string
-  }
-
   return (
       <Modal
         open={props.open}

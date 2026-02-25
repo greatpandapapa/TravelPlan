@@ -262,9 +262,23 @@ export class CScheduleList {
         this._checkMaxLatestId();
         let idx = this._getIndexByPreId(target_id);
         let new_id = this.max_id+1;
-        let json:ISchedule = {
-            "id": new_id,
-            "pre_id": target_id,
+        let json:ISchedule = this.getNewSchedule();
+        json.id = new_id;
+        json.pre_id = target_id;
+        this.schedule.push(new CSchedule(json));
+        if (idx != null) {
+            this.schedule[idx].pre_id = new_id;
+        }
+        return new_id;
+    }
+
+    /**
+     * 空のスケジュールデータを取得
+     */
+    public getNewSchedule():ISchedule {
+        return {
+            "id": 0,
+            "pre_id": 0,
             "start_time_auto": "pre",
             "start_time": "",
             "stay_minutes": 0,
@@ -275,11 +289,20 @@ export class CScheduleList {
             "currency": "Yen",
             "dest_id": null
         };
-        this.schedule.push(new CSchedule(json));
+    }
+
+    /**
+     * スケジュールデータを取得
+     * @param id 
+     */
+    public getSchedule(id:number):ISchedule {
+        // データの登録・更新
+        const idx = this._getIndexById(id);
         if (idx != null) {
-            this.schedule[idx].pre_id = new_id;
+            return this.schedule[idx];
+        } else {
+            return this.getNewSchedule();
         }
-        return new_id;
     }
 
     /**

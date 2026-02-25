@@ -41,14 +41,14 @@ function SavePanel() {
     <Grid container>
         <Typography>
             <Box>
-            <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start',verticalAlign:'center' }}>
-                サーバに保存しますか？<Button variant="outlined" size="small" onClick={saveData} sx={{bgcolor: '#ffffff'}}>はい</Button>
-                {saved == "success" && "保存しました"}
-                {saved == "error" && resp_mesg}
-            </Box>
-            <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start' }}>
-              <ExportLink/>
-            </Box>
+                <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start',verticalAlign:'center' }}>
+                    <Button variant="outlined" size="small" onClick={saveData} sx={{bgcolor: '#ffffff'}} disabled={!plan.isModified()}>サーバに保存</Button>
+                    {saved == "success" && "保存しました"}
+                    {saved == "error" && resp_mesg}
+                </Box>
+                <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start' }}>
+                <ExportLink/>
+                </Box>
             </Box>
         </Typography>
     </Grid>

@@ -1,6 +1,6 @@
 import {useState,memo} from 'react';
 import { plan,CPlan } from '../lib/Plan';
-import {IScheduleTable} from '../typings/data_json';
+import {IScheduleTable,ISchedule} from '../typings/data_json';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,42 +16,71 @@ import { ReferenceList } from "../component/ReferenceList";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Link } from '@mui/material';
+import {EditScheduleModal} from './ScheduleModal';
 
 type ViewPanelProps = {
-  mode: string;
+  printMode?:boolean;
 }
 
 /**
  * スケジュール編集パネル
  */
-function ViewPanel(gprops:ViewPanelProps) {
+function ViewPanel(props:ViewPanelProps) {
   const [width, height] = useWindowSize();
-  const rows = plan.getTableRows(); 
+  const [rows,setRows] = useState(plan.getTableRows()); 
+
+  const [schedule,setSchedule] = useState<ISchedule>(plan.getNewSchedule());
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // リスト更新
+  const updateList = () => {
+    setRows(plan.getTableRows());
+  }
+    // フォームを更新
+  const updateForm = (dest:object) => {
+    setSchedule(dest as ISchedule);
+  }
+
+  // 登録開始
+  const saveData = () => {
+    plan.updateSchedule(schedule);
+    updateList();
+    handleClose();
+  };
+
 
   /**
    * スケジュールテーブル
    */
-  const ScheduleTable = () => {
+  const ScheduleTable = (props:ViewPanelProps) => {
+    let sx = {};
+    if (props.printMode === undefined) {
+      sx = {maxHeight: height-140};
+    }
     let pre_date:string = "";
+
     return (
-      <TableContainer sx={{ maxHeight: height-140 }}>
+      <TableContainer sx={sx}>
       <Table sx={{ minWidth: 650,padding: '1px 1px' }} stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <SlimTableCell align="center" component="th">No</SlimTableCell>
-            <SlimTableCell align="center" component="th">日付</SlimTableCell>
-            <SlimTableCell align="center" component="th">開始</SlimTableCell>
-            <SlimTableCell align="center" component="th">終了</SlimTableCell>
-            <SlimTableCell align="center" component="th">滞在</SlimTableCell>
-            <SlimTableCell align="center" component="th">TZ</SlimTableCell>
-            <SlimTableCell align="center" component="th">タイプ</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 20}}>No</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 100}}>日付</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>開始</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>終了</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>滞在</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>TZ</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 50}}>タイプ</SlimTableCell>
             <SlimTableCell align="center" component="th">予定</SlimTableCell>
             <SlimTableCell align="center" component="th">住所</SlimTableCell>
-            <SlimTableCell align="center" component="th">予約</SlimTableCell>
-            <SlimTableCell align="center" component="th">情報源</SlimTableCell>
-            <SlimTableCell align="center" component="th">料金</SlimTableCell>
-            <SlimTableCell align="center" component="th">地図</SlimTableCell>
-            <SlimTableCell align="center" component="th">備考</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 50}}>予約</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 50}}>情報源</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 80}}>料金</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>地図</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>備考</SlimTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -112,7 +141,11 @@ function ViewPanel(gprops:ViewPanelProps) {
       <SlimTableCell align="right">{props.row.stay_minutes}</SlimTableCell>
       <SlimTableCell align="right">{props.row.tz_ajust}</SlimTableCell>
       <SlimTableCell align="left">{props.row.type_label}</SlimTableCell>
-      <SlimTableCell align="left">
+      <SlimTableCell align="left" 
+      onClick={()=>{
+        setSchedule(plan.getSchedule(props.row.id as number));
+        handleOpen();
+      }}>
         {props.row.destination.alert != "" && (<Typography sx={{color:"#FF0000"}}>★:{props.row.destination.alert}</Typography>)} 
         {props.row.name}
         {(props.row.name=="") && props.row.destination.name}
@@ -157,7 +190,15 @@ function ViewPanel(gprops:ViewPanelProps) {
           {(plan.total_fee["TOTAL_YEN"] > 0)? <Grid item xs={2} sx={{textAlign: "left"}}>総額:{plan.total_fee["TOTAL_YEN"].toLocaleString()}円</Grid>:""}
         </Grid>
         </Box>
-        {ScheduleTable()}
+        {ScheduleTable(props)}
+        <EditScheduleModal 
+          open={open}
+          handleClose={handleClose} 
+          updateForm={updateForm}
+          saveData={saveData}
+          schedule={schedule}
+        >
+        </EditScheduleModal>
     </Paper>
   );
 }

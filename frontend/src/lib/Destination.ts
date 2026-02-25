@@ -4,6 +4,8 @@ import {
     IDestination,
     IDestinationTable,
     IScheduleNestedTable,
+    IValueOptions,
+    INumberValueOptions,
 } from "../typings/data_json";
 import {
     CBaseListItem,
@@ -47,9 +49,9 @@ export class CDestinationList extends CBaseList<CDestination> {
      * 
      * @returns 
      */
-    public getDestinationValueOptions() {
-        let options = [];
-        options.push({value:null,label:""});
+    public getDestinationValueOptions():INumberValueOptions[] {
+        let options:INumberValueOptions[] = [];
+        options.push({value:0,label:""});
         for (let dt of this.list) {
             options.push({value:dt.id,label:dt.name});
         }

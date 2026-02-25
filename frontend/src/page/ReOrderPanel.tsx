@@ -40,7 +40,7 @@ import {
 /**
  * スケジュール編集パネル
  */
-function SortPanel() {
+function ReOrderPanel() {
   const [width, height] = useWindowSize();
   let initialRows = plan.getNestedTableRows(); 
   const [rows, setRows] = useState(initialRows);
@@ -68,7 +68,7 @@ function SortPanel() {
    * 
    * @returns 
    */
-  const SortableScheduleTable = ()=>(
+  const ReOrderScheduleTable = ()=>(
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
@@ -253,9 +253,9 @@ function SortPanel() {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', marginY: "10px" }}>
-       {SortableScheduleTable()}
+       {ReOrderScheduleTable()}
     </Paper>
   );
 }
 
-export default SortPanel;
+export default ReOrderPanel;
