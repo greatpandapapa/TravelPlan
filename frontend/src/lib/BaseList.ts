@@ -3,6 +3,7 @@ import {
     IReference,
     IBaseListItem
 } from "../typings/data_json";
+import {plan} from "../lib/Plan";
 
 /**
  * リストのアイテムのベースクラス
@@ -106,6 +107,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
         } else {
             this.list[idx].update(data2);
         }
+        plan.modified();
     }
 
     /**
@@ -119,6 +121,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
             throw new Error("can't get destination by id:"+id);
         }
         this.list.splice(idx, 1);
+        plan.modified();
     }
 
     /**

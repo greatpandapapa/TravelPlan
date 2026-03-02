@@ -48,6 +48,7 @@ function PlanPanel() {
                     <TextField label="filename" fullWidth size="small" value={name}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.name = event.target.value;
+                        plan.modified();
                         setName(plan.name);
                       }}/>
                 </Grid>
@@ -57,6 +58,7 @@ function PlanPanel() {
                     <Select value={status} sx={{width:150}} label="ステータス" size="small"
                       onChange={(event) => {
                             plan.status = event.target.value;
+                            plan.modified();
                             setStatus(plan.status);
                         }}>
                         {status_menuItems}
@@ -72,6 +74,7 @@ function PlanPanel() {
                     <TextField label="タイトル" fullWidth size="small" value={title}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.title = event.target.value;
+                        plan.modified();
                         setTitle(plan.title);
                       }}/>
                 </Grid>
@@ -80,6 +83,7 @@ function PlanPanel() {
                     onChange={(newdate) => {
                         if (newdate != null) {
                             plan.deparure_date = newdate;
+                            plan.modified();
                         }
                         setDDate(plan.deparure_date);
                     }}/>
@@ -90,6 +94,7 @@ function PlanPanel() {
                     <Select value={members} sx={{width:150}} label="人数" size="small"
                       onChange={(event) => {
                             plan.members = event.target.value as number;
+                            plan.modified();
                             setMembers(plan.members);
                         }}>
                         {[1,2,3,4,5,6,7,8,9,10].map((no)=>(
@@ -102,12 +107,14 @@ function PlanPanel() {
                     <TextField label="目的" multiline rows={3} fullWidth size="small" value={purpose}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.purpose = event.target.value;
+                        plan.modified();
                         setPurpose(plan.purpose);}}/>
                 </Grid>
                 <Grid item xs={3}>
                     <TextField label="ドル為替" type="number" fullWidth size="small" value={usd_rate}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.usd_rate = Number(event.target.value);
+                        plan.modified();
                         setUSDRate(plan.usd_rate);}}
                     InputProps={{inputProps: {style: { textAlign: "right" }}}}/>
                 </Grid>
@@ -115,6 +122,7 @@ function PlanPanel() {
                     <TextField label="ユーロ為替" type="number" fullWidth size="small" value={eur_rate}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.eur_rate = Number(event.target.value);
+                        plan.modified();
                         setEURRate(plan.eur_rate);}}
                     InputProps={{inputProps: {style: { textAlign: "right" }}}}/>
                 </Grid>
@@ -122,6 +130,7 @@ function PlanPanel() {
                     <TextField label="現地通過名" type="string" fullWidth size="small" value={local_currency_name}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.local_currency_name = event.target.value;
+                        plan.modified();
                         setLocalCurrencyName(plan.local_currency_name);
                         plan.setLocalCurrencyName();
                     }}/>
@@ -130,6 +139,7 @@ function PlanPanel() {
                     <TextField label="現地通過為替" type="number" fullWidth size="small" value={local_rate}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         plan.local_rate = Number(event.target.value);
+                        plan.modified();
                         setLocalRate(plan.local_rate);}}
                     InputProps={{inputProps: {style: { textAlign: "right" }}}}/>
                 </Grid>

@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import {useWindowSize} from '../lib/useWindowsSize';
 import { Typography } from '@mui/material';
 import {getBgColor} from '../component/CustomMui';
-import { SlimTableCell } from '../component/CustomMui';
+import { SlimTableCell,AddressMapLink } from '../component/CustomMui';
 import { ReferenceList } from "../component/ReferenceList";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -95,17 +95,7 @@ function ViewPanel(props:ViewPanelProps) {
     );
   };
 
-  type AddressMapLinkProps = {
-    address: string;
-  };
 
-  /**
-   * 住所をGoogleMapのリンクにする
-   */
-  const AddressMapLink = ((props:AddressMapLinkProps)=>{
-    let url = "https://www.google.com/maps/place/"+encodeURIComponent(props.address);
-    return (<Link target="_blank" href={url}>{props.address}</Link>);
-  });
 
   type ScheduleTableRowProps = {
     row:IScheduleTable;

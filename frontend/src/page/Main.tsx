@@ -27,7 +27,10 @@ import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import MyAppBar from "../component/MyAppBar";
 import BringItemPanel from './BringItemPanel';
 import ActionItemPanel from './ActionItemPanel';
-import {config,convMobileText} from "../lib/Config"
+import {config,convMobileText} from "../lib/Config";
+import GuidePanel from "./GuideiPanel";
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
+import {getColor} from '../lib/Common';
 
 function Main() {
   const [value, setValue] = React.useState('plan');
@@ -61,66 +64,73 @@ function Main() {
   const tag_style = {borderRadius: '6px',minWidth:"32px",minHeight: config.icon_hight, height: config.icon_hight }
 
   const panel_padding:string = '5px';
+  let i:number = 0;
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider', margin: "0px" }}>
         <MyAppBar></MyAppBar>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab icon={<CardTravelIcon />} iconPosition="start" label={convMobileText("計画")} value="plan" sx={{...tag_style, bgcolor: '#e0ffff'}} />
-              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={convMobileText("工程")} value="scheduleedit"  sx={{...tag_style, bgcolor: '#f0f8ff'}}/>
-              <Tab icon={<SwapVertIcon />} iconPosition="start" label={convMobileText("順序")} value="schedulesort"  sx={{...tag_style, bgcolor: '#e6e6fa'}}/>
-              <Tab icon={<TourIcon />} iconPosition="start" label={convMobileText("行き先")} value="destination"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
-              <Tab icon={<GradingIcon />} iconPosition="start" label={convMobileText("工程表")} value="publish"  sx={{...tag_style, bgcolor: '#fce1fc'}}/>
-              <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持ち物")} value="bringitem"  sx={{...tag_style, bgcolor: '#cfffd4'}}/>
-              <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={convMobileText("準備")} value="actionitem"  sx={{...tag_style, bgcolor: '#e0ffff'}}/>
-              <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor: '#f8fbf8'}}/>
-              <Tab icon={<LocalPrintshopIcon />} iconPosition="start" label={convMobileText("印刷")} value="print"  sx={{...tag_style, bgcolor: '#ffffe0'}}/>
+            <TabList onChange={handleChange}>
+              <Tab icon={<CardTravelIcon />} iconPosition="start" label={convMobileText("計画")} value="plan" sx={{...tag_style, bgcolor:getColor(i=0)}} />
+              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={convMobileText("工程")} value="scheduleedit"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<SwapVertIcon />} iconPosition="start" label={convMobileText("順序")} value="schedulesort"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<TourIcon />} iconPosition="start" label={convMobileText("行き先")} value="destination"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<GradingIcon />} iconPosition="start" label={convMobileText("工程表")} value="publish"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持ち物")} value="bringitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={convMobileText("準備")} value="actionitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<LocalPrintshopIcon />} iconPosition="start" label={convMobileText("印刷")} value="print"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<StickyNote2Icon />} iconPosition="start" label={convMobileText("しおり")} value="guide"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
             </TabList>
           </Box>
-          <TabPanel value="plan" sx={{bgcolor: '#e0ffff',padding: panel_padding,paddingTop:'20px'}}>
+          <TabPanel value="plan" sx={{bgcolor:getColor(i=0),padding: panel_padding,paddingTop:'20px'}}>
             <Box sx={{bgcolor: '#ffffff',margin: "0px"}}>
               <PlanPanel></PlanPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="scheduleedit" sx={{bgcolor: '#f0f8ff',padding: panel_padding}}>
+          <TabPanel value="scheduleedit" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ScheduleEditPanel></ScheduleEditPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="schedulesort" sx={{bgcolor: '#e6e6fa',padding: panel_padding}}>
+          <TabPanel value="schedulesort" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ReOrderPanel></ReOrderPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="destination"  sx={{bgcolor: '#ffffe0',padding: panel_padding}}>
+          <TabPanel value="destination"  sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <DestinationPanel></DestinationPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="publish" sx={{bgcolor: '#fce1fc',padding: panel_padding}}>
+          <TabPanel value="publish" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ViewPanel></ViewPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="bringitem" sx={{bgcolor: '#cfffd4',padding: panel_padding}}>
+          <TabPanel value="bringitem" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <BringItemPanel></BringItemPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="actionitem" sx={{bgcolor: '#e0ffff',padding: panel_padding}}>
+          <TabPanel value="actionitem" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ActionItemPanel></ActionItemPanel>
             </Box>
           </TabPanel>
-          <TabPanel value="save" sx={{bgcolor: '#f8fbf8',padding: panel_padding}}>
-            <Box>
-              <SavePanel></SavePanel>
-            </Box>
-          </TabPanel>
-          <TabPanel value="print" sx={{bgcolor: '#ffffe0',padding: panel_padding}}>
+          <TabPanel value="print" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ViewPanel printMode></ViewPanel>
+            </Box>
+          </TabPanel>
+          <TabPanel value="guide" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
+            <Box sx={{bgcolor: '#ffffff'}}>
+              <GuidePanel></GuidePanel>
+            </Box>
+          </TabPanel>
+          <TabPanel value="save" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
+            <Box>
+              <SavePanel></SavePanel>
             </Box>
           </TabPanel>
         </TabContext>

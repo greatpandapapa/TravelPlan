@@ -11,6 +11,7 @@ import {
     IScheduleNestedTable,
 } from "../typings/data_json";
 import ja from 'dayjs/locale/ja';
+import {cache} from "./ChacheManger";
 
 /**
  * スケジュールのリストを管理するクラス
@@ -59,6 +60,19 @@ export class CScheduleList {
      * @returns インデックスの配列
      */
     private _getSortedIndex():number[] {
+        // キャッシュ有効ならキャッシュを返す
+        if (! cache.hasValidScheduleSortedIndex()) {
+            cache.setScheduleSortedIndex(this.__getSortedIndex());
+        }
+        return cache.getScheduleSortedIndex();
+    }
+
+    /**
+     * リスト順番にソートされたインデックスの配列を返す
+     * 
+     * @returns インデックスの配列
+     */
+    private __getSortedIndex():number[] {
         let id  = this._searchStartID();
         let idx = this._getIndexById(id);
         if (idx == null) {
@@ -80,6 +94,28 @@ export class CScheduleList {
      * SchedulePanelのDataGrid用のデータを生成する
      */
     public getScheduleRows(deparure_date:Dayjs):IScheduleRows[] {
+        // キャッシュ有効ならキャッシュを返す
+        if (! cache.hasValidScheduleRows()) {
+            cache.setScheduleRows(this._getScheduleRows(deparure_date));
+        }
+        return cache.getScheduleRows();
+    }
+
+    /**
+     * SchedulePanelのDataGrid用のデータを生成する
+     */
+    public getDays(deparure_date:Dayjs):string[] {
+        // キャッシュ有効ならキャッシュを返す
+        if (! cache.hasValidScheduleDays()) {
+            cache.setScheduleRows(this._getScheduleRows(deparure_date));
+        }
+        return cache.getScheduleDays();
+    }
+
+    /**
+     * SchedulePanelのDataGrid用のデータを生成する
+     */
+    private _getScheduleRows(deparure_date:Dayjs):IScheduleRows[] {
         let sc: CSchedule;
         let ddate: Dayjs;
         let rows: IScheduleRows[] = [];
@@ -87,6 +123,8 @@ export class CScheduleList {
         let no:number = 1;
         let grp_id: number = 0;
         let grp_head: boolean;
+
+        let ddays:string[] = [];
 
         const sorted_idx = this._getSortedIndex();
         grp_id = 0;
@@ -101,6 +139,7 @@ export class CScheduleList {
         // 最初の日
         let dayn = 0;
         ddate = deparure_date;
+        ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
         let pre_start_time:null|string = "";
         for(let i = 0; i < rows.length; i++) {
             rows[i].dayn = ddate.format("YYYY-MM-DD(ddd)")
@@ -124,6 +163,7 @@ export class CScheduleList {
                 if (dayjs(etime.format('yyyy-MM-DD')).diff(dayjs(etime2.format('yyyy-MM-DD')),"d") > 0) {
                     dayn++;
                     ddate = deparure_date.add(dayn,"d");
+                    ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
                 }
             }
             // １つ前の終了時間
@@ -132,6 +172,7 @@ export class CScheduleList {
             if (rows[i].type == "end") {
                 dayn++;
                 ddate = deparure_date.add(dayn,"d");
+                ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
                 pre_start_time = "6:00";
             }
         }
@@ -165,6 +206,9 @@ export class CScheduleList {
             }
             rows[i].grp_id = grp_id;
         }
+        // ddaysのキャッシュ
+        cache.setScheduleDays(ddays);
+
         return rows;
     }
 
@@ -205,21 +249,39 @@ export class CScheduleList {
      * @param opt "id" or "pre_id" 検索対象を指定する
      * @returns schedule
      */
-    private _getIndexById(id:number,opt:string = "id"):number|null {
-        let i = 0;
-        for (let sc of this.schedule) {
-            if (opt == "id" && sc.id == id) {
-                return i;
-            }
-            if (opt == "pre_id" && sc.pre_id == id) {
-                return i;
-            }
-            i++;
+    private _getIndexById(id:number):number|null {
+        if (! cache.hasValidScheduleIndex()) {
+            let index:number[] = [];
+
+            let i = 0;
+            for (let sc of this.schedule) {
+                index[sc.id] = i;
+                i++;
+            } 
+            cache.setScheduleIndex(index);
         }
-        return null;;
+        const index = cache.getScheduleIndex();
+        if (index[id] === undefined) {
+            return null;
+        }
+        return index[id];
     }
     private _getIndexByPreId(id:number):number|null {
-        return this._getIndexById(id,"pre_id");
+        if (! cache.hasValidSchedulePreIndex()) {
+            let index:number[] = [];
+
+            let i = 0;
+            for (let sc of this.schedule) {
+                if (sc.pre_id !== null) index[sc.pre_id] = i;
+                i++;
+            } 
+            cache.setSchedulePreIndex(index);
+        }
+        const index = cache.getSchedulePreIndex();
+        if (index[id] === undefined) {
+            return null;
+        }
+        return index[id];
     }
 
     /**

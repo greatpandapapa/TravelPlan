@@ -66,8 +66,9 @@ export interface DataJson {
     reference: IReference[],
     schedule: ISchedule[],
     destination: IDestination[],
-    bringitem: IBringItem[]
-    actionitem: IActionItem[]
+    bringitem: IBringItem[],
+    actionitem: IActionItem[],
+    note: INote[],
 }
 
 declare module '*.json' {
@@ -126,4 +127,10 @@ export interface IActionItem extends IBaseListItem {
     limit_date: Date|null;
     memo: string;
     done: boolean;
-} 
+}
+
+export interface INote extends IBaseListItem {
+    sc_id: number;
+    type: string;
+    contents: string;
+}

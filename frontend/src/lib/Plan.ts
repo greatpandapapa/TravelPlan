@@ -19,7 +19,9 @@ import {CDestinationList,CDestination} from "./Destination";
 import {CReferenceList} from "./Reference";
 import {CBringItemList} from "./BringItem";
 import {CActionItemList} from "./ActionItem";
+import {CNoteList} from "./Notes";
 import {toDateString,toDateTimeString} from "./Common";
+import {cache} from "./ChacheManger";
 
 // 日付の曜日を日本語にするため
 dayjs.locale(ja);
@@ -78,11 +80,12 @@ export class CPlan {
     local_rate: number = 1;
     local_currency_name = "";
     // プライベート
-    private schedules: CScheduleList = new CScheduleList(jsondata);
+    public schedules: CScheduleList = new CScheduleList(jsondata);
     private destinations: CDestinationList = new CDestinationList(jsondata);
     private references: CReferenceList = new CReferenceList(jsondata);
     private bringitems: CBringItemList = new CBringItemList(jsondata);
     private actionitems: CActionItemList = new CActionItemList(jsondata);
+    public note: CNoteList = new CNoteList(jsondata);
     // 集計情報
     public start_date: String="";
     public end_date: String="";
@@ -126,6 +129,7 @@ export class CPlan {
         this.references = new CReferenceList(data);
         this.bringitems = new CBringItemList(data);
         this.actionitems = new CActionItemList(data);
+        this.note = new CNoteList(data);
 
         this.setLocalCurrencyName();
         // 更新なし状態にセット
@@ -214,7 +218,15 @@ export class CPlan {
             this.local_currency_name = "現地通貨";
         } else {
             this.local_currency_name = data.plan.local_currency_name;
-        }     
+        }
+        // ノート
+        let note:any[];
+        if (!("note" in data)) {
+            note = [];
+        } else {
+            note = data.note;
+        }
+        this.note = new CNoteList({...data,note:note});
 
         this.setLocalCurrencyName();
         // 更新なし状態にセット
@@ -226,13 +238,15 @@ export class CPlan {
         CPlan.currency_options[3].label = this.local_currency_name;
     }
 
-    // 湖心更新なしにリセット
+    // 更新なしにリセット
     public unsetModified() {
         this.modify = false;
+        cache.clear();
     }
     // 更新あり状態にする
     public modified():void {
         this.modify = true;
+        cache.clear();
     }
     // 更新状態を確認する
     public isModified():boolean {
@@ -405,6 +419,30 @@ export class CPlan {
      * テーブル出力用のObjectを作る
      */
     public getTableRows():IScheduleTable[] {
+        if (! cache.hasValidScheduleTable()) {
+            cache.setScheduleTable(this._getTableRows());
+        }
+        return cache.getScheduleTable();
+    }
+
+    /**
+     * テーブル出力の1日分を取得する
+     */
+    public getTableRowsADay(day:string):IScheduleTable[] {
+        const rows:IScheduleTable[] = this.getTableRows();
+        const rows2:IScheduleTable[] = [];
+        rows.map((row)=>{
+            if (row.dayn == day) {
+                rows2.push({...row});
+            }
+        });
+        return rows2;
+    }
+
+    /**
+     * テーブル出力用のObjectを作る
+     */
+    public _getTableRows():IScheduleTable[] {
         let rows: IScheduleTable[] = [];
         let sc: IScheduleTable;
         this.getScheduleRows().map((row)=>{
@@ -569,6 +607,7 @@ export class CPlan {
             reference: this.references.getSaveData(),
             bringitem: this.bringitems.getSaveData(),
             actionitem: this.actionitems.getSaveData(),
+            note: this.note.getSaveData(),
         }
         return data;
     }
@@ -705,7 +744,7 @@ export class CPlan {
      */
     public getActionItemTypeValueOptions():IValueOptions[] {
         return this.actionitems.getTypeValueOptions();
-    }        
+    }
 }
 
 /**
