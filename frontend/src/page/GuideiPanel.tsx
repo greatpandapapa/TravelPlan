@@ -14,19 +14,22 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Link } from '@mui/material';
-import { SlimTableCell,AddressMapLink,ImageLink } from '../component/CustomMui';
+import { SlimTableCell,AddressMapLink,ImageLink,UrlLink } from '../component/CustomMui';
 import {CNote} from '../lib/Notes';
 import TextField from '@mui/material/TextField';
 import { Note } from '@mui/icons-material';
 import Button from '@mui/material/Button';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import TextIncreaseIcon from '@mui/icons-material/TextIncrease';
+import IconButton from '@mui/material/IconButton';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import TextIncreaseOutlinedIcon from '@mui/icons-material/TextIncreaseOutlined';
+import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
 import SpeedDial, { SpeedDialProps } from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AddIcon from '@mui/icons-material/Add';
 import {useWindowSize} from '../lib/useWindowsSize';
 import {getColor} from '../lib/Common';
+import CreateIcon from '@mui/icons-material/Create';
 
 type GuidePanelProps = {
 }
@@ -198,13 +201,18 @@ function GuideNotes(props:GuideNotesProps) {
     const addButton = ()=>{
         <SpeedDial ariaLabel="SpeedDiale" hidden={hidden} icon={<AddIcon />}
             direction="right">
-            <SpeedDialAction key="img" icon={<AddPhotoAlternateIcon/>}
+            <SpeedDialAction key="img" icon={<AddPhotoAlternateOutlinedIcon/>}
                 slotProps={{tooltip: {title: "Image"}}} onClick={()=>{addNote("img")}} />
-            <SpeedDialAction key="img" icon={<TextIncreaseIcon/>}
+            <SpeedDialAction key="img" icon={<TextIncreaseOutlinedIcon/>}
                 slotProps={{tooltip: {title: "Image"}}} onClick={()=>{addNote("text")}} />
         </SpeedDial>
     }
 
+/*
+                <IconButton size="small" onClick={()=>{addNote("img")}} sx={{color:'#000000',rightPadding:10}}><AddPhotoAlternateOutlinedIcon  /></IconButton>
+                <IconButton size="small" onClick={()=>{addNote("url")}} sx={{color:'#000000',rightPadding:10}}><LinkOutlinedIcon /></IconButton>
+                <IconButton size="small" onClick={()=>{addNote("text")}} sx={{color:'#000000',rightPadding:10}}><TextIncreaseOutlinedIcon/></IconButton>
+*/
     return (
         <Box>
             {notes.map((note)=>{
@@ -212,6 +220,7 @@ function GuideNotes(props:GuideNotesProps) {
             })}
             <Box>
                 <Button size="small" onClick={()=>{addNote("img")}} sx={{color:'#000000',padding:0}}>Img</Button>
+                <Button size="small" onClick={()=>{addNote("url")}} sx={{color:'#000000',padding:0}}>Url</Button>
                 <Button size="small" onClick={()=>{addNote("text")}} sx={{color:'#000000',padding:0}}>Txt</Button>
             </Box>
         </Box>
@@ -236,20 +245,23 @@ function GuideNote(props:GuideNoteProps) {
 
     if (edit) {
         return (
-        <TextField onKeyDown={(e)=>{
-            if (e.keyCode === 13) {
-                props.update({...props.note,contents:contents})
-                setEdit(false);
-            }}}
-            onChange={(e)=>{setContents(e.target.value)}}
-            value={contents} sx={{width:600}}>
-        </TextField>);
+            <TextField onKeyDown={(e)=>{
+                if (e.keyCode === 13) {
+                    props.update({...props.note,contents:contents})
+                    setEdit(false);
+                }}}
+                onChange={(e)=>{setContents(e.target.value)}}
+                value={contents} sx={{width:600}}>
+            </TextField>
+        );
     } else {
-        if (props.note.type == "img") {
-            return <Box onDoubleClick={handleOnclick}><ImageLink url={props.note.contents}></ImageLink></Box>
-        } else {
-            return <Box onDoubleClick={handleOnclick}>{props.note.contents}</Box>
-        }
+        return (
+            <Box onDoubleClick={handleOnclick}>
+                {props.note.type == "img"?(<ImageLink url={props.note.contents}/>):""}            
+                {props.note.type == "text"?(props.note.contents):""}
+                {props.note.type == "url"?(<><UrlLink url={props.note.contents}/><IconButton onClick={handleOnclick} size="small" sx={{width:20,leftMargin:-20,padding:0}} ><CreateIcon /></IconButton></>):""}
+            </Box>
+        );
     }
 }
 

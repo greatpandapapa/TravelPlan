@@ -22,6 +22,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {CPlan} from "../lib/Plan";
 import { IValueOptions } from '../typings/data_json';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 
 /**
  * ファイルからJSONデータを読み込み
@@ -97,6 +98,7 @@ function ListServerFile() {
               <TableCell align="center">{row.rev}</TableCell>
               <TableCell align="left">{CPlan.getStatusName(row.status)}</TableCell>
               <TableCell align="center">
+                <Link to={"/print"} state={{from:"server",name:row.name}}>印刷</Link>
                 <IconButton aria-label="Delete" onClick={(e:React.MouseEvent)=>{handleDelete(row.name)}}>
                   <DeleteIcon />
                 </IconButton>

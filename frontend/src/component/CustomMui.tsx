@@ -73,3 +73,14 @@ export const ImageLink = ((props:ImageLinkProps)=>{
     let url = props.url;
     return (<img  width="400" src={url} alt="image"/>);
 });
+
+type UrlLinkProps = {
+  url: string;
+};
+
+/**
+ * 住所をGoogleMapのリンクにする
+ */
+export const UrlLink = ((props:UrlLinkProps)=>{
+    return (<Link target="_blank" href={props.url}>{props.url}</Link>);
+});

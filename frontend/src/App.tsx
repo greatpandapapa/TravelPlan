@@ -9,6 +9,7 @@ import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import { isMobile } from "react-device-detect";
 import Load from './page/Load';
 import Main from './page/Main';
+import Print from './page/Print';
 
 dayjs.locale("ja_JP");
 
@@ -36,6 +37,7 @@ function App() {
               <Routes>
                 <Route index element={<Load key="menu" />}/>
                 <Route path="/main" element={<Main />} />
+                <Route path="/print" element={<Print />} />
               </Routes>
             </BrowserRouter>
       </Box>

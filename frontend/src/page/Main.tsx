@@ -78,7 +78,6 @@ function Main() {
               <Tab icon={<GradingIcon />} iconPosition="start" label={convMobileText("工程表")} value="publish"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
               <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持ち物")} value="bringitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
               <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={convMobileText("準備")} value="actionitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<LocalPrintshopIcon />} iconPosition="start" label={convMobileText("印刷")} value="print"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
               <Tab icon={<StickyNote2Icon />} iconPosition="start" label={convMobileText("しおり")} value="guide"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
               <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
             </TabList>
@@ -116,11 +115,6 @@ function Main() {
           <TabPanel value="actionitem" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
             <Box sx={{bgcolor: '#ffffff'}}>
               <ActionItemPanel></ActionItemPanel>
-            </Box>
-          </TabPanel>
-          <TabPanel value="print" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
-            <Box sx={{bgcolor: '#ffffff'}}>
-              <ViewPanel printMode></ViewPanel>
             </Box>
           </TabPanel>
           <TabPanel value="guide" sx={{bgcolor:getColor(++i),padding: panel_padding}}>
