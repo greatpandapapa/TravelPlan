@@ -23,9 +23,25 @@ import {
   GridRow,
   GridRowModes,
   GridRowModesModel,
+  GridInitialState,
+  GridSortModel,
+  DataGridProps
 } from '@mui/x-data-grid';
 import { IActionItem } from '../typings/data_json';
-import {StripedDataGrid} from '../component/CustomMui';
+import {StripedGrid} from '../component/CustomMui';
+
+/** doneがチェックされていば背景色変更 */
+export function CheckedStripedDataGrid(props:DataGridProps) {  
+  return (
+    <StripedGrid 
+      {...props}
+      getRowClassName={(params) => {
+        if (params.row.done == true) return "checked";
+        return (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd');
+      }}
+    />
+  );
+}
 
 // Propsの型
 type ActionItemGridProps = {
@@ -77,7 +93,7 @@ export function ActionItemGrid(props:ActionItemGridProps) {
    */
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    
+
     plan.updateActionItem(newRow as object)
     props.updateList();
 
@@ -90,6 +106,7 @@ export function ActionItemGrid(props:ActionItemGridProps) {
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
+
 
   const columns: GridColDef[] = [
     { 
@@ -121,7 +138,7 @@ export function ActionItemGrid(props:ActionItemGridProps) {
       field: 'memo',
       headerName: '備考',
       type: 'string',
-      width: 400,
+      width: 300,
       align: 'left',
       headerAlign: 'left',
       editable: true,
@@ -133,6 +150,15 @@ export function ActionItemGrid(props:ActionItemGridProps) {
       width: 100,
       align: 'left',
       headerAlign: 'left',
+      editable: true,
+    },
+    {
+      field: 'priority',
+      headerName: '優先順位',
+      type: 'number',
+      width: 100,
+      align: 'right',
+      headerAlign: 'right',
       editable: true,
     },
     {
@@ -204,7 +230,7 @@ export function ActionItemGrid(props:ActionItemGridProps) {
         },
       }}
     >
-        <StripedDataGrid
+        <CheckedStripedDataGrid
             rows={rows}
             columns={columns}
             editMode="row"

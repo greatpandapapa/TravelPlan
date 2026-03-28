@@ -41,6 +41,7 @@ export class CActionItemList extends CBaseList<CActionItem> {
         return ([
             {label:"-",value:""},
             {label:"計画",value:"plan"},
+            {label:"調査",value:"investigation"},
             {label:"予約",value:"reservation"}, 
             {label:"申請",value:"admition"}, 
             {label:"購入",value:"buy"}, 
@@ -56,6 +57,7 @@ export class CActionItem extends CBaseListItem implements IActionItem {
     name: string;
     type: string;
     limit_date: Date|null;
+    priority: number|null;
     memo: string;
     done: boolean;
 
@@ -70,6 +72,7 @@ export class CActionItem extends CBaseListItem implements IActionItem {
             this.name = "";
             this.type = "";
             this.limit_date = null;
+            this.priority = null;
             this.memo = ""; 
             this.done = false;
         } else {
@@ -77,6 +80,7 @@ export class CActionItem extends CBaseListItem implements IActionItem {
             this.name = data.name;
             this.type = data.type;
             this.limit_date = data.limit_date;
+            this.priority = data.priority;
             this.memo = data.memo;
             this.done = data.done;    
         }
@@ -86,11 +90,12 @@ export class CActionItem extends CBaseListItem implements IActionItem {
         this.name = data.name;
         this.type = data.type;
         this.limit_date = data.limit_date;
+        this.priority = data.priority;
         this.memo = data.memo;
         this.done = data.done;
     }
 
     public getData():IActionItem {
-        return {id:this.id,name:this.name,type:this.type,limit_date:this.limit_date,memo:this.memo,done:this.done};
+        return {id:this.id,name:this.name,type:this.type,limit_date:this.limit_date,priority:this.priority,memo:this.memo,done:this.done};
     } 
 }

@@ -40,6 +40,7 @@
     "build:dev": "env-cmd -f .env.development react-scripts build",
     "build:staging": "env-cmd -f .env.staging react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build",
+    "build:local": "env-cmd -f .env.production.local react-scripts build",
     "build:public": "env-cmd -f .env.production.public react-scripts build"
   },
   "eslintConfig": {

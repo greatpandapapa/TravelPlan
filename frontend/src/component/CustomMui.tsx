@@ -5,14 +5,19 @@ import TableCell from '@mui/material/TableCell';
 import { Link } from '@mui/material';
 
 export function getBgColor(mode:string) {
-  if (mode === "odd") {
+  if (mode === "checked") {
+    return '#d3d3d3';
+  } else if (mode === "odd") {
     return '#f8f8ff';
   } else {
     return '#fffaff';
   }
 }
 
-const StripedGrid = styled(DataGrid)(({ theme }) => ({
+export const StripedGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.checked`]: {
+    backgroundColor: getBgColor('checked'),
+  },
   [`& .${gridClasses.row}.odd`]: {
     backgroundColor: getBgColor('odd'),
   },
@@ -71,7 +76,7 @@ type ImageLinkProps = {
  */
 export const ImageLink = ((props:ImageLinkProps)=>{
     let url = props.url;
-    return (<img  width="400" src={url} alt="image"/>);
+    return (<img  height="300" src={url} alt="image"/>);
 });
 
 type UrlLinkProps = {

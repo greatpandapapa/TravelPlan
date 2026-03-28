@@ -125,6 +125,7 @@ export interface IActionItem extends IBaseListItem {
     name: string;
     type: string;
     limit_date: Date|null;
+    priority: number|null;
     memo: string;
     done: boolean;
 }
