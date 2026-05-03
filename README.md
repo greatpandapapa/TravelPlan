@@ -29,6 +29,7 @@
   - 目的地の定期日を登録することで、予定がお休みにバッティングしている場合にアラートを表示します
 - 持ち物リストを管理できます
 - アクションアイテムを管理できます
+- 旅のしろりを作れます
 - どこにでも設置
   - Frontendアプリ単独でも動作します
   - サーバはPerl CGIスクリプトが動作すれば設置可能です
@@ -83,22 +84,22 @@
   ```
   $ npm i
   ```
-- .envをサーバに合わせて編集する必要がある。以下の２項目を設定する
+- .env.productionをサーバに合わせて編集する必要がある。以下の２項目を設定する
   ```
   REACT_APP_SERVER_URL="サーバのURL"
   REACT_APP_BASEPATH='APPが配置されているパス'
   ```
-- ローカルサーバ用（PHP Server）
-  - .env.productionを編集
-  - ビルド
+  - ローカルサーバ用（PHP Server）
+    ```
+　  REACT_APP_SERVER_URL="http://サーバ名/APPのパス/backend/public/index.php"
+    ```
+  - Public用（Perl CGI）
+    ```
+　  REACT_APP_SERVER_URL="http://サーバ名/APPのパス/backend_cgi/index.cgi"
+    ```
+- ビルドする
   ```
   $ npm run build
-  ```
-- Public用（Perl CGI）
-  - .env.production.publicを編集
-  - ビルド
-  ```
-  $ npm run build:public
   ```
 - buildをWebサーバに配置する
 

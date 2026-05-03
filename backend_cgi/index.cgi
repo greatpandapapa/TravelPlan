@@ -142,16 +142,20 @@ sub saveFile {
     if ($name ne "_template") {
         $data = $request->{"data"};
 
-        my $file_cnt = file_get_contents($filename);
-        my $cur_data = $json->decode($file_cnt);
+        if ( -f $filename ) {
+            my $file_cnt = file_get_contents($filename);
+            my $cur_data = $json->decode($file_cnt);
 
-        # リビジョンチェック        
-        if ($cur_data->{plan}->{rev} ne "") {
-            if ($cur_data->{plan}->{rev} != $data->{plan}->{rev}) {
-                warnningExit({"mesg"=>"ファイルが他のユーザにより更新されています"},2);
+            # リビジョンチェック        
+            if ($cur_data->{plan}->{rev} ne "") {
+                if ($cur_data->{plan}->{rev} != $data->{plan}->{rev}) {
+                    warnningExit({"mesg"=>"ファイルが他のユーザにより更新されています"},2);
+                }
+                # Revをインクリメント
+                $data->{plan}->{rev}++;
+            } else {
+                $data->{plan}->{rev} = 1;
             }
-            # Revをインクリメント
-            $data->{plan}->{rev}++;
         } else {
             $data->{plan}->{rev} = 1;
         }
@@ -172,6 +176,16 @@ sub deleteFile {
         unlink($filename);
     }
     successExit("OK");
+}
+
+#バックアップから履歴を取得する(ダミー。対応していないので空の配列返す)
+sub historyFile {
+    my $request = shift(@_);
+    $name = $request->{"name"};
+
+    my @list;
+    push(@list,{update_date => "2026-01-01 00:01",rev=>1});
+    successExit(\@list);
 }
 
 ## "POSTDATA"はPOSTメソッド使用時のBODY全体
@@ -198,5 +212,7 @@ if ($@) {
         saveFile($request);
     } elsif ($action eq "delete") {
         deleteFile($request);
+    } elsif ($action eq "history") {
+        historyFile($request);
     }
 }
