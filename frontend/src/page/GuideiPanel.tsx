@@ -4,29 +4,19 @@ import Box from '@mui/material/Box';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import {useLocation} from "react-router-dom";
 import {plan} from "../lib/Plan";
 import { IScheduleTable,INote } from '../typings/data_json';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Link } from '@mui/material';
-import { SlimTableCell,AddressMapLink,ImageLink,UrlLink } from '../component/CustomMui';
+import { AddressMapLink,ImageLink,UrlLink } from '../component/CustomMui';
 import {CNote} from '../lib/Notes';
 import TextField from '@mui/material/TextField';
-import { Note } from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import TextIncreaseOutlinedIcon from '@mui/icons-material/TextIncreaseOutlined';
-import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
-import SpeedDial, { SpeedDialProps } from '@mui/material/SpeedDial';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
-import AddIcon from '@mui/icons-material/Add';
 import {useWindowSize} from '../lib/useWindowsSize';
 import {getColor} from '../lib/Common';
 import CreateIcon from '@mui/icons-material/Create';
@@ -40,7 +30,6 @@ type GuidePanelProps = {
 export function GuidePanel(props:GuidePanelProps) { 
     const days:string[] = plan.schedules.getDays(plan.deparure_date);
     const [value, setValue] = React.useState(days[0]);
-    const { state } = useLocation();
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -85,7 +74,7 @@ type GuideViewProps = {
  */
 function GuideTableADay(props:GuideViewProps) {
     const rows:IScheduleTable[] = plan.getTableRowsADay(props.dayn);
-    const [width, height] = useWindowSize();
+    const [, height] = useWindowSize(); // widthは使ってないので省略
 
     return (
       <TableContainer sx={{maxHeight: height-50}}>
@@ -127,35 +116,35 @@ function GuideViewDetail(props:GuideViewRowProps) {
             <Box sx={{ display: 'flex'}}>
                 <Box sx={sx}>
                     {props.row.type_label}:
-                    {(props.row.name != "" && props.row.destination.name == "") && props.row.name}
-                    {(props.row.name == "" && props.row.destination.name != "") && props.row.destination.name}
-                    {(props.row.name != "" && props.row.destination.name != "") && props.row.name + "("+props.row.destination.name+")"}
+                    {(props.row.name !== "" && props.row.destination.name === "") && props.row.name}
+                    {(props.row.name === "" && props.row.destination.name !== "") && props.row.destination.name}
+                    {(props.row.name !== "" && props.row.destination.name !== "") && props.row.name + "("+props.row.destination.name+")"}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.address != "") && (
+                    {(props.row.destination.address !== "") && (
                     <Box>住所:<AddressMapLink address={props.row.destination.address}></AddressMapLink></Box>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.fee !=0 && props.row.fee != null) && ("予算:"+props.row.fee.toLocaleString() + props.row.currency_label)}
+                    {(props.row.fee !== 0 && props.row.fee !== null) && ("予算:"+props.row.fee.toLocaleString() + props.row.currency_label)}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.reservation_url != "") && (
+                    {(props.row.destination.reservation_url !== "") && (
                         <Box>予約:<Link target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</Link></Box>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.url != "") && (
+                    {(props.row.destination.url !== "") && (
                         <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.url2 != "") && (
+                    {(props.row.destination.url2 !== "") && (
                         <Link target="_blank" href={props.row.destination.url2}>参考</Link>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.map_url != "") && (
+                    {(props.row.destination.map_url !== "") && (
                         <Link target="_blank" href={props.row.destination.map_url}>地図</Link>
                     )}
                 </Box>
@@ -174,13 +163,9 @@ type GuideNotesProps = {
  */
 function GuideNotes(props:GuideNotesProps) {
     const [notes,setNotes] = useState<CNote[]>(plan.note.getNotesByScheduleId(props.id));
-   const [direction, setDirection] =
-    React.useState<SpeedDialProps['direction']>('up');
-  const [hidden, setHidden] = React.useState(false);
-
 
     const updateNote = (note:INote)=>{
-        if (note.contents == "") {
+        if (note.contents === "") {
             plan.note.delData(note.id);
         } else {
             plan.note.updateData({...note});
@@ -198,21 +183,6 @@ function GuideNotes(props:GuideNotesProps) {
         setNotes(plan.note.getNotesByScheduleId(props.id));
     }
 
-    const addButton = ()=>{
-        <SpeedDial ariaLabel="SpeedDiale" hidden={hidden} icon={<AddIcon />}
-            direction="right">
-            <SpeedDialAction key="img" icon={<AddPhotoAlternateOutlinedIcon/>}
-                slotProps={{tooltip: {title: "Image"}}} onClick={()=>{addNote("img")}} />
-            <SpeedDialAction key="img" icon={<TextIncreaseOutlinedIcon/>}
-                slotProps={{tooltip: {title: "Image"}}} onClick={()=>{addNote("text")}} />
-        </SpeedDial>
-    }
-
-/*
-                <IconButton size="small" onClick={()=>{addNote("img")}} sx={{color:'#000000',rightPadding:10}}><AddPhotoAlternateOutlinedIcon  /></IconButton>
-                <IconButton size="small" onClick={()=>{addNote("url")}} sx={{color:'#000000',rightPadding:10}}><LinkOutlinedIcon /></IconButton>
-                <IconButton size="small" onClick={()=>{addNote("text")}} sx={{color:'#000000',rightPadding:10}}><TextIncreaseOutlinedIcon/></IconButton>
-*/
     return (
         <Box>
             {notes.map((note)=>{
@@ -236,7 +206,7 @@ type GuideNoteProps = {
  * 予定に付加した情報を表示
  */
 function GuideNote(props:GuideNoteProps) {
-    const [edit,setEdit] = useState<boolean>(props.note.contents==""?true:false);
+    const [edit,setEdit] = useState<boolean>(props.note.contents === ""?true:false);
     const [contents,setContents] = useState<string>(props.note.contents);
 
     const handleOnclick = (event: React.SyntheticEvent) => {
@@ -257,9 +227,9 @@ function GuideNote(props:GuideNoteProps) {
     } else {
         return (
             <Box onDoubleClick={handleOnclick}>
-                {props.note.type == "img"?(<ImageLink url={props.note.contents}/>):""}            
-                {props.note.type == "text"?(props.note.contents):""}
-                {props.note.type == "url"?(<><UrlLink url={props.note.contents}/><IconButton onClick={handleOnclick} size="small" sx={{width:20,leftMargin:-20,padding:0}} ><CreateIcon /></IconButton></>):""}
+                {props.note.type === "img"?(<ImageLink url={props.note.contents}/>):""}            
+                {props.note.type === "text"?(props.note.contents):""}
+                {props.note.type === "url"?(<><UrlLink url={props.note.contents}/><IconButton onClick={handleOnclick} size="small" sx={{width:20,leftMargin:-20,padding:0}} ><CreateIcon /></IconButton></>):""}
             </Box>
         );
     }

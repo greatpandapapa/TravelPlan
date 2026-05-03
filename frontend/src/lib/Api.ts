@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //const URL="http://localhost:8080/index.php";
 let URL:string;
-if (process.env.REACT_APP_SERVER_URL == undefined) {
+if (process.env.REACT_APP_SERVER_URL === undefined) {
     throw new Error("can't defined REACT_APP_SERVER_URL in .env");
 } else {
     URL = process.env.REACT_APP_SERVER_URL;

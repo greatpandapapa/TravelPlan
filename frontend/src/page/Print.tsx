@@ -1,10 +1,9 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import ViewPanel from './ViewPanel';
 import {API,ILoadDataResponse} from "../lib/Api";
 import {plan} from "../lib/Plan";
 import {DataJson} from "../typings/data_json";
-import { Link,useNavigate,useLocation } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
@@ -14,7 +13,7 @@ export function Print() {
 
   if (!loaded) {
     let from:string = state["from"];
-    if (from == "server") {
+    if (from === "server") {
       let name:string = state["name"];
       API.loadData(name,(response)=>{
         plan.load(((response as unknown) as ILoadDataResponse).result.data as DataJson);

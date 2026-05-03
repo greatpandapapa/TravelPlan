@@ -1,5 +1,4 @@
 import React from 'react';
-import '../App.css';
 import {API,IgetListResponse,IgetListRow} from "../lib/Api";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,16 +12,14 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 import MyAppBar from "../component/MyAppBar";
-import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {CPlan} from "../lib/Plan";
 import { IValueOptions } from '../typings/data_json';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 
 /**
  * ファイルからJSONデータを読み込み
@@ -43,7 +40,7 @@ function LoadJsonFile() {
       const content = event.target?.result
         try {
           const jsonData = JSON.parse(content as string)
-          console.log(jsonData);
+//          console.log(jsonData);
           navigate('/main', {state:{from:"file","data":jsonData}});
         } catch (error) {
           console.error('JSONファイルを解析できませんでした。', error)
@@ -85,7 +82,7 @@ function ListServerFile() {
   }
 
   const outputRow = (row:IgetListRow) => {
-    if (row.status === status || status == "all"){
+    if (row.status === status || status === "all"){
         return (
             <TableRow>
               <TableCell align="left">

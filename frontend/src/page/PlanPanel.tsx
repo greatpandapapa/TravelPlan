@@ -1,8 +1,7 @@
-import {useState,ChangeEvent,ReactElement,SyntheticEvent} from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import { DateField } from '@mui/x-date-pickers/DateField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dayjs } from 'dayjs';
 import Select from '@mui/material/Select';
@@ -32,14 +31,6 @@ function PlanPanel() {
     const status_menuItems = CPlan.getStatusValueOptions().map((option) => (
         <MenuItem value={option.value}>{option.label}</MenuItem>
     ));
-    const saveData = () => {
-        plan.title = title;
-        if (ddate != null) {
-            plan.deparure_date = ddate;
-        }
-        plan.members = members;
-        plan.purpose = purpose;
-    };
 
     return (
         <Box width={800}>

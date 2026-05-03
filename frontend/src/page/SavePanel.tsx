@@ -16,7 +16,7 @@ function SavePanel() {
     const saveData = () => {
         API.saveData(plan.name,plan.getSaveData(),(response)=>{
             // 成功の場合
-            if (response.code == 0) {
+            if (response.code === 0) {
                 plan.incRev();
                 setSaved("success");
             } else {
@@ -43,8 +43,8 @@ function SavePanel() {
             <Box>
                 <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start',verticalAlign:'center' }}>
                     <Button variant="outlined" size="small" onClick={saveData} sx={{bgcolor: '#ffffff'}} disabled={!plan.isModified()}>サーバに保存</Button>
-                    {saved == "success" && "保存しました"}
-                    {saved == "error" && resp_mesg}
+                    {saved === "success" && "保存しました"}
+                    {saved === "error" && resp_mesg}
                 </Box>
                 <Box sx={{ p: 2, display: 'flex',justifyContent: 'flex-start' }}>
                 <ExportLink/>

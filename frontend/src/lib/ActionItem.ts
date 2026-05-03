@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from 'dayjs';
 import {
     DataJson,
     IActionItem,
@@ -79,7 +78,11 @@ export class CActionItem extends CBaseListItem implements IActionItem {
             super(data);
             this.name = data.name;
             this.type = data.type;
-            this.limit_date = data.limit_date;
+            if (data.limit_date === null || data.limit_date === undefined) {
+                this.limit_date = null;
+            } else {
+                this.limit_date = new Date(data.limit_date);
+            }
             this.priority = data.priority;
             this.memo = data.memo;
             this.done = data.done;    

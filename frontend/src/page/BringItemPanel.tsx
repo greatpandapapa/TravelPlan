@@ -1,6 +1,5 @@
-import {useState,ChangeEvent,ReactElement,SyntheticEvent} from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -9,7 +8,6 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import {useWindowSize} from '../lib/useWindowsSize';
-import { Link } from 'react-router-dom';
 
 import {
   GridRowsProp,
@@ -19,12 +17,9 @@ import {
   GridEventListener,
   GridRowModel,
   GridRowEditStopReasons,
-  GridSlots,
-  GridRow,
   GridRowModes,
   GridRowModesModel,
 } from '@mui/x-data-grid';
-import { IBringItem } from '../typings/data_json';
 import {StripedDataGrid} from '../component/CustomMui';
 
 // Propsの型
@@ -34,7 +29,7 @@ type BringItemGridProps = {
 }
 
 export function BringItemGrid(props:BringItemGridProps) {
-  const [width, height] = useWindowSize();
+  const [, height] = useWindowSize(); // widthは使ってないので省略
 
   const rows: GridRowsProp = props.BringItemRows; 
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});

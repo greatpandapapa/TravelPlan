@@ -33,7 +33,7 @@ type DestinationGridProps = {
 }
 
 export function DestinationGrid(props:DestinationGridProps) {
-  const [width, height] = useWindowSize();
+  const [, height] = useWindowSize(); // widthは使ってないので省略
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -113,11 +113,11 @@ export function DestinationGrid(props:DestinationGridProps) {
       headerAlign: 'center',
       renderCell: ({id}) => {
         const row = rows.find(row => row.id === id);
-        if (row == undefined || row.reservation_url == "") {
+        if (row === undefined || row.reservation_url === "") {
           return (<></>);
         } else {
           let site:string = row.reservation_site;
-          if (site == "") {
+          if (site === "") {
             site = "予約サイト";
           }
           return (<Link target="_blank" to={`${row.reservation_url}`}>{site}</Link>)
@@ -133,11 +133,11 @@ export function DestinationGrid(props:DestinationGridProps) {
       headerAlign: 'center',
       renderCell: ({id}) => {
         const row = rows.find(row => row.id === id);
-        if (row == undefined || row.url == "") {
+        if (row === undefined || row.url === "") {
           return (<></>);
         } else {
           let source:string = row.source;
-          if (source == "") {
+          if (source === "") {
             source = "情報源";
           }
           return (<Link target="_blank" to={`${row.url}`}>{source}</Link>)
@@ -153,7 +153,7 @@ export function DestinationGrid(props:DestinationGridProps) {
       headerAlign: 'center',
       renderCell: (params) => {
         return (
-          ((params.value != "")) && (
+          ((params.value !== "")) && (
             <Link target="_blank" to={`${params.value}`}>参考</Link>
           )
         )
@@ -168,7 +168,7 @@ export function DestinationGrid(props:DestinationGridProps) {
       headerAlign: 'center',
       renderCell: (params) => {
         return (
-          ((params.value != "")) && (
+          ((params.value !== "")) && (
             <Link target="_blank" to={`${params.value}`}>MAP</Link>
           )
         )
@@ -261,12 +261,12 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
 
 
   let typeOptions:ReactElement[]=[];
-  plan.getTypeValueOptions().map((opt)=>{
+  plan.getTypeValueOptions().forEach((opt)=>{
     typeOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
 
   let currencyOptions:ReactElement[]=[];
-  plan.getCurrencyValueOptions().map((opt)=>{
+  plan.getCurrencyValueOptions().forEach((opt)=>{
     currencyOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
 

@@ -13,7 +13,7 @@ export function MyAppBar() {
 
     function onClickAppBaButton() {
       let result = true;
-      if (location.pathname != "/") {
+      if (location.pathname !== "/") {
         if (plan.isModified()) {
           result = window.confirm("変更されています。変更を破棄してロード画面に戻りますか？");
         }

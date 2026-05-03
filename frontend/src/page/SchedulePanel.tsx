@@ -1,8 +1,8 @@
-import {useState,useCallback,memo} from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
 import { plan } from '../lib/Plan';
 import {useWindowSize} from '../lib/useWindowsSize';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,23 +13,16 @@ import {
   GridRowsProp,
   GridRowModesModel,
   GridRowModes,
-  DataGrid,
   GridColDef,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
   GridRowModel,
   GridRowEditStopReasons,
-  GridSlots,
   GridRow,
-  GridRowProps,
-  GridRenderCellParams,
-  GridRowParams,
-  GridApi
 } from '@mui/x-data-grid';
 
-import {StripedDataGrid, StripedDataGridByGroup} from '../component/CustomMui';
+import {StripedDataGrid} from '../component/CustomMui';
 import { IScheduleRows } from '../typings/data_json';
 
 type ScheduleGridProps = {
@@ -40,7 +33,7 @@ type ScheduleGridProps = {
  * スケジュールGrid
  */
 export function ScheduleGrid(props:ScheduleGridProps) {
-  const [width, height] = useWindowSize();
+  const [, height] = useWindowSize(); // widthは使ってないので省略
   const initialRows: GridRowsProp = plan.getScheduleRows(); 
   const [rows, setRows] = useState(initialRows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -87,7 +80,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
   // 追加ボタン
   const handleAddClick = (id: GridRowId) => () => {
     const editedRow = rows.find((row) => row.id === id);
-    if (editedRow != undefined) {
+    if (editedRow !== undefined) {
       let new_id = plan.addSchedule(editedRow.id);
       const initialRows: GridRowsProp = plan.getScheduleRows(); 
       setRows(initialRows);
@@ -107,7 +100,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     let oldRow = rows[i] as IScheduleRows;
     // end_timeとstay_minutesのどちらが更新されているかを確認し、
     // end_timeが更新されていたらend_timeからstay_minutesを算出してセットする
-    if (newRow.end_time != oldRow.end_time && newRow.stay_minutes == oldRow.stay_minutes) {
+    if (newRow.end_time !== oldRow.end_time && newRow.stay_minutes === oldRow.stay_minutes) {
       let stime = dayjs(newRow.start_time,"H:mm");
       let etime = dayjs(newRow.end_time,"H:mm");
       // etimeの方が遅ければ24時間経過と考える
@@ -229,7 +222,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     {
       field: 'name',
       headerName: '予定',
-      width: 160,
+      width: 220,
       editable: enable_editable,
       type: 'string',
       disableColumnMenu: true,
@@ -238,7 +231,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     {
       field: 'dest_id',
       headerName: '行先',
-      width: 150,
+      width: 200,
       editable: enable_editable,
       type: 'singleSelect',
       valueOptions: plan.getDestinationValueOptions(),
@@ -263,15 +256,6 @@ export function ScheduleGrid(props:ScheduleGridProps) {
       headerAlign: 'center',
       type: 'singleSelect',
       valueOptions: plan.getCurrencyValueOptions(),
-      disableColumnMenu: true,
-      sortable: false,
-    },
-    {
-      field: 'memo',
-      headerName: '備考',
-      width: 150,
-      editable: enable_editable,
-      type: 'string',
       disableColumnMenu: true,
       sortable: false,
     },

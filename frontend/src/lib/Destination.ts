@@ -1,10 +1,7 @@
-import dayjs, { Dayjs } from 'dayjs';
 import {
     DataJson,
     IDestination,
     IDestinationTable,
-    IScheduleNestedTable,
-    IValueOptions,
     INumberValueOptions,
 } from "../typings/data_json";
 import {
@@ -102,7 +99,7 @@ export class CDestination extends CBaseListItem implements IDestination {
     constructor(data?: IDestination) {
         // 最初にsuperを呼んでおく必要あり
         super({id:0});
-        if (data != undefined) {
+        if (data !== undefined) {
             this.id = data.id;
             this.type = data.type;
             this.name = data.name;
@@ -163,13 +160,13 @@ export class CDestination extends CBaseListItem implements IDestination {
      * 過去データとの互換性維持のため
      */
     private _fixUndefField() {
-        if (this.url2 == undefined || this.url2 == null) {
+        if (this.url2 === undefined || this.url2 === null) {
             this.url2 = "";
         }
-        if (this.map_url == undefined || this.map_url == null) {
+        if (this.map_url === undefined || this.map_url === null) {
             this.map_url = "";
         }
-        if (this.pay == undefined) {
+        if (this.pay === undefined) {
             this.pay = "Total";            
         }
     }

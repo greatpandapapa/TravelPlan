@@ -1,5 +1,4 @@
 import React from 'react';
-import '../App.css';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import TabContext from '@mui/lab/TabContext';
@@ -23,7 +22,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import GradingIcon from '@mui/icons-material/Grading';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import MyAppBar from "../component/MyAppBar";
 import BringItemPanel from './BringItemPanel';
 import ActionItemPanel from './ActionItemPanel';
@@ -43,14 +41,15 @@ function Main() {
 
   if (!loaded) {
     let from:string = state["from"];
-    if (from == "new") {
+    if (from === "new") {
       plan.loadTemplateData();
       setLoaded(true);
-    } else if (from == "file") {
+    } else if (from === "file") {
       const data = state["data"];
       plan.load((data as DataJson));
+      plan.modified(); // 変更なしでもSaveできるようにする
       setLoaded(true);
-    } else if (from == "server") {
+    } else if (from === "server") {
       let name:string = state["name"];
       API.loadData(name,(response)=>{
         plan.load(((response as unknown) as ILoadDataResponse).result.data as DataJson);

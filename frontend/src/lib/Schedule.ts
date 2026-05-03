@@ -1,16 +1,9 @@
 import dayjs, { Dayjs } from 'dayjs';
 import {
     DataJson,
-    IDestination,
     ISchedule,
     IScheduleRows,
-    IScheduleTable,
-    IValueOptions,
-    IPlan,
-    IDestinationTable,
-    IScheduleNestedTable,
 } from "../typings/data_json";
-import ja from 'dayjs/locale/ja';
 import {cache} from "./ChacheManger";
 
 /**
@@ -45,7 +38,7 @@ export class CScheduleList {
         let sc: CSchedule|null
         const sorted_idx = this._getSortedIndex();
         this.max_id = 0;
-        sorted_idx.map((idx)=>{
+        sorted_idx.forEach((idx)=>{
             sc = this.schedule[idx];
             if (this.max_id < sc.id) {
                 this.max_id = sc.id;
@@ -122,13 +115,11 @@ export class CScheduleList {
 
         let no:number = 1;
         let grp_id: number = 0;
-        let grp_head: boolean;
 
         let ddays:string[] = [];
 
         const sorted_idx = this._getSortedIndex();
         grp_id = 0;
-        grp_head = true;
         for(let i=0;i<sorted_idx.length;i++) {
             let idx:number = sorted_idx[i];
             sc = this.schedule[idx];
@@ -144,12 +135,12 @@ export class CScheduleList {
         for(let i = 0; i < rows.length; i++) {
             rows[i].dayn = ddate.format("YYYY-MM-DD(ddd)")
             // autoの時間計算（前）
-            if (i !=0 && rows[i].start_time_auto == "pre") {
+            if (i !==0 && rows[i].start_time_auto === "pre") {
                 rows[i].start_time = pre_start_time;
                 rows[i].grp_id = rows[i-1].grp_id;
             }
             // end_timeの設定
-            if (rows[i].start_time != "") {
+            if (rows[i].start_time !== "") {
                 let etime:Dayjs = dayjs(rows[i].start_time,"H:mm").add(rows[i].stay_minutes,"m");
                 let etime2:Dayjs = dayjs(rows[i].start_time,"H:mm");
                 rows[i].end_time = etime.format("H:mm");
@@ -169,7 +160,7 @@ export class CScheduleList {
             // １つ前の終了時間
             pre_start_time = rows[i].end_time;
             // 日付の加算
-            if (rows[i].type == "end") {
+            if (rows[i].type === "end") {
                 dayn++;
                 ddate = deparure_date.add(dayn,"d");
                 ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
@@ -178,13 +169,13 @@ export class CScheduleList {
         }
         // autoの時間計算(後)
         for(let i = rows.length-2; i > 0; i--) {
-            if (rows[i].start_time_auto == "post") {
+            if (rows[i].start_time_auto === "post") {
                 let st:(string|null) = rows[i+1].start_time;
                 rows[i].grp_id = rows[i+1].grp_id;
                 if (st != null) {
                     rows[i].end_time = st;
                 }
-                if (rows[i].end_time != "") {
+                if (rows[i].end_time !== "") {
                     let stime:Dayjs = dayjs(rows[i].end_time,"H:mm").subtract(rows[i].stay_minutes,"m");
                     // 時差（tz_ajust）の補正
                     let ajust:number|null = rows[i].tz_ajust;
@@ -200,7 +191,7 @@ export class CScheduleList {
         grp_id = 1;
         rows[0].grp_id = grp_id;
         for(let i = 1; i < rows.length; i++) {
-            if (pre_grp_id != rows[i].grp_id) {
+            if (pre_grp_id !== rows[i].grp_id) {
                 grp_id++;
                 pre_grp_id = rows[i].grp_id;
             }
@@ -235,7 +226,7 @@ export class CScheduleList {
      */
     private _searchStartID() {
         for (let sc of this.schedule) {
-            if (sc.pre_id == null) {
+            if (sc.pre_id === null) {
                 return sc.id;
             }
         }
@@ -291,10 +282,10 @@ export class CScheduleList {
      */
     public getGroupEndId(id:number):number {
         const idx = this._getIndexById(id);
-        if (idx == null) {
+        if (idx === null) {
             throw new Error("id not found:"+id);
         }
-        if (this.schedule[idx].start_time_auto == "pre") {
+        if (this.schedule[idx].start_time_auto === "pre") {
             return id;
         } else {
             return this._getGroupEndId(id);
@@ -302,11 +293,11 @@ export class CScheduleList {
     }
     private _getGroupEndId(id:number):number {
         const pre_idx = this._getIndexByPreId(id);
-        if (pre_idx == null) {
+        if (pre_idx === null) {
             // 最後のスケジュールなら
             return id;
         } else {
-            if (this.schedule[pre_idx].start_time_auto == "pre") {
+            if (this.schedule[pre_idx].start_time_auto === "pre") {
                 return this._getGroupEndId(this.schedule[pre_idx].id);
             } else {
                 // 次のスケジュールのstart_time_autoがfalseなら最後
@@ -360,7 +351,7 @@ export class CScheduleList {
     public getSchedule(id:number):ISchedule {
         // データの登録・更新
         const idx = this._getIndexById(id);
-        if (idx != null) {
+        if (idx !== null) {
             return this.schedule[idx];
         } else {
             return this.getNewSchedule();
@@ -376,7 +367,7 @@ export class CScheduleList {
         let idx:number|null;
         let data2: ISchedule = data as ISchedule;
 
-        if (data2.pre_id != null) {
+        if (data2.pre_id !== null) {
             idx = this._getIndexByPreId(data2.pre_id);
             if (idx != null) {
                 this.schedule[idx].pre_id = data2.id;                
@@ -385,7 +376,7 @@ export class CScheduleList {
 
         // データの登録・更新
         idx = this._getIndexById(data2.id);
-        if (idx == null) {
+        if (idx === null) {
             this.schedule.push(new CSchedule(data2));
         } else {
             this.schedule[idx].update(data2);
@@ -400,21 +391,21 @@ export class CScheduleList {
         let pre_id: number|null;
 
         // 最後の１件になったら削除できないようにする
-        if (this.schedule.length == 1) {
+        if (this.schedule.length === 1) {
             return;
         }
         // 削除するインデックス取得
         idx = this._getIndexById(id);
-        if (idx == null) {
+        if (idx === null) {
             throw new Error("can't get schedule by id:"+id);
         }
         pre_id = this.schedule[idx].pre_id;
         this.schedule.splice(idx, 1);
 
         // pre_idの連鎖を修正
-        if (pre_id != null) {
+        if (pre_id !== null) {
             idx = this._getIndexByPreId(id);
-            if (idx != null) {
+            if (idx !== null) {
                 this.schedule[idx].pre_id = pre_id;
             }
         }
@@ -436,7 +427,7 @@ export class CScheduleList {
     public moveSchedule(target_id:number,dest_id:number) {
 
         console.log("t:"+target_id,", d:"+dest_id);
-        if (target_id == dest_id) {
+        if (target_id === dest_id) {
             return;
         }
 
@@ -458,7 +449,7 @@ export class CScheduleList {
 
     private _printID() {
         const sorted_ids = this._getSortedIndex();
-        sorted_ids.map((idx)=>{
+        sorted_ids.forEach((idx)=>{
             console.log("ID:"+this.schedule[idx].id+", PID:"+this.schedule[idx].pre_id,", A:"+this.schedule[idx].start_time_auto);
         });
     }
@@ -493,7 +484,7 @@ export class CScheduleList {
         let next_idx = this._getIndexByPreId(grp_last_id)
         
         this._checkMaxLatestId();
-        if (head_idx != null && next_idx != null) {
+        if (head_idx !== null && next_idx !== null) {
             this.schedule[next_idx].pre_id = this.schedule[head_idx].pre_id;
             this.schedule[head_idx].pre_id = this.latest_id 
         }
@@ -550,16 +541,16 @@ export class CScheduleList {
         const target_last_id = this.getGroupEndId(target_id);
 //        console.log(target_last_id);
         // targetが最後でなければ何もしない
-        if (target_last_id != this.latest_id) {
+        if (target_last_id !== this.latest_id) {
             return;
         }
         
-        if (before == true) {
+        if (before === true) {
             // a=dest_idのpre_id              => target_idのpre_id
             // b=target_idのグループの最後のid => dest_idのpre_id
             const t_idx = this._getIndexById(target_id);
             const d_idx = this._getIndexById(dest_id);
-            if (t_idx != null && d_idx != null) {
+            if (t_idx !== null && d_idx !== null) {
                 const a_id = this.schedule[d_idx].pre_id;
                 const b_id = target_last_id;
                 this.schedule[t_idx].pre_id = a_id;
@@ -572,7 +563,7 @@ export class CScheduleList {
             const a_id = this.getGroupEndId(dest_id);
             const b_id = target_last_id;
             const d_idx = this._getIndexByPreId(a_id);
-            if (t_idx != null && d_idx != null) {
+            if (t_idx !== null && d_idx !== null) {
                 this.schedule[t_idx].pre_id = a_id;
                 this.schedule[d_idx].pre_id = b_id;
             }
@@ -632,7 +623,7 @@ export class CScheduleList {
             const a_id = this.schedule[d_idx].pre_id;
             const b_id = this.schedule[t_idx].pre_id;
             const c_id = this.getGroupEndId(target_id);
-            if (a_id != b_id && b_id != c_id && a_id != c_id) {
+            if (a_id !== b_id && b_id !== c_id && a_id !== c_id) {
                 this.schedule[t_idx].pre_id = a_id;
                 this.schedule[d_idx].pre_id = c_id
                 if (d2_idx != null) {
@@ -695,7 +686,7 @@ export class CScheduleList {
         let t2_idx:(number|null) = this._getIndexByPreId(target_id);
         let d2_idx:(number|null) = this._getIndexByPreId(dest_id);
 
-        if (t_idx != null && d2_idx != null) {
+        if (t_idx !== null && d2_idx !== null) {
             /*
             * a=dest_idのpre_id        => target_idのpre_id
             * b=target_idのpre_id      => target_idがpre_idに設定されているidのpre_id
@@ -704,7 +695,7 @@ export class CScheduleList {
             const a_id = dest_id;
             const b_id = target_id;
             const c_id = this.schedule[t_idx].pre_id;
-            if (a_id != b_id && b_id != c_id && a_id != c_id) {
+            if (a_id !== b_id && b_id !== c_id && a_id !== c_id) {
                 this.schedule[t_idx].pre_id = a_id;
                 this.schedule[d2_idx].pre_id = b_id
                 if (t2_idx != null) {
@@ -736,23 +727,23 @@ export class CScheduleList {
         let dest:number;
 
         // 同じなら0を返す
-        if (start_id == end_id) {
+        if (start_id === end_id) {
             return 0;
         }
 
         start_idx = this._getIndexById(start_id);
-        if (start_idx == null) {
+        if (start_idx === null) {
             throw new Error("can't get schedule by id:"+start_id);
         }
         pre_id = this.schedule[start_idx].pre_id;
         dest = -1;
         // start_idから先頭方向に探す
-        while(pre_id != null) {
+        while(pre_id !== null) {
             idx = this._getIndexById(pre_id);
-            if (idx == null) {
+            if (idx === null) {
                 throw new Error("can't get schedule by id:"+pre_id);
             }
-            if (end_id == this.schedule[idx].id) {
+            if (end_id === this.schedule[idx].id) {
                 return dest;
             }
             pre_id = this.schedule[idx].pre_id;
@@ -763,7 +754,7 @@ export class CScheduleList {
         dest = 1;
         while(idx != null) { 
             id = this.schedule[idx].id;
-            if (end_id == id) {
+            if (end_id === id) {
                 return dest;
             }
             idx = this._getIndexByPreId(id);
@@ -840,6 +831,9 @@ export class CSchedule {
         this.name =data.name;
         this.currency = data.currency;
         this.dest_id = data.dest_id;
+        if (this.dest_id === 0) {
+            this.dest_id = null;
+        }
         this.pre_id = data.pre_id;
         if (data.currency === undefined) {
             this.currency = "";
@@ -869,6 +863,9 @@ export class CSchedule {
         this.fee = data.fee;
         this.currency = data.currency;
         this.dest_id = data.dest_id;
+        if (this.dest_id === 0) {
+            this.dest_id = null;
+        }
         this.pre_id = data.pre_id;
         if (this.fee == null) {
             this.currency = "";

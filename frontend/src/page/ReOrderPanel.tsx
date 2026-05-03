@@ -3,7 +3,6 @@ import { plan } from '../lib/Plan';
 import {IScheduleTable,IScheduleNestedTable} from '../typings/data_json';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import { SlimTableCell } from '../component/CustomMui';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -33,15 +32,15 @@ import { CSS } from "@dnd-kit/utilities";
 import {getBgColor} from '../component/CustomMui';
 import DragHandleIcon from "@mui/icons-material/DragHandle"
 import {
-  DraggableAttributes,
   DraggableSyntheticListeners
 } from "@dnd-kit/core";
+import { Link } from '@mui/material';
 
 /**
  * スケジュール編集パネル
  */
 function ReOrderPanel() {
-  const [width, height] = useWindowSize();
+  const [, height] = useWindowSize(); // widthは使ってないので省略
   let initialRows = plan.getNestedTableRows(); 
   const [rows, setRows] = useState(initialRows);
 
@@ -100,15 +99,16 @@ function ReOrderPanel() {
         <TableHead>
           <TableRow>
             <SlimTableCell component="th"></SlimTableCell>
-            <SlimTableCell component="th">ID</SlimTableCell>
-            <SlimTableCell component="th">日付</SlimTableCell>
-            <SlimTableCell component="th">時間</SlimTableCell>
-            <SlimTableCell component="th">滞在</SlimTableCell>
-            <SlimTableCell component="th">タイプ</SlimTableCell>
-            <SlimTableCell component="th">予定</SlimTableCell>
-            <SlimTableCell component="th">住所</SlimTableCell>
-            <SlimTableCell component="th">予約</SlimTableCell>
-            <SlimTableCell component="th">情報源</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 20}}>ID</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 100}}>日付</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 30}}>時間</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 30}}>滞在</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 30}}>TZ</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 50}}>タイプ</SlimTableCell>
+            <SlimTableCell component="th" style={{maxWidth: 200}}>予定</SlimTableCell>
+            <SlimTableCell component="th" style={{maxWidth: 150}}>住所</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 50}}>予約</SlimTableCell>
+            <SlimTableCell component="th" style={{minWidth: 50}}>情報源</SlimTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -138,7 +138,7 @@ function ReOrderPanel() {
       setNodeRef,
       transform,
       transition,
-      isDragging
+      //isDragging
     } = useSortable({ id: props.grp_rows.head_id });
     const style = {
       transform: CSS.Transform.toString(transform),
@@ -196,7 +196,7 @@ function ReOrderPanel() {
       setNodeRef,
       transform,
       transition,
-      isDragging
+      //isDragging
     } = useSortable({ id: local_key });
     const style = {
       transform: CSS.Transform.toString(transform),
@@ -224,7 +224,7 @@ function ReOrderPanel() {
   const ScheduleSlimTableCells = ((props:ScheduleSlimTableCellsProps) => {
     return (
       <>
-        {props.grp_head == true ? (
+        {props.grp_head === true ? (
          <SlimTableCell rowSpan={props.grp_count} style={{verticalAlign:'top'}}>
             <DragHandleIcon {...props.listeners}/>
           </SlimTableCell>
@@ -233,19 +233,20 @@ function ReOrderPanel() {
         <SlimTableCell align="left">{props.row.dayn}</SlimTableCell>
         <SlimTableCell align="center">{props.row.start_time}-{props.row.end_time}</SlimTableCell>
         <SlimTableCell align="right">{props.row.stay_minutes}</SlimTableCell>
+        <SlimTableCell align="right">{props.row.tz_ajust}</SlimTableCell>
         <SlimTableCell align="left">{props.row.type_label}</SlimTableCell>
         <SlimTableCell align="left">
-          {props.row.destination.alert != "" && (<Typography sx={{color:"#FF0000"}}>★:{props.row.destination.alert}</Typography>)} 
+          {props.row.destination.alert !== "" && (<Typography sx={{color:"#FF0000"}}>★:{props.row.destination.alert}</Typography>)} 
           {props.row.name}
-          {(props.row.name=="") && props.row.destination.name}
-          {(props.row.name!="" && props.row.destination.name!="") && "("+props.row.destination.name+")"}
+          {(props.row.name === "") && props.row.destination.name}
+          {(props.row.name !== "" && props.row.destination.name !== "") && "("+props.row.destination.name+")"}
         </SlimTableCell>
         <SlimTableCell align="left">{props.row.destination.address}</SlimTableCell>
         <SlimTableCell align="center">
-          <a target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</a>
+          <Link target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</Link>
         </SlimTableCell>
         <SlimTableCell align="center">
-          <a target="_blank" href={props.row.destination.url}>{props.row.destination.source}</a>
+          <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
         </SlimTableCell>
       </>
     );

@@ -1,23 +1,13 @@
-import {useState,ChangeEvent,ReactElement,SyntheticEvent} from 'react';
+import {ChangeEvent,ReactElement} from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { plan } from '../lib/Plan';
-import AddIcon from '@mui/icons-material/Add';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
-import {useWindowSize} from '../lib/useWindowsSize';
-import { Link } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import AppBar from '@mui/material/AppBar';
 import MenuItem from '@mui/material/MenuItem';
 import { ISchedule } from '../typings/data_json';
-import {StripedDataGrid} from '../component/CustomMui';
 
 // Propsの型
 type EditScheduleModalProps = {
@@ -47,28 +37,23 @@ export function EditScheduleModal(props:EditScheduleModalProps) {
   };
 
   let autoOptions:ReactElement[]=[];
-  plan.getAutoValueOptions().map((opt)=>{
+  plan.getAutoValueOptions().forEach((opt)=>{
     autoOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
 
   let typeOptions:ReactElement[]=[];
-  plan.getTypeValueOptions().map((opt)=>{
+  plan.getTypeValueOptions().forEach((opt)=>{
     typeOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
 
   let currencyOptions:ReactElement[]=[];
-  plan.getCurrencyValueOptions().map((opt)=>{
+  plan.getCurrencyValueOptions().forEach((opt)=>{
     currencyOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
   let destinationOptions:ReactElement[]=[];
-  plan.getDestinationValueOptions().map((opt)=>{
+  plan.getDestinationValueOptions().forEach((opt)=>{
     destinationOptions.push(<MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>);
   });
-
-  interface IOptions {
-    value: string,
-    label: string
-  }
 
   return (
       <Modal

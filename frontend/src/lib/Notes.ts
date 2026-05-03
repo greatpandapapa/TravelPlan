@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from 'dayjs';
 import {
     DataJson,
     INote,
@@ -44,7 +43,7 @@ export class CNoteList extends CBaseList<CNote> {
             return [];
         }
         let notes:CNote[] = [];
-        index[sc_id].map((i)=>{
+        index[sc_id].forEach((i)=>{
             notes.push(this.list[i]);
         })
         return notes;
@@ -78,7 +77,7 @@ export class CNote extends CBaseListItem implements INote {
     constructor(data?: INote) {
         // 最初にsuperを呼んでおく必要あり
         super({id:0});
-        if (data != undefined) {
+        if (data !== undefined) {
             this.id = data.id;
             this.sc_id = data.sc_id;
             this.type = data.type;

@@ -1,15 +1,14 @@
 import {IScheduleRows,IScheduleTable} from "../typings/data_json";
-import dayjs, { Dayjs } from 'dayjs';
 
-const CC= {
-    SCHEDULE_INDEX:0,
-    SCHEDULE_PREINDEX:1,
-    SCHEDULE_SORTEDINDEX:2,
-    SCHEDULE_ROW:3,
-    SCHEDULE_DAYS:4,
-    SCHEDULE_TABLE:5,
+enum CC {
+    SCHEDULE_INDEX=0,
+    SCHEDULE_PREINDEX=1,
+    SCHEDULE_SORTEDINDEX=2,
+    SCHEDULE_ROW=3,
+    SCHEDULE_DAYS=4,
+    SCHEDULE_TABLE=5,
 }
-type CC = (typeof CC)[keyof typeof CC];
+//type CC = (typeof CC)[keyof typeof CC];
 
 export class CacheManager {
     private cache_Valid:boolean[] = [];

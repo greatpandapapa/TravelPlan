@@ -72,11 +72,11 @@ type ImageLinkProps = {
 };
 
 /**
- * 住所をGoogleMapのリンクにする
+ * 画像を埋め込む
  */
 export const ImageLink = ((props:ImageLinkProps)=>{
     let url = props.url;
-    return (<img  height="300" src={url} alt="image"/>);
+    return (<img  height="300" src={url} alt="User"/>);
 });
 
 type UrlLinkProps = {
@@ -84,7 +84,7 @@ type UrlLinkProps = {
 };
 
 /**
- * 住所をGoogleMapのリンクにする
+ * URLを埋め込む
  */
 export const UrlLink = ((props:UrlLinkProps)=>{
     return (<Link target="_blank" href={props.url}>{props.url}</Link>);

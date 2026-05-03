@@ -8,7 +8,6 @@ import {
     IReference,
     IBringItem,
     IActionItem,
-    IPlan,
     ISchedule,
     INumberValueOptions,
 } from "../typings/data_json";
@@ -92,14 +91,6 @@ export class CPlan {
     public total_fee: {[index: string]: number} = {}
     // 更新ありフラグ
     private modify:boolean = false;
-
-    /**
-     * コンストラクタ
-     * 
-     * @param data JSONデータ
-     */
-    constructor() {
-    }
 
     /**
      * テンプレートを読み込む
@@ -361,17 +352,17 @@ export class CPlan {
      */
     public static getOptionLabel(key:string, mode:string):string {
         let options:IValueOptions[];
-        if (mode == "type") {
+        if (mode === "type") {
             options  = (CPlan.type_options as unknown[]) as IValueOptions[];
-        } else if (mode == "currency") {
+        } else if (mode === "currency") {
             options  = (CPlan.currency_options as unknown[]) as IValueOptions[];
-        } else if (mode == "start_time_auto") {
+        } else if (mode === "start_time_auto") {
             options  = (CPlan.auto_options as unknown[]) as IValueOptions[];
         } else {
             options  = (CPlan.status_options as unknown[]) as IValueOptions[];
         }
         for (let row of options) {
-            if (row.value == key) {
+            if (row.value === key) {
                 return row.label;
             }
         }
@@ -431,8 +422,8 @@ export class CPlan {
     public getTableRowsADay(day:string):IScheduleTable[] {
         const rows:IScheduleTable[] = this.getTableRows();
         const rows2:IScheduleTable[] = [];
-        rows.map((row)=>{
-            if (row.dayn == day) {
+        rows.forEach((row)=>{
+            if (row.dayn === day) {
                 rows2.push({...row});
             }
         });
@@ -445,7 +436,7 @@ export class CPlan {
     public _getTableRows():IScheduleTable[] {
         let rows: IScheduleTable[] = [];
         let sc: IScheduleTable;
-        this.getScheduleRows().map((row)=>{
+        this.getScheduleRows().forEach((row)=>{
             sc = {...row,
                   destination: this.destinations.getNewTableRow(),
                   type_label: this.getTypeName(row.type),
@@ -471,7 +462,7 @@ export class CPlan {
             if (rows[i].dest_id != null) {
                 if (! dest_fee_sumed.includes(rows[i].dest_id)) {
                     // 個別なら人数分をかける
-                    if (rows[i].destination.pay == "Every" && plan.members !== null) {
+                    if (rows[i].destination.pay === "Every" && plan.members !== null) {
                         rows[i].destination.fee = rows[i].destination.fee * plan.members;
                     }
                     // スケジュールのfeeとマージ
@@ -496,13 +487,13 @@ export class CPlan {
     // 日本円に両替
     private _exchagneYen(fee:number,currency:string):number {
         let yen:number = 0;
-        if (currency == "Yen") {
+        if (currency === "Yen") {
             yen = fee;
-        } else if (currency == "Dollar") {
+        } else if (currency === "Dollar") {
             yen = fee * this.usd_rate;
-        } else if (currency == "Euro") {
+        } else if (currency === "Euro") {
             yen = fee * this.eur_rate;
-        } else if (currency == "Local") {
+        } else if (currency === "Local") {
             yen = fee * this.local_rate;
         }
         return yen;
@@ -515,16 +506,16 @@ export class CPlan {
      * 通貨が違う場合は日本円に変換して統合する
      */
     private _margeFee(sc:IScheduleTable):void {
-        if ((sc.fee == 0 || sc.fee == null) && sc.destination.fee != 0) {
+        if ((sc.fee === 0 || sc.fee == null) && sc.destination.fee !== 0) {
             // sc.feeをsc.destination.feeで上書き
             sc.fee = sc.destination.fee;
             sc.currency = sc.destination.currency;
-        } else if (sc.fee != 0 && sc.fee !== null && sc.destination.fee == 0) {
+        } else if (sc.fee !== 0 && sc.fee !== null && sc.destination.fee === 0) {
             // 何もしない
-        } else if (sc.fee != 0 && sc.fee !== null && sc.destination.fee != 0  && sc.destination.fee !== null) {
+        } else if (sc.fee !== 0 && sc.fee !== null && sc.destination.fee !== 0  && sc.destination.fee !== null) {
             // マージする
             // 通貨が同じ
-            if (sc.currency == sc.destination.currency) {
+            if (sc.currency === sc.destination.currency) {
                 console.log(sc);
                 sc.fee += sc.destination.fee;
             } else {
@@ -557,7 +548,7 @@ export class CPlan {
         let grp_head_id:number =  rows[0].id;
         let grp_rows:IScheduleTable[] = [];
         for(let i = 0; i < rows.length; i++) {
-            if (pre_grp_id != rows[i].grp_id) {
+            if (pre_grp_id !== rows[i].grp_id) {
                 nrows.push({id:pre_grp_id, count:grp_count, head_id:grp_head_id, rows:grp_rows});
                 grp_rows = [];
                 grp_rows.push(rows[i]);
@@ -775,7 +766,7 @@ class TableFilter {
     private _addRouteSearchLink() {
         // 最初と最後は見る必要ないのでループから外す
         for(let i=1;i<this.rows.length-1;i++) {
-            if (this.rows[i].type == "move" ) {
+            if (this.rows[i].type === "move" ) {
                 if (i-1 < 0 || i+1 >= this.rows.length) {
                     continue;
                 }
@@ -788,12 +779,12 @@ class TableFilter {
                         const to = matches[2].trim();
                         this._createYahooTrainURL(i,from,to);
                     }
-                } else if (this.rows[i-1].type == "station"  && this.rows[i+1].type == "station") {
+                } else if (this.rows[i-1].type === "station"  && this.rows[i+1].type === "station") {
                     // 駅名
                     const from = this.rows[i-1].name;
                     const to = this.rows[i+1].name;
                     this._createYahooTrainURL(i,from,to);
-                } else if (this.rows[i-1].destination.address != ""  && this.rows[i+1].destination.address != "") {
+                } else if (this.rows[i-1].destination.address !== ""  && this.rows[i+1].destination.address !== "") {
                     // GoogleMap
                     let from = this.rows[i-1].destination.address;
                     let to = this.rows[i+1].destination.address;
@@ -817,7 +808,7 @@ class TableFilter {
         const org = encodeURIComponent(from);
         const dest = encodeURIComponent(to);
         // 日付
-        const day = /(\d+)\-(\d+)\-(\d+)/.exec(this.rows[index].dayn);
+        const day = /(\d+)-(\d+)-(\d+)/.exec(this.rows[index].dayn);
         if (day == null) return;
         const y:string = day[1];
         const m:string = day[2];  // 0パディングする必要あるがもともとなってるから
@@ -825,7 +816,7 @@ class TableFilter {
         // 時間
         const st:(string|null) = this.rows[index].start_time;
         if (st == null) return;
-        const time = /(\d+)\:(\d)(\d)/.exec(st);
+        const time = /(\d+):(\d)(\d)/.exec(st);
         if (time == null) return;
         const hh:string = ('00'+Number(time[1])).slice(-2); // 0パディングする必要あり
         const m1:string = time[2];
@@ -858,13 +849,13 @@ class TableFilter {
         for(let i=0;i<this.rows.length;i++) {
             let wday = /\((.+)\)/.exec(this.rows[i].dayn);
             if (wday != null) {
-                if ((wday[1] == "月" && this.rows[i].destination.hd_mon) ||
-                    (wday[1] == "火" && this.rows[i].destination.hd_tue) ||
-                    (wday[1] == "水" && this.rows[i].destination.hd_wed) ||
-                    (wday[1] == "木" && this.rows[i].destination.hd_thu) ||
-                    (wday[1] == "金" && this.rows[i].destination.hd_fri) ||
-                    (wday[1] == "土" && this.rows[i].destination.hd_sat) ||
-                    (wday[1] == "日" && this.rows[i].destination.hd_sun)) {
+                if ((wday[1] === "月" && this.rows[i].destination.hd_mon) ||
+                    (wday[1] === "火" && this.rows[i].destination.hd_tue) ||
+                    (wday[1] === "水" && this.rows[i].destination.hd_wed) ||
+                    (wday[1] === "木" && this.rows[i].destination.hd_thu) ||
+                    (wday[1] === "金" && this.rows[i].destination.hd_fri) ||
+                    (wday[1] === "土" && this.rows[i].destination.hd_sat) ||
+                    (wday[1] === "日" && this.rows[i].destination.hd_sun)) {
                     this.rows[i].destination.alert = "定休日";
                 }
             }
@@ -878,7 +869,7 @@ class TableFilter {
     private _addMapLink() {
         // 最初と最後は見る必要ないのでループから外す
         for(let i=1;i<this.rows.length-1;i++) {
-            if (this.rows[i].destination.address != "") {
+            if (this.rows[i].destination.address !== "") {
                 let address = encodeURIComponent(this.rows[i].destination.address);
                 let url = "https://www.google.com/maps/place/"+address;
                 this.rows[i].destination.map_url = url;

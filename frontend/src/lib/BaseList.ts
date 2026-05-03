@@ -1,6 +1,4 @@
 import {
-    DataJson,
-    IReference,
     IBaseListItem
 } from "../typings/data_json";
 import {plan} from "../lib/Plan";
@@ -47,7 +45,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
      */
     protected _checkMaxLatestId() {
         this.max_id = 0;
-        this.list.map((item: T)=>{
+        this.list.forEach((item: T)=>{
             if (this.max_id < item.id) {
                 this.max_id = item.id;
             }
@@ -64,7 +62,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
     protected _getIndexById(id:number):number|null {
         let i = 0;
         for (let item of this.list) {
-            if (item.id == id) {
+            if (item.id === id) {
                 return i;
             }
             i++;
@@ -118,7 +116,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
 
         idx = this._getIndexById(id);
         if (idx == null) {
-            throw new Error("can't get destination by id:"+id);
+            throw new Error("can't get "+this.constructor.name+" by id:"+id);
         }
         this.list.splice(idx, 1);
         plan.modified();
@@ -135,7 +133,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
 
         idx = this._getIndexById(id);
         if (idx == null) {
-            throw new Error("can't get destination by id:"+id);
+            throw new Error("can't get "+this.constructor.name+" by id:"+id);
         }
         return this.list[idx];
     }
@@ -145,7 +143,7 @@ export abstract class CBaseList<T extends CBaseListItem>  {
      */
     public getSaveData():object[] {
         let rows:object[] = [];
-        this.list.map((item: T)=>{
+        this.list.forEach((item: T)=>{
             rows.push(item.getData());
         });
         return rows;

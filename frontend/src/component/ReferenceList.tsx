@@ -1,4 +1,4 @@
-import {useState,ChangeEvent,ReactElement,SyntheticEvent} from 'react';
+import {useState,ChangeEvent} from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -7,7 +7,6 @@ import { plan } from '../lib/Plan';
 import Modal from '@mui/material/Modal';
 import AppBar from '@mui/material/AppBar';
 import { IReference } from '../typings/data_json';
-import {useWindowSize} from '../lib/useWindowsSize';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
@@ -18,6 +17,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { CReference } from '../lib/Reference';
 import { SlimTableCell } from './CustomMui';
+import { Link } from '@mui/material';
 
 // Propsの型
 type EditreferenceModalProps = {
@@ -161,7 +161,7 @@ export function ReferenceList(props:ReferenceListProps) {
                     {rows.map((row) => (
                         <TableRow>
                             <SlimTableCell align="center" component="th">
-                                <a target="_blank" href={row.url}>{row.site}</a>
+                                <Link target="_blank" href={row.url}>{row.site}</Link>
                             </SlimTableCell>
                             <SlimTableCell align="left" component="th">{row.memo}</SlimTableCell>
                             {props.edit && (
