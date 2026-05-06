@@ -169,7 +169,7 @@ export class CPlan {
         }
         this.actionitems = new CActionItemList({...data,actionitem:actionitem});
         // statusはあとから追加したため無い場合は初期値を設定
-        if (!("status" in data)) {
+        if (data.plan.status === undefined) {
             this.status = CPlan.status_options[0].value;
         } else {
             this.status = data.plan.status;
