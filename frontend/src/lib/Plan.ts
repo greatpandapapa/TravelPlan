@@ -631,7 +631,7 @@ export class CPlan {
         rows.forEach((row)=>{
             let idx:number = types.indexOf(row.type);
             if (row.fee != null) {
-                fee_summary[idx].fees[row.currency] += row.fee;
+                fee_summary[idx].fees[row.currency] += Number(row.fee);
                 fee_summary[idx].total_yen += Number(this._exchagneYen(row.fee,row.currency));
             }
         });
