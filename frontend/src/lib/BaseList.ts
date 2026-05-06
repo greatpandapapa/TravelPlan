@@ -109,6 +109,19 @@ export abstract class CBaseList<T extends CBaseListItem>  {
     }
 
     /**
+     * IDが有効なIDがチェックする
+     * 
+     * @return true:有効なID,false:無効なID
+     */
+    public checkValidId(id:number):boolean {
+        if (this._getIndexById(id) === null) {
+            return false
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * IDを削除する
      */
     public delData(id:number) {

@@ -1,6 +1,6 @@
 {
   "name": "travelplan",
-  "version": "0.1.0",
+  "version": "1.1.4",
   "private": true,
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -29,6 +29,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
     "react-scripts": "^5.0.1",
+    "recharts": "^3.8.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -41,7 +42,8 @@
     "build:staging": "env-cmd -f .env.staging react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build",
     "build:local": "env-cmd -f .env.production.local react-scripts build",
-    "build:public": "env-cmd -f .env.production.public react-scripts build"
+    "build:public": "env-cmd -f .env.production.public react-scripts build",
+    "build:public2": "env-cmd -f .env.production.public2 react-scripts build"
   },
   "eslintConfig": {
     "extends": [

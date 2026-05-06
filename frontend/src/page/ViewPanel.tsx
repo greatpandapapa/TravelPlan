@@ -15,13 +15,14 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Link } from '@mui/material';
 import {EditScheduleModal} from './ScheduleModal';
+import { isBlank } from '../lib/Common';
 
 type ViewPanelProps = {
   printMode?:boolean;
 }
 
 /**
- * スケジュール編集パネル
+ * スケジュール参照パネル
  */
 function ViewPanel(props:ViewPanelProps) {
   const [, height] = useWindowSize(); // widthは使ってないので省略
@@ -75,9 +76,8 @@ function ViewPanel(props:ViewPanelProps) {
             <SlimTableCell align="center" component="th" style={{maxWidth: 200}}>予定</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{maxWidth: 150}}>住所</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{minWidth: 50}}>予約</SlimTableCell>
-            <SlimTableCell align="center" component="th" style={{minWidth: 50}}>情報源</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{minWidth: 80}}>料金</SlimTableCell>
-            <SlimTableCell align="center" component="th" style={{minWidth: 30}}>地図</SlimTableCell>
+            <SlimTableCell align="center" component="th" style={{minWidth: 50}}>Link</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{minWidth: 30}}>備考</SlimTableCell>
           </TableRow>
         </TableHead>
@@ -140,25 +140,28 @@ function ViewPanel(props:ViewPanelProps) {
         {(props.row.name !== "" && props.row.destination.name !== "") && "("+props.row.destination.name+")"}
       </SlimTableCell>
       <SlimTableCell align="left">
-        {(props.row.destination.address !== "") && (
+        {(! isBlank(props.row.destination.address)) && (
           <AddressMapLink address={props.row.destination.address}></AddressMapLink>
          )}       
       </SlimTableCell>
       <SlimTableCell align="center">
         <Link target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</Link>
       </SlimTableCell>
-      <SlimTableCell align="center">
-        <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
-      </SlimTableCell>
       <SlimTableCell align="right">
         {(props.row.fee !== 0 && props.row.fee !== null) && (props.row.fee.toLocaleString() + props.row.currency_label)}
       </SlimTableCell>
       <SlimTableCell align="center">
-        {(props.row.destination.map_url !== "") && (
+        <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
+        &nbsp;
+        {(! isBlank(props.row.destination.url2)) && (
+           <Link target="_blank" href={props.row.destination.url2}>参考</Link>
+          )}
+        &nbsp;
+        {(! isBlank(props.row.destination.map_url)) && (
            <Link target="_blank" href={props.row.destination.map_url}>地図</Link>
           )}
       </SlimTableCell>
-      <SlimTableCell align="left">{props.row.destination.memo}</SlimTableCell>
+      <SlimTableCell align="left">{props.row.destination.note}</SlimTableCell>
       </>
     );
   });
@@ -176,7 +179,7 @@ function ViewPanel(props:ViewPanelProps) {
             } else {
               return (<></>);
             }
-          })};
+          })}
           {(plan.total_fee["TOTAL_YEN"] > 0)? <Grid item xs={2} sx={{textAlign: "left"}}>総額:{plan.total_fee["TOTAL_YEN"].toLocaleString()}円</Grid>:""}
         </Grid>
         </Box>

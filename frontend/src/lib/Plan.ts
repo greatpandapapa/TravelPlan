@@ -10,6 +10,8 @@ import {
     IActionItem,
     ISchedule,
     INumberValueOptions,
+    IFeeSummary,
+    ITimeSummary,
 } from "../typings/data_json";
 import jsondata from "./_template.json"
 import ja from 'dayjs/locale/ja';
@@ -444,7 +446,11 @@ export class CPlan {
                   currency_label: "",
                 };
             if (row.dest_id != null) {
-                sc.destination = {...this.destinations.getDestinationTableRow(row.dest_id)};
+                if (this.destinations.checkValidId(row.dest_id)) {
+                    sc.destination = {...this.destinations.getDestinationTableRow(row.dest_id)};
+                } else {
+                    row.dest_id = null;
+                }
             }
             rows.push(sc);
         });
@@ -516,7 +522,7 @@ export class CPlan {
             // マージする
             // 通貨が同じ
             if (sc.currency === sc.destination.currency) {
-                console.log(sc);
+//                console.log(sc);
                 sc.fee += sc.destination.fee;
             } else {
                 // 円換算してマージ
@@ -602,7 +608,58 @@ export class CPlan {
         }
         return data;
     }
-    
+
+    /**
+     * 費用のサマリを取得する
+     */
+    public getFeeSummary():IFeeSummary[] {
+        let currency_options:IValueOptions[] = this.getCurrencyValueOptions();
+  
+        let type_options:IValueOptions[] = this.getTypeValueOptions();
+        let types:string[] = [];
+        let fee_summary: IFeeSummary[] = [];
+        type_options.forEach((type)=>{
+            types.push(type.value);
+            let fees: {[index: string]: number} = {};
+            currency_options.forEach((options)=>{
+                fees[options.value] = 0;
+            });
+            fee_summary.push({type:type.value,type_label:type.label,fees:fees,total_yen:0});
+        });
+        
+        let rows:IScheduleTable[] = this.getTableRows(); 
+        rows.forEach((row)=>{
+            let idx:number = types.indexOf(row.type);
+            if (row.fee != null) {
+                fee_summary[idx].fees[row.currency] += row.fee;
+                fee_summary[idx].total_yen += Number(this._exchagneYen(row.fee,row.currency));
+            }
+        });
+        return fee_summary;
+    }
+
+    /**
+     * 所要時間のサマリを取得する
+     */
+    public getTimeSummary():ITimeSummary[] {
+        let type_options:IValueOptions[] = this.getTypeValueOptions();
+        let types:string[] = [];
+        let time_summary: ITimeSummary[] = [];
+        type_options.forEach((type)=>{
+            types.push(type.value);
+            time_summary.push({type:type.value,type_label:type.label,time:0});
+        });
+        
+        let rows:IScheduleTable[] = this.getTableRows(); 
+        rows.forEach((row)=>{
+            let idx:number = types.indexOf(row.type);
+            if (row.fee != null) {
+                time_summary[idx].time += row.stay_minutes;
+            }
+        });
+        return time_summary;
+    }
+
     /**
      * Revを上げる
      */

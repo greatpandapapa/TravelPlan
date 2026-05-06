@@ -63,7 +63,7 @@ export function DestinationGrid(props:DestinationGridProps) {
     { 
       field: 'id', 
       headerName: 'ID', 
-      width: 80, 
+      width: 50, 
       editable: false },
     {
       field: 'type',
@@ -252,7 +252,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 620,
-    height: 560,
+    height: 590,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 12,
@@ -393,12 +393,20 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                <TextField id="memo" name="memo" label="備考" size="small" sx={{width:600}} multiline rows={2}
+                <TextField id="note" name="note" label="備考" size="small" sx={{width:600}}
+                value={props.destination.note}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  props.updateForm({...props.destination,note:event.target.value});
+                }}>
+                </TextField>
+              <Grid item xs={12}>
+                <TextField id="memo" name="memo" label="メモ" size="small" sx={{width:600}} multiline rows={2}
                 value={props.destination.memo}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,memo:event.target.value});
                 }}>
                 </TextField>
+              </Grid>
               </Grid>
               <Grid item xs={2}>
               <Typography>定休日</Typography> 
@@ -495,7 +503,7 @@ export function DestinationPanel() {
 
   return (
     <div>
-      <Box sx={{display: 'flex',flexDirection: 'row',m:0, p:0,marginY: "10px" }}>
+      <Box sx={{display: 'flex',flexDirection: 'row',m:0, p:0,marginY: "5px" }}>
         <Box sx={{m:0, p:0}}>
         <Button onClick={addClickHandler} fullWidth><AddIcon></AddIcon>追加</Button>
         </Box>

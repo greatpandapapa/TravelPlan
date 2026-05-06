@@ -224,7 +224,7 @@ export function BringItemPanel() {
 
   return (
     <div>
-      <Box sx={{display: 'flex',flexDirection: 'row',m:0, p:0,marginY: "10px" }}>
+      <Box sx={{display: 'flex',flexDirection: 'row',m:0, p:0,marginY: "5px" }}>
         <Box sx={{m:0, p:0}}>
         <Button onClick={addClickHandler} fullWidth><AddIcon></AddIcon>追加</Button>
         </Box>

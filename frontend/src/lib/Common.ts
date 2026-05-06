@@ -22,8 +22,18 @@ export function isInvalidDate(date:Date):boolean {
 
 // カラーパレットから色を取得
 //const colorindex:string[] = ["#CCFFCC","#CCFFFF","#CCCCFF","#FFCCFF","	#FFCCCC","#CCCC99","#99CC99","#99CCCC","#9999CC","#CC99CC","#CC9999"];
-const colorindex:string[] = ['#e0ffff','#f0f8ff','#e6e6fa','#ffffe0','#fff0f5','#fce1fc','#cfffd4','#afeeee'];
+export const colorindex:string[] = ['#e0ffff','#f0f8ff','#e6e6fa','#ffffe0','#fff0f5','#fce1fc','#cfffd4','#afeeee'];
 export function getColor(index:number):string {
     return colorindex[index % colorindex.length];
 }
 
+/**
+ * 値が空文字列、NULL、undefinedならtrue
+ */
+export function isBlank(value:string|number|null|undefined):boolean {
+    if (value === "" || value === 0 || value === null || value === undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}

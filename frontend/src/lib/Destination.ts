@@ -88,6 +88,7 @@ export class CDestination extends CBaseListItem implements IDestination {
     url2: string = "";
     map_url: string = "";
     memo: string = "";
+    note: string = "";
     hd_sun: boolean = false;
     hd_mon: boolean = false;
     hd_tue: boolean = false;
@@ -116,6 +117,7 @@ export class CDestination extends CBaseListItem implements IDestination {
             this.url2 = data.url2;
             this.map_url = data.map_url;
             this.memo = data.memo;
+            this.note = data.note;
             this.hd_sun = data.hd_sun;
             this.hd_mon = data.hd_mon;
             this.hd_tue = data.hd_tue;
@@ -146,6 +148,7 @@ export class CDestination extends CBaseListItem implements IDestination {
         this.url2 = data.url2;
         this.map_url = data.map_url;
         this.memo = data.memo;
+        this.note = data.note;
         this.hd_sun = data.hd_sun;
         this.hd_mon = data.hd_mon;
         this.hd_tue = data.hd_tue;

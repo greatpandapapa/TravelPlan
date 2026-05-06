@@ -20,6 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import {useWindowSize} from '../lib/useWindowsSize';
 import {getColor} from '../lib/Common';
 import CreateIcon from '@mui/icons-material/Create';
+import { isBlank } from '../lib/Common';
 
 type GuidePanelProps = {
 }
@@ -121,7 +122,7 @@ function GuideViewDetail(props:GuideViewRowProps) {
                     {(props.row.name !== "" && props.row.destination.name !== "") && props.row.name + "("+props.row.destination.name+")"}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.address !== "") && (
+                    {(! isBlank(props.row.destination.address)) && (
                     <Box>住所:<AddressMapLink address={props.row.destination.address}></AddressMapLink></Box>
                     )}
                 </Box>
@@ -129,22 +130,22 @@ function GuideViewDetail(props:GuideViewRowProps) {
                     {(props.row.fee !== 0 && props.row.fee !== null) && ("予算:"+props.row.fee.toLocaleString() + props.row.currency_label)}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.reservation_url !== "") && (
-                        <Box>予約:<Link target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</Link></Box>
+                    {(! isBlank(props.row.destination.reservation_url)) && (
+                        <Box>予約:<Link target="_blank" href={props.row.destination.reservation_url}>{isBlank(props.row.destination.reservation) ? props.row.destination.reservation_site:props.row.destination.reservation}</Link></Box>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.url !== "") && (
+                    {(! isBlank(props.row.destination.url)) && (
                         <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.url2 !== "") && (
+                    {(! isBlank(props.row.destination.url2)) && (
                         <Link target="_blank" href={props.row.destination.url2}>参考</Link>
                     )}
                 </Box>
                 <Box sx={sx}>
-                    {(props.row.destination.map_url !== "") && (
+                    {(! isBlank(props.row.destination.map_url)) && (
                         <Link target="_blank" href={props.row.destination.map_url}>地図</Link>
                     )}
                 </Box>

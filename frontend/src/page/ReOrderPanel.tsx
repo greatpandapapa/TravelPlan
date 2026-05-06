@@ -253,7 +253,7 @@ function ReOrderPanel() {
   });
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', marginY: "10px" }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', marginY: "5px" }}>
        {ReOrderScheduleTable()}
     </Paper>
   );

@@ -52,6 +52,7 @@ export interface IDestination extends IBaseListItem {
     url2: string;
     map_url: string;
     memo: string;
+    note: string;
     hd_sun: boolean;
     hd_mon: boolean;
     hd_tue: boolean;
@@ -134,4 +135,17 @@ export interface INote extends IBaseListItem {
     sc_id: number;
     type: string;
     contents: string;
+}
+
+export interface IFeeSummary {
+    type: string;
+    type_label: string;
+    fees:{[index: string]: number};
+    total_yen: number;
+}
+
+export interface ITimeSummary {
+    type: string;
+    type_label: string;
+    time: number;
 }

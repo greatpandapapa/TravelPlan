@@ -630,7 +630,7 @@ export class CScheduleList {
                     this.schedule[d2_idx].pre_id = b_id;
                 }
             } else {
-                console.log("a="+a_id,",b="+b_id+",c="+c_id);
+                //console.log("a="+a_id,",b="+b_id+",c="+c_id);
             }
         }
     }
