@@ -10,13 +10,14 @@ import { isMobile } from "react-device-detect";
 import Load from './page/Load';
 import Main from './page/Main';
 import Print from './page/Print';
+import {config} from "./lib/Config";
 
 dayjs.locale("ja_JP");
 
 function App() {
   const theme = createTheme({
     typography: {
-      fontSize: 14,
+      fontSize: config.fontsize,
     },
     spacing: 4,
     mixins: {
@@ -24,6 +25,15 @@ function App() {
         '@media (min-width: 600px)': {
           minHeight: isMobile ? '32px':'64px',
        },
+      },
+    },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 768,
+        lg: 1025,
+        xl: 1536,
       },
     },
   });

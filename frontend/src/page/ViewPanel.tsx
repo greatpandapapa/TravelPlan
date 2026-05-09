@@ -16,6 +16,8 @@ import Grid from '@mui/material/Grid';
 import { Link } from '@mui/material';
 import {EditScheduleModal} from './ScheduleModal';
 import { isBlank } from '../lib/Common';
+import {cmNum} from '../lib/Common';
+import {isMobile} from "react-device-detect";
 
 type ViewPanelProps = {
   printMode?:boolean;
@@ -66,8 +68,8 @@ function ViewPanel(props:ViewPanelProps) {
       <Table sx={{ minWidth: 650,padding: '1px 1px' }} stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <SlimTableCell align="center" component="th" style={{minWidth: 20}}>No</SlimTableCell>
-            <SlimTableCell align="center" component="th" style={{minWidth: 100}}>日付</SlimTableCell>
+            {isMobile ? "":<SlimTableCell align="center" component="th" style={{minWidth: 20}}>No</SlimTableCell>}
+            <SlimTableCell align="center" component="th" style={{minWidth: cmNum(100,60)}}>日付</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{minWidth: 30}}>開始</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{minWidth: 30}}>終了</SlimTableCell>
             <SlimTableCell align="center" component="th" style={{minWidth: 30}}>滞在</SlimTableCell>
@@ -118,7 +120,7 @@ function ViewPanel(props:ViewPanelProps) {
   const ScheduleSlimTableCells = ((props:ScheduleTableRowProps) => {
     return (
       <>
-      <SlimTableCell align="center">{props.row.no}</SlimTableCell>
+      {isMobile ? "":<SlimTableCell align="center">{props.row.no}</SlimTableCell>}
       <SlimTableCell align="left">
         {props.row.dayn !== props.pre_date && <>{props.row.dayn}</>}
       </SlimTableCell>
@@ -169,19 +171,20 @@ function ViewPanel(props:ViewPanelProps) {
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden', margin: "0px" }}>
         <Box fontSize={16}>
+        {isMobile ? "":
         <Grid container spacing={1}>
           <Grid item xs="auto">日程：</Grid>
-          <Grid item xs={3} sx={{textAlign: "left"}}>{plan.geTerm()}</Grid>
+          <Grid item xs={2} sx={{textAlign: "left"}}>{plan.geTerm()}</Grid>
           <Grid item xs="auto">予算：</Grid>
           {CPlan.currency_options.map((cc)=>{
             if (plan.total_fee[cc.value] > 0) {
-              return (<Grid item xs={1} sx={{textAlign: "left"}}>{plan.total_fee[cc.value].toLocaleString()}{cc.label}</Grid>);
+              return (<Grid item sx={{textAlign: "left"}}>{plan.total_fee[cc.value].toLocaleString()}{cc.label}</Grid>);
             } else {
               return (<></>);
             }
           })}
           {(plan.total_fee["TOTAL_YEN"] > 0)? <Grid item xs={2} sx={{textAlign: "left"}}>総額:{plan.total_fee["TOTAL_YEN"].toLocaleString()}円</Grid>:""}
-        </Grid>
+        </Grid>}
         </Box>
         {ScheduleTable(props)}
         <EditScheduleModal 

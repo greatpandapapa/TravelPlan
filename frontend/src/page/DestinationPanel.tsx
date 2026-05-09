@@ -25,6 +25,7 @@ import AppBar from '@mui/material/AppBar';
 import MenuItem from '@mui/material/MenuItem';
 import { IDestination } from '../typings/data_json';
 import {StripedDataGrid} from '../component/CustomMui';
+import {cmText,cmNum,cmGridCol} from '../lib/Common';
 
 // Propsの型
 type DestinationGridProps = {
@@ -59,12 +60,16 @@ export function DestinationGrid(props:DestinationGridProps) {
     handleClose();
   };
 
-  const columns: GridColDef[] = [
+  // モバイルで有効なフィールド
+  const enable_mobile_fields: string[] = ["name",'url','url2','map_url','actions'];
+  // 列の定義
+  const full_columns: GridColDef[] = [
     { 
       field: 'id', 
       headerName: 'ID', 
       width: 50, 
-      editable: false },
+      editable: false 
+    },
     {
       field: 'type',
       headerName: '種類',
@@ -76,9 +81,10 @@ export function DestinationGrid(props:DestinationGridProps) {
       field: 'name',
       headerName: '名前',
       type: 'string',
-      width: 250,
+      width: cmNum(250,170),
       align: 'left',
       headerAlign: 'left',
+      disableColumnMenu: true,
     },
     {
       field: 'address',
@@ -126,11 +132,12 @@ export function DestinationGrid(props:DestinationGridProps) {
     },
     {
       field: 'url',
-      headerName: '情報源',
+      headerName: cmText('情報源','情報'),
       type: 'string',
-      width: 120,
+      width: cmNum(120,70),
       align: 'center',
       headerAlign: 'center',
+      disableColumnMenu: true,
       renderCell: ({id}) => {
         const row = rows.find(row => row.id === id);
         if (row === undefined || row.url === "") {
@@ -148,9 +155,10 @@ export function DestinationGrid(props:DestinationGridProps) {
       field: 'url2',
       headerName: '参考',
       type: 'string',
-      width: 80,
+      width: cmNum(80,70),
       align: 'center',
       headerAlign: 'center',
+      disableColumnMenu: true,
       renderCell: (params) => {
         return (
           ((params.value !== "")) && (
@@ -163,9 +171,10 @@ export function DestinationGrid(props:DestinationGridProps) {
       field: 'map_url',
       headerName: '地図',
       type: 'string',
-      width: 80,
+      width: cmNum(80,70),
       align: 'center',
       headerAlign: 'center',
+      disableColumnMenu: true,
       renderCell: (params) => {
         return (
           ((params.value !== "")) && (
@@ -202,6 +211,9 @@ export function DestinationGrid(props:DestinationGridProps) {
     },
   ];
 
+  // 列の定義を代入
+  let columns: GridColDef[] = cmGridCol(full_columns,enable_mobile_fields);
+
   return (
     <Box
       sx={{
@@ -232,6 +244,7 @@ export function DestinationGrid(props:DestinationGridProps) {
   );
 }
 
+
 // Propsの型
 type EditDestinationGridProps = {
   open: boolean;
@@ -251,8 +264,9 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 620,
-    height: 590,
+    maxWidth: 620,
+    width: '90%',
+    height: cmNum(590,670),
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 12,
@@ -281,7 +295,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 登録
               </AppBar>
               <Grid item xs={12}>
-                <TextField id="type" name="type" label="タイプ" size="small" select sx={{width:200}} value={props.destination.type}
+                <TextField id="type" name="type" label="タイプ" size="small" select sx={{width:'100%'}} value={props.destination.type}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,type:event.target.value});
                 }}>
@@ -289,21 +303,21 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                <TextField id="name" name="name" label="名称" size="small" sx={{width:600}} value={props.destination.name}
+                <TextField id="name" name="name" label="名称" size="small" sx={{width:'100%'}} value={props.destination.name}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,name:event.target.value});
                 }}>
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                <TextField id="address" name="address" label="住所" size="small" sx={{width:600}} value={props.destination.address}
+                <TextField id="address" name="address" label="住所" size="small" sx={{width:'100%'}} value={props.destination.address}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,address:event.target.value});
                 }}>
                 </TextField>
               </Grid>
               <Grid item xs={6}>
-                <TextField id="tel_number" name="tel_number" label="TEL" size="small" sx={{width:300}}
+                <TextField id="tel_number" name="tel_number" label="TEL" size="small" sx={{width:'100%'}}
                 value={props.destination.tel_number}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,tel_number:event.target.value});
@@ -311,7 +325,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={6}>
-                <TextField id="reservation" name="reservation" label="予約番号" size="small" sx={{width:300}}
+                <TextField id="reservation" name="reservation" label="予約番号" size="small" sx={{width:'100%'}}
                 value={props.destination.reservation}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,reservation:event.target.value});
@@ -327,7 +341,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
                 </Grid>
                 <Grid item xs={9}>
-                <TextField id="reservation_url" name="reservation_url" label="予約URL" size="small" sx={{width:450}} type="url"
+                <TextField id="reservation_url" name="reservation_url" label="予約URL" size="small" sx={{width:'100%'}} type="url"
                 value={props.destination.reservation_url}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,reservation_url:event.target.value});
@@ -343,7 +357,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={4}>
-                <TextField id="currency" name="currency" label="通貨" size="small" sx={{width:200}}
+                <TextField id="currency" name="currency" label="通貨" size="small" sx={{width:'100%'}}
                   value={props.destination.currency} select
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     props.updateForm({...props.destination,currency:event.target.value});
@@ -352,7 +366,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={4}>
-                <TextField id="pay" name="pay" label="支払い" size="small" sx={{width:100}}
+                <TextField id="pay" name="pay" label="支払い" size="small" sx={{width:'100%'}}
                   value={props.destination.pay} select
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     props.updateForm({...props.destination,pay:event.target.value});
@@ -369,7 +383,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={9}>
-                <TextField id="url" name="url" label="情報源URL" size="small" sx={{width:450}} type="url"
+                <TextField id="url" name="url" label="情報源URL" size="small" sx={{width:'100%'}} type="url"
                   value={props.destination.url}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     props.updateForm({...props.destination,url:event.target.value});
@@ -377,7 +391,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                <TextField id="url2" name="url2" label="参考URL" size="small" sx={{width:600}}
+                <TextField id="url2" name="url2" label="参考URL" size="small" sx={{width:'100%'}}
                 value={props.destination.url2}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,url2:event.target.value});
@@ -385,7 +399,7 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                <TextField id="map_url" name="map_url" label="地図URL" size="small" sx={{width:600}}
+                <TextField id="map_url" name="map_url" label="地図URL" size="small" sx={{width:'100%'}}
                 value={props.destination.map_url}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,map_url:event.target.value});
@@ -393,14 +407,14 @@ export function EditDestinationModal(props:EditDestinationGridProps) {
                 </TextField>
               </Grid>
               <Grid item xs={12}>
-                <TextField id="note" name="note" label="備考" size="small" sx={{width:600}}
+                <TextField id="note" name="note" label="備考" size="small" sx={{width:'100%'}}
                 value={props.destination.note}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,note:event.target.value});
                 }}>
                 </TextField>
               <Grid item xs={12}>
-                <TextField id="memo" name="memo" label="メモ" size="small" sx={{width:600}} multiline rows={2}
+                <TextField id="memo" name="memo" label="メモ" size="small" sx={{width:'100%'}} multiline rows={2}
                 value={props.destination.memo}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.destination,memo:event.target.value});

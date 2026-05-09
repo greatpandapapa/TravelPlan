@@ -18,6 +18,7 @@ import TableRow from '@mui/material/TableRow';
 import { CReference } from '../lib/Reference';
 import { SlimTableCell } from './CustomMui';
 import { Link } from '@mui/material';
+import {cmNum} from '../lib/Common';
 
 // Propsの型
 type EditreferenceModalProps = {
@@ -36,8 +37,8 @@ export function EditreferenceModal(props:EditreferenceModalProps) {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 750,
-        height: 220,
+        width: '80%',
+        height: cmNum(210,250),
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 12,
@@ -63,7 +64,7 @@ export function EditreferenceModal(props:EditreferenceModalProps) {
                         サイト
                     </Grid>
                     <Grid item xs={10}>
-                        <TextField id="site" name="site" size="small" sx={{width:300}} value={formdata.site}
+                        <TextField id="site" name="site" size="small" sx={{minWidth:'60%'}} value={formdata.site}
                             onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                 setFormData({...formdata,site:event.target.value});
                             }}>
@@ -73,7 +74,7 @@ export function EditreferenceModal(props:EditreferenceModalProps) {
                         URL
                     </Grid>
                     <Grid item xs={10}>
-                        <TextField id="url" name="url" size="small" sx={{width:600}} value={formdata.url}
+                        <TextField id="url" name="url" size="small" sx={{minWidth:'90%'}} value={formdata.url}
                             onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                 setFormData({...formdata,url:event.target.value});
                             }}>
@@ -83,7 +84,7 @@ export function EditreferenceModal(props:EditreferenceModalProps) {
                         メモ
                     </Grid>
                     <Grid item xs={10}>
-                        <TextField id="memo" name="memo" size="small" sx={{width:600}} value={formdata.memo} multiline rows={2}
+                        <TextField id="memo" name="memo" size="small" sx={{minWidth:'90%'}} value={formdata.memo} multiline rows={2}
                             onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                 setFormData({...formdata,memo:event.target.value});
                             }}>
@@ -133,7 +134,7 @@ export function ReferenceList(props:ReferenceListProps) {
     };
 
     return (
-        <Box width={720} style={{padding:5,border:1,borderColor:'primary.main'}}>
+        <Box sx={{minWidth:450}} style={{padding:5,border:1,borderColor:'primary.main'}}>
             <EditreferenceModal 
                 open={open}
                 saveData={saveData}
@@ -149,7 +150,7 @@ export function ReferenceList(props:ReferenceListProps) {
                 }}>( + )</span>)}
             </Box>
             <TableContainer>
-                <Table sx={{ minWidth: 600,padding: '1px 1px' }} stickyHeader aria-label="sticky table">
+                <Table sx={{ minWidth:450,padding: '1px 1px' }} stickyHeader aria-label="sticky table">
                     <TableHead>
                     <TableRow>
                         <SlimTableCell align="center" style={{width: '30%'}} component="th">サイト</SlimTableCell>

@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import AppBar from '@mui/material/AppBar';
 import MenuItem from '@mui/material/MenuItem';
 import { ISchedule } from '../typings/data_json';
+import {cmNum} from '../lib/Common';
 
 // Propsの型
 type EditScheduleModalProps = {
@@ -28,7 +29,8 @@ export function EditScheduleModal(props:EditScheduleModalProps) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 620,
+    maxWidth: 620,
+    width: '93%',
     height: 200,
     bgcolor: 'background.paper',
     border: '2px solid #000',
@@ -66,7 +68,7 @@ export function EditScheduleModal(props:EditScheduleModalProps) {
                 予定
               </AppBar>
               <Grid item xs={2}>
-                <TextField id="type" name="start_time_auto" label="連結" size="small" select sx={{width:100}} value={props.schedule.start_time_auto}
+                <TextField id="type" name="start_time_auto" label="連結" size="small" select sx={{width:'100%'}} value={props.schedule.start_time_auto}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,start_time_auto:event.target.value});
                 }}>
@@ -74,28 +76,28 @@ export function EditScheduleModal(props:EditScheduleModalProps) {
                 </TextField>
               </Grid>
               <Grid item xs={3}>
-                <TextField id="name" name="start_time" label="開始時間" size="small" sx={{width:150}} value={props.schedule.start_time}
+                <TextField id="name" name="start_time" label="開始時間" size="small" sx={{width:'100%'}} value={props.schedule.start_time}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,start_time:event.target.value});
                 }}>
                 </TextField>
               </Grid>
               <Grid item xs={3}>
-                <TextField id="name" name="tay_minutes" label="滞在時間" size="small" type="number" sx={{width:150}} value={props.schedule.stay_minutes}
+                <TextField id="name" name="tay_minutes" label="滞在時間" size="small" type="number" sx={{width:'100%'}} value={props.schedule.stay_minutes}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,stay_minutes:Number(event.target.value)});
                 }}>
                 </TextField>
               </Grid>
               <Grid item xs={2}>
-                <TextField id="name" name="tz_ajust" label="TZ" size="small" type="number" sx={{width:100}} value={props.schedule.tz_ajust}
+                <TextField id="name" name="tz_ajust" label="TZ" size="small" type="number" sx={{width:'100%'}} value={props.schedule.tz_ajust}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,tz_ajust:Number(event.target.value)});
                 }}>
                 </TextField>
               </Grid>
               <Grid item xs={2}>
-                <TextField id="type" name="type" label="タイプ" size="small" select sx={{width:100}} value={props.schedule.type}
+                <TextField id="type" name="type" label="タイプ" size="small" select sx={{width:'100%'}} value={props.schedule.type}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,type:event.target.value});
                 }}>
@@ -103,14 +105,14 @@ export function EditScheduleModal(props:EditScheduleModalProps) {
                 </TextField>
               </Grid>
               <Grid item xs={8}>
-                <TextField id="name" name="name" label="名称" size="small" sx={{width:400}} value={props.schedule.name}
+                <TextField id="name" name="name" label="名称" size="small" sx={{width:'100%'}} value={props.schedule.name}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,name:event.target.value});
                 }}>
                 </TextField>
               </Grid>
               <Grid item xs={4}>
-                <TextField id="type" name="type" label="行先" size="small" select sx={{width:200}} value={props.schedule.dest_id}
+                <TextField id="type" name="type" label="行先" size="small" select sx={{width:'100%'}} value={props.schedule.dest_id}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   props.updateForm({...props.schedule,dest_id:Number(event.target.value)});
                 }}>
@@ -126,7 +128,7 @@ export function EditScheduleModal(props:EditScheduleModalProps) {
                 </TextField>
               </Grid>
               <Grid item xs={2}>
-                <TextField id="currency" name="currency" label="通貨" size="small" sx={{width:200}}
+                <TextField id="currency" name="currency" label="通貨" size="small" sx={{width:'100%'}}
                   value={props.schedule.currency} select
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     props.updateForm({...props.schedule,currency:event.target.value});

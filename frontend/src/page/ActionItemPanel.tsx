@@ -21,6 +21,7 @@ import {
   DataGridProps
 } from '@mui/x-data-grid';
 import {StripedGrid} from '../component/CustomMui';
+import {cmNum,cmGridCol} from '../lib/Common';
 
 /** doneがチェックされていば背景色変更 */
 export function CheckedStripedDataGrid(props:DataGridProps) {  
@@ -100,7 +101,10 @@ export function ActionItemGrid(props:ActionItemGridProps) {
   };
 
 
-  const columns: GridColDef[] = [
+  // モバイルで有効なフィールド
+  const enable_mobile_fields: string[] = ['name','done','actions'];
+  // 列の定義
+  const full_columns: GridColDef[] = [
     { 
       field: 'id', 
       headerName: 'ID', 
@@ -111,7 +115,7 @@ export function ActionItemGrid(props:ActionItemGridProps) {
       field: 'name',
       headerName: '名前',
       type: 'string',
-      width: 400,
+      width: cmNum(400,250),
       align: 'left',
       headerAlign: 'left',
       editable: true,
@@ -157,7 +161,7 @@ export function ActionItemGrid(props:ActionItemGridProps) {
       field: 'done',
       headerName: '完了',
       type: 'boolean',
-      width: 150,
+      width: cmNum(150,120),
       align: 'center',
       headerAlign: 'center',
       editable: true,
@@ -208,6 +212,8 @@ export function ActionItemGrid(props:ActionItemGridProps) {
       },
     },
   ];
+  // 列の定義を代入
+  let columns: GridColDef[] = cmGridCol(full_columns,enable_mobile_fields);
 
   return (
     <Box

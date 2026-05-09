@@ -5,6 +5,7 @@ import {
     IScheduleRows,
 } from "../typings/data_json";
 import {cache} from "./ChacheManger";
+import {cmDateFormat} from '../lib/Common';
 
 /**
  * スケジュールのリストを管理するクラス
@@ -130,10 +131,10 @@ export class CScheduleList {
         // 最初の日
         let dayn = 0;
         ddate = deparure_date;
-        ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
+        ddays.push(ddate.format(cmDateFormat()));
         let pre_start_time:null|string = "";
         for(let i = 0; i < rows.length; i++) {
-            rows[i].dayn = ddate.format("YYYY-MM-DD(ddd)")
+            rows[i].dayn = ddate.format(cmDateFormat())
             // autoの時間計算（前）
             if (i !==0 && rows[i].start_time_auto === "pre") {
                 rows[i].start_time = pre_start_time;
@@ -154,7 +155,7 @@ export class CScheduleList {
                 if (dayjs(etime.format('yyyy-MM-DD')).diff(dayjs(etime2.format('yyyy-MM-DD')),"d") > 0) {
                     dayn++;
                     ddate = deparure_date.add(dayn,"d");
-                    ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
+                    ddays.push(ddate.format(cmDateFormat()));
                 }
             }
             // １つ前の終了時間

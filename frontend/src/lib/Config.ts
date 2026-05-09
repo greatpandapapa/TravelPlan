@@ -6,14 +6,6 @@ export const config = {
     version: pjson.version,
     isMobile: isMobile,
     icon_hight: isMobile ? "32px":"48px",
-    datagrid_rowHight: isMobile ? 25:35
+    datagrid_rowHight: isMobile ? 25:35,
+    fontsize: isMobile? 16:14
 } 
-
-// モバイル環境で文字を省略する場所で使う
-export function convMobileText(text:string):string {
-    if (isMobile) {
-        return "";
-    } else {
-        return text; 
-    }
-}

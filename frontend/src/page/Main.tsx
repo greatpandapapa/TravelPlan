@@ -26,11 +26,12 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import MyAppBar from "../component/MyAppBar";
 import BringItemPanel from './BringItemPanel';
 import ActionItemPanel from './ActionItemPanel';
-import {config,convMobileText} from "../lib/Config";
+import {config} from "../lib/Config";
 import GuidePanel from "./GuideiPanel";
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import {getColor} from '../lib/Common';
 import SummarizeIcon from '@mui/icons-material/Summarize';
+import {cmText} from '../lib/Common';
 
 function Main() {
   const [value, setValue] = React.useState('plan');
@@ -72,16 +73,16 @@ function Main() {
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange}>
-              <Tab icon={<CardTravelIcon />} iconPosition="start" label={convMobileText("計画")} value="plan" sx={{...tag_style, bgcolor:getColor(i=0)}} />
-              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={convMobileText("予定")} value="scheduleedit"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<TourIcon />} iconPosition="start" label={convMobileText("行先")} value="destination"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<GradingIcon />} iconPosition="start" label={convMobileText("工程表")} value="publish"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<SwapVertIcon />} iconPosition="start" label={convMobileText("順序")} value="schedulesort"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={convMobileText("持物")} value="bringitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={convMobileText("準備")} value="actionitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<StickyNote2Icon />} iconPosition="start" label={convMobileText("しおり")} value="guide"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<SummarizeIcon />} iconPosition="start" label={convMobileText("分析")} value="summary"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
-              <Tab icon={<SaveIcon />} iconPosition="start" label={convMobileText("保存")} value="save"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<CardTravelIcon />} iconPosition="start" label={cmText("計画")} value="plan" sx={{...tag_style, bgcolor:getColor(i=0)}} />
+              <Tab icon={<CalendarMonthIcon />} iconPosition="start" label={cmText("予定")} value="scheduleedit"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<TourIcon />} iconPosition="start" label={cmText("行先")} value="destination"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<GradingIcon />} iconPosition="start" label={cmText("工程表")} value="publish"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<SwapVertIcon />} iconPosition="start" label={cmText("順序")} value="schedulesort"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<HomeRepairServiceIcon />} iconPosition="start" label={cmText("持物")} value="bringitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<ChecklistRtlIcon />} iconPosition="start" label={cmText("準備")} value="actionitem"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<StickyNote2Icon />} iconPosition="start" label={cmText("しおり")} value="guide"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<SummarizeIcon />} iconPosition="start" label={cmText("分析")} value="summary"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
+              <Tab icon={<SaveIcon />} iconPosition="start" label={cmText("保存")} value="save"  sx={{...tag_style, bgcolor:getColor(++i)}}/>
             </TabList>
           </Box>
           <TabPanel value="plan" sx={{bgcolor:getColor(i=0),padding: panel_padding,paddingTop:'20px'}}>

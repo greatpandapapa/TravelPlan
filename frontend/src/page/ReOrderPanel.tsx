@@ -35,6 +35,8 @@ import {
   DraggableSyntheticListeners
 } from "@dnd-kit/core";
 import { Link } from '@mui/material';
+import {cmNum} from '../lib/Common';
+import {isMobile} from "react-device-detect";
 
 /**
  * スケジュール編集パネル
@@ -99,16 +101,16 @@ function ReOrderPanel() {
         <TableHead>
           <TableRow>
             <SlimTableCell component="th"></SlimTableCell>
-            <SlimTableCell component="th" style={{minWidth: 20}}>ID</SlimTableCell>
-            <SlimTableCell component="th" style={{minWidth: 100}}>日付</SlimTableCell>
+            {isMobile ? "":<SlimTableCell component="th" style={{minWidth: 20}}>ID</SlimTableCell>}
+            <SlimTableCell component="th" style={{minWidth: cmNum(100,80)}}>日付</SlimTableCell>
             <SlimTableCell component="th" style={{minWidth: 30}}>時間</SlimTableCell>
-            <SlimTableCell component="th" style={{minWidth: 30}}>滞在</SlimTableCell>
-            <SlimTableCell component="th" style={{minWidth: 30}}>TZ</SlimTableCell>
+            {isMobile ? "":<SlimTableCell component="th" style={{minWidth: 30}}>滞在</SlimTableCell>}
+            {isMobile ? "":<SlimTableCell component="th" style={{minWidth: 30}}>TZ</SlimTableCell>}
             <SlimTableCell component="th" style={{minWidth: 50}}>タイプ</SlimTableCell>
-            <SlimTableCell component="th" style={{maxWidth: 200}}>予定</SlimTableCell>
-            <SlimTableCell component="th" style={{maxWidth: 150}}>住所</SlimTableCell>
-            <SlimTableCell component="th" style={{minWidth: 50}}>予約</SlimTableCell>
-            <SlimTableCell component="th" style={{minWidth: 50}}>情報源</SlimTableCell>
+            <SlimTableCell component="th" style={{maxWidth: cmNum(200,100)}}>予定</SlimTableCell>
+            {isMobile ? "":<SlimTableCell component="th" style={{maxWidth: 150}}>住所</SlimTableCell>}
+            {isMobile ? "":<SlimTableCell component="th" style={{minWidth: 50}}>予約</SlimTableCell>}
+            {isMobile ? "":<SlimTableCell component="th" style={{minWidth: 50}}>情報源</SlimTableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -229,11 +231,11 @@ function ReOrderPanel() {
             <DragHandleIcon {...props.listeners}/>
           </SlimTableCell>
          ):<></>}
-        <SlimTableCell align="center">{props.row.id}</SlimTableCell>
+        {isMobile ? "":<SlimTableCell align="center">{props.row.id}</SlimTableCell>}
         <SlimTableCell align="left">{props.row.dayn}</SlimTableCell>
         <SlimTableCell align="center">{props.row.start_time}-{props.row.end_time}</SlimTableCell>
-        <SlimTableCell align="right">{props.row.stay_minutes}</SlimTableCell>
-        <SlimTableCell align="right">{props.row.tz_ajust}</SlimTableCell>
+        {isMobile ? "":<SlimTableCell align="right">{props.row.stay_minutes}</SlimTableCell>}
+        {isMobile ? "":<SlimTableCell align="right">{props.row.tz_ajust}</SlimTableCell>}
         <SlimTableCell align="left">{props.row.type_label}</SlimTableCell>
         <SlimTableCell align="left">
           {props.row.destination.alert !== "" && (<Typography sx={{color:"#FF0000"}}>★:{props.row.destination.alert}</Typography>)} 
@@ -241,13 +243,13 @@ function ReOrderPanel() {
           {(props.row.name === "") && props.row.destination.name}
           {(props.row.name !== "" && props.row.destination.name !== "") && "("+props.row.destination.name+")"}
         </SlimTableCell>
-        <SlimTableCell align="left">{props.row.destination.address}</SlimTableCell>
-        <SlimTableCell align="center">
+        {isMobile ? "":<SlimTableCell align="left">{props.row.destination.address}</SlimTableCell>}
+        {isMobile ? "":<SlimTableCell align="center">
           <Link target="_blank" href={props.row.destination.reservation_url}>{props.row.destination.reservation}</Link>
-        </SlimTableCell>
-        <SlimTableCell align="center">
+        </SlimTableCell>}
+        {isMobile ? "":<SlimTableCell align="center">
           <Link target="_blank" href={props.row.destination.url}>{props.row.destination.source}</Link>
-        </SlimTableCell>
+        </SlimTableCell>}
       </>
     );
   });

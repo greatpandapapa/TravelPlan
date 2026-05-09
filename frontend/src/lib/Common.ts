@@ -1,3 +1,6 @@
+import {isMobile} from "react-device-detect";
+import {GridColDef} from '@mui/x-data-grid';
+
 /**
  * パッケージのインストール
  * 
@@ -36,4 +39,55 @@ export function isBlank(value:string|number|null|undefined):boolean {
     } else {
         return false;
     }
+}
+
+// モバイル環境で文字を省略する場所で使う
+export function cmText(text:string,text2:string=""):string {
+    if (isMobile) {
+        return text2;
+    } else {
+        return text; 
+    }
+}
+
+// モバイル環境で数値を変える場所で使う
+export function cmNum(num:number,num2:number=0):number {
+    if (isMobile) {
+        return num2;
+    } else {
+        return num; 
+    }
+}
+
+// 日付フォーマットを返す
+export function cmDateFormat():string {
+    if (isMobile) {
+        return "MM-DD(ddd)";
+    } else {
+        return "YYYY-MM-DD(ddd)";
+    }
+}
+
+// モバイル環境の
+export function cmBool(bln:boolean,bln2:boolean):boolean {
+    if (isMobile) {
+        return bln2;
+    } else {
+        return bln;
+    }
+}
+
+// モバイル環境で表示する列を絞る
+export function cmGridCol(columns:GridColDef[],mobile_fields:string[]):GridColDef[] {
+  let columns2: GridColDef[] = [];
+  if (isMobile) {
+    columns.forEach((column:GridColDef)=>{
+      if (mobile_fields.includes(column.field)) {
+        columns2.push(column);
+      }
+    });
+    return columns2;
+  } else {
+    return columns;
+  }
 }

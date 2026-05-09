@@ -33,7 +33,7 @@ function PlanPanel() {
     ));
 
     return (
-        <Box width={800}>
+        <Box sx={{minwidth:500,maxWidth:800}}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={9}>
                     <TextField label="filename" fullWidth size="small" value={name}
@@ -46,7 +46,7 @@ function PlanPanel() {
                 <Grid item xs={3}>
                     <FormControl fullWidth>
                     <InputLabel size="small" id="masterplan-select-label">状態</InputLabel>
-                    <Select value={status} sx={{width:150}} label="ステータス" size="small"
+                    <Select value={status} sx={{width:120}} label="ステータス" size="small"
                       onChange={(event) => {
                             plan.status = event.target.value;
                             plan.modified();
@@ -69,7 +69,7 @@ function PlanPanel() {
                         setTitle(plan.title);
                       }}/>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <DatePicker label="出発日" format="YYYY-MM-DD" sx={{width:150}} value={ddate}
                     onChange={(newdate) => {
                         if (newdate != null) {
@@ -79,7 +79,7 @@ function PlanPanel() {
                         setDDate(plan.deparure_date);
                     }}/>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <FormControl fullWidth>
                     <InputLabel size="small" id="masterplan-select-label">人数</InputLabel>
                     <Select value={members} sx={{width:150}} label="人数" size="small"

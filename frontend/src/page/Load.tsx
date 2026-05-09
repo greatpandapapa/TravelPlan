@@ -20,6 +20,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {CPlan} from "../lib/Plan";
 import { IValueOptions } from '../typings/data_json';
+import {cmText,cmNum} from '../lib/Common';
+import {isMobile} from "react-device-detect";
 
 /**
  * ファイルからJSONデータを読み込み
@@ -89,11 +91,11 @@ function ListServerFile() {
                 <Link to={"/main"} state={{from:"server",name:row.name}}>{row.name}</Link>
               </TableCell>
               <TableCell align="left">{row.title}</TableCell>
-              <TableCell align="left">{row.purpose}</TableCell>
-              <TableCell align="center">{row.create_date}</TableCell>
-              <TableCell align="center">{row.update_date}</TableCell>
-              <TableCell align="center">{row.rev}</TableCell>
-              <TableCell align="left">{CPlan.getStatusName(row.status)}</TableCell>
+              {isMobile ? "":<TableCell align="left">{row.purpose}</TableCell>}
+              {isMobile ? "":<TableCell align="center">{row.create_date}</TableCell>}
+              {isMobile ? "":<TableCell align="center">{row.update_date}</TableCell>}
+              {isMobile ? "":<TableCell align="center">{row.rev}</TableCell>}
+              {isMobile ? "":<TableCell align="left">{CPlan.getStatusName(row.status)}</TableCell>}
               <TableCell align="center">
                 <Link to={"/print"} state={{from:"server",name:row.name}}>印刷</Link>
                 <IconButton aria-label="Delete" onClick={(e:React.MouseEvent)=>{handleDelete(row.name)}}>
@@ -123,16 +125,16 @@ function ListServerFile() {
         ))}
       </RadioGroup>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: cmNum(650,300)}} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell component="th">名前</TableCell>
               <TableCell component="th">タイトル</TableCell>
-              <TableCell component="th">目的</TableCell>
-              <TableCell component="th">作成日</TableCell>
-              <TableCell component="th">更新日</TableCell>
-              <TableCell component="th">Rev</TableCell>
-              <TableCell component="th">状態</TableCell>
+              {isMobile ? "":<TableCell component="th">目的</TableCell>}
+              {isMobile ? "":<TableCell component="th">作成日</TableCell>}
+              {isMobile ? "":<TableCell component="th">更新日</TableCell>}
+              {isMobile ? "":<TableCell component="th">Rev</TableCell>}
+              {isMobile ? "":<TableCell component="th">状態</TableCell>}
               <TableCell component="th"></TableCell>
             </TableRow>
           </TableHead>
@@ -153,19 +155,19 @@ function Load() {
       <MyAppBar/>
       <Grid container spacing={2} sx={{ p: 2 }}>
         <Grid item xs={2} sx={{display: 'flex',justifyContent: 'flex-start'}}>
-          新規作成
+          {cmText("新規作成","New")}
         </Grid>
         <Grid item xs={10} sx={{display: 'flex',justifyContent: 'flex-start'}}>
         <Link to={"/main"} state={{from:"new"}}>テンプレート</Link>
         </Grid>
         <Grid item xs={2} sx={{display: 'flex',justifyContent: 'flex-start'}}>
-          ファイルから読み込む
+          {cmText("ファイルから読み込む","File")}
         </Grid>
         <Grid item xs={10} sx={{display: 'flex',justifyContent: 'flex-start'}}>
           <LoadJsonFile/>
         </Grid>
         <Grid item xs={2} sx={{display: 'flex',justifyContent: 'flex-start'}}>
-          サーバから読み込む
+          {cmText("サーバから読み込む","Server")}
         </Grid>
         <Grid item xs={10} sx={{display: 'flex',justifyContent: 'flex-start'}}>
           <ListServerFile/>

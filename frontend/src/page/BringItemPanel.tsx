@@ -21,6 +21,7 @@ import {
   GridRowModesModel,
 } from '@mui/x-data-grid';
 import {StripedDataGrid} from '../component/CustomMui';
+import {cmNum,cmGridCol} from '../lib/Common';
 
 // Propsの型
 type BringItemGridProps = {
@@ -86,18 +87,21 @@ export function BringItemGrid(props:BringItemGridProps) {
     setRowModesModel(newRowModesModel);
   };
 
-  const columns: GridColDef[] = [
+  // モバイルで有効なフィールド
+  const enable_mobile_fields: string[] = ['name','checked','actions'];
+  // 列の定義
+  const full_columns: GridColDef[] = [
     { 
       field: 'id', 
       headerName: 'ID', 
-      width: 100, 
+      width: 90, 
       editable: false 
     },
     {
       field: 'name',
       headerName: '名前',
       type: 'string',
-      width: 400,
+      width: cmNum(400,200),
       align: 'left',
       headerAlign: 'left',
       editable: true,
@@ -106,7 +110,7 @@ export function BringItemGrid(props:BringItemGridProps) {
       field: 'type',
       headerName: '種類',
       type: 'singleSelect',
-      width: 150,
+      width: 120,
       align: 'center',
       headerAlign: 'center',
       editable: true,
@@ -116,7 +120,7 @@ export function BringItemGrid(props:BringItemGridProps) {
       field: 'memo',
       headerName: '備考',
       type: 'string',
-      width: 200,
+      width: cmNum(200,100),
       align: 'left',
       headerAlign: 'left',
       editable: true,
@@ -176,6 +180,8 @@ export function BringItemGrid(props:BringItemGridProps) {
       },
     },
   ];
+  // 列の定義を代入
+  let columns: GridColDef[] = cmGridCol(full_columns,enable_mobile_fields);
 
   return (
     <Box

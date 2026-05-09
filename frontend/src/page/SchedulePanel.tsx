@@ -24,6 +24,9 @@ import {
 
 import {StripedDataGrid} from '../component/CustomMui';
 import { IScheduleRows } from '../typings/data_json';
+import {EditScheduleModal} from './ScheduleModal';
+import {ISchedule} from '../typings/data_json';
+import {cmText,cmNum,cmBool,cmGridCol} from '../lib/Common';
 
 type ScheduleGridProps = {
   mode: string;
@@ -45,10 +48,11 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     }
   };
 
+  /*
   // 編集開始ボタンの処理
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
+  };*/
 
   // 編集保存ボタンの処理
   const handleSaveClick = (id: GridRowId) => () => {
@@ -130,10 +134,33 @@ export function ScheduleGrid(props:ScheduleGridProps) {
 
   // Editモードならeditableをtrueにする 
   let enable_editable:boolean;
-  enable_editable = true;
+  enable_editable = cmBool(true,false);
 
+  const [schedule,setSchedule] = useState<ISchedule>(plan.getNewSchedule());
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  
+  // Modelのリスト更新
+  const updateList = () => {
+    setRows(plan.getTableRows());
+  }
+  // Modelのフォームを更新
+  const updateForm = (dest:object) => {
+    setSchedule(dest as ISchedule);
+  }
+  // Modelのデータ更新
+  const saveData = () => {
+    plan.updateSchedule(schedule);
+    updateList();
+    handleClose();
+  };
+
+  // モバイルで有効なフィールド
+  const enable_mobile_fields: string[] = ["dayn",'start_time_auto','start_time','stay_minutes','name','actions'];
   // 列の定義
-  const columns: GridColDef[] = [
+  const full_columns: GridColDef[] = [
     {
       field: 'id', 
       headerName: 'ID', 
@@ -146,7 +173,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
       field: 'dayn',
       headerName: '日付',
       type: 'string',
-      width: 120,
+      width: cmNum(120,100),
       align: 'left',
       headerAlign: 'center',
       editable: false,
@@ -167,9 +194,9 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     },
     {
       field: 'start_time',
-      headerName: '開始時刻',
+      headerName: cmText('開始時刻','開始'),
       type: 'string',
-      width: 80,
+      width: cmNum(80,70),
       align: 'center',
       headerAlign: 'center',
       editable: enable_editable,
@@ -189,9 +216,9 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     },
     {
       field: 'stay_minutes',
-      headerName: '滞在時間',
+      headerName: cmText('滞在時間','滞在'),
       type: 'number',
-      width: 80,
+      width: cmNum(80,50),
       align: 'right',
       headerAlign: 'center',
       editable: enable_editable,
@@ -222,7 +249,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
     {
       field: 'name',
       headerName: '予定',
-      width: 220,
+      width: cmNum(220,100),
       editable: enable_editable,
       type: 'string',
       disableColumnMenu: true,
@@ -263,7 +290,7 @@ export function ScheduleGrid(props:ScheduleGridProps) {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: cmNum(100,80),
       cellClassName: 'actions',
       disableColumnMenu: true,
       sortable: false,
@@ -293,7 +320,11 @@ export function ScheduleGrid(props:ScheduleGridProps) {
             <GridActionsCellItem
               icon={<EditIcon />}
               label="Edit"
-              onClick={handleEditClick(id)}
+              onClick={()=>{
+                setSchedule(plan.getSchedule(id as number));
+                handleOpen();
+              }}
+              //onClick={handleEditClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
@@ -313,6 +344,9 @@ export function ScheduleGrid(props:ScheduleGridProps) {
       },
     }
   ];
+
+  // 列の定義を代入
+  let columns: GridColDef[] = cmGridCol(full_columns,enable_mobile_fields);
 
   let slots = {
 //    toolbar: EditToolbar as GridSlots['toolbar'],
@@ -348,6 +382,13 @@ export function ScheduleGrid(props:ScheduleGridProps) {
         slotProps={slotProps}
         rowHeight={35}
         sx={{margin:0}}
+      />
+      <EditScheduleModal 
+        open={open}
+        handleClose={handleClose} 
+        updateForm={updateForm}
+        saveData={saveData}
+        schedule={schedule}
       />
     </Box>
   );
