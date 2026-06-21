@@ -5,7 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import { BrowserRouter,HashRouter,Routes,Route } from 'react-router-dom';
 import { isMobile } from "react-device-detect";
 import Load from './page/Load';
 import Main from './page/Main';
@@ -27,15 +27,6 @@ function App() {
        },
       },
     },
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 768,
-        lg: 1025,
-        xl: 1536,
-      },
-    },
   });
 
   return (
@@ -43,13 +34,13 @@ function App() {
       <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ flexGrow: 1 }}>
-            <BrowserRouter basename={process.env.REACT_APP_BASEPATH}>
+            <HashRouter>
               <Routes>
                 <Route index element={<Load key="menu" />}/>
                 <Route path="/main" element={<Main />} />
                 <Route path="/print" element={<Print />} />
               </Routes>
-            </BrowserRouter>
+            </HashRouter>
       </Box>
       </LocalizationProvider>
       </ThemeProvider>
