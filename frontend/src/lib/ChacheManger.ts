@@ -48,7 +48,7 @@ export class CacheManager {
      */
     public setScheduleIndex(index:number[]) {
         this.schedule_index =  index;
-        this.cache_Valid[CC.SCHEDULE_INDEX] = false;
+        this.cache_Valid[CC.SCHEDULE_INDEX] = true;
     }
 
     /**
@@ -71,7 +71,7 @@ export class CacheManager {
      */
     public setSchedulePreIndex(index:number[]) {
         this.schedule_preindex =  index;
-        this.cache_Valid[CC.SCHEDULE_PREINDEX] = false;
+        this.cache_Valid[CC.SCHEDULE_PREINDEX] =  true;
     }
 
     /**
@@ -94,7 +94,7 @@ export class CacheManager {
      */
     public setScheduleSortedIndex(index:number[]) {
         this.schedule_sortedindex =  index;
-        this.cache_Valid[CC.SCHEDULE_SORTEDINDEX] = false;
+        this.cache_Valid[CC.SCHEDULE_SORTEDINDEX] =  true;
     }
 
     /**
@@ -117,7 +117,7 @@ export class CacheManager {
      */
     public setScheduleRows(rows:IScheduleRows[]) {
         this.schedule_rows =  rows;
-        this.cache_Valid[CC.SCHEDULE_ROW] = false;
+        this.cache_Valid[CC.SCHEDULE_ROW] = true;
     }
 
     /**
@@ -140,7 +140,7 @@ export class CacheManager {
      */
     public setScheduleDays(days:string[]) {
         this.schedule_days =  days;
-        this.cache_Valid[CC.SCHEDULE_DAYS] = false;
+        this.cache_Valid[CC.SCHEDULE_DAYS] =  true;
     }
 
     /**
@@ -163,7 +163,7 @@ export class CacheManager {
      */
     public setScheduleTable(table:IScheduleTable[]) {
         this.schedule_table =  table;
-        this.cache_Valid[CC.SCHEDULE_TABLE] = false;
+        this.cache_Valid[CC.SCHEDULE_TABLE] =  true;
     }
 
     /**

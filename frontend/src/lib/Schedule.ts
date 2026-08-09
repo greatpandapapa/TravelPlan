@@ -164,7 +164,7 @@ export class CScheduleList {
             if (rows[i].type === "end") {
                 dayn++;
                 ddate = deparure_date.add(dayn,"d");
-                ddays.push(ddate.format("YYYY-MM-DD(ddd)"));
+                ddays.push(ddate.format(cmDateFormat()));
                 pre_start_time = "6:00";
             }
         }
