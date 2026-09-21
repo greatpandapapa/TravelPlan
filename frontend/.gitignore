@@ -19,6 +19,7 @@
 .env.production.local
 .env.production.public
 .env.production.public2
+.env.production.wsl2
 
 npm-debug.log*
 yarn-debug.log*

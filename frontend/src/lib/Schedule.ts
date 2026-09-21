@@ -261,12 +261,12 @@ export class CScheduleList {
     private _getIndexByPreId(id:number):number|null {
         if (! cache.hasValidSchedulePreIndex()) {
             let index:number[] = [];
-
-            let i = 0;
-            for (let sc of this.schedule) {
+            let i=0;
+            this.schedule.forEach((sc)=>{
+                console.log(sc.id);
                 if (sc.pre_id !== null) index[sc.pre_id] = i;
                 i++;
-            } 
+            });
             cache.setSchedulePreIndex(index);
         }
         const index = cache.getSchedulePreIndex();
@@ -323,6 +323,8 @@ export class CScheduleList {
         if (idx != null) {
             this.schedule[idx].pre_id = new_id;
         }
+        // indexなどが追加前のものがキャッシュされるため
+        cache.clear();
         return new_id;
     }
 
